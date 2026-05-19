@@ -1,0 +1,66 @@
+datasource db {
+  provider = "postgresql"
+}
+
+generator client {
+  provider = "prisma-client"
+  output   = "./generated/prisma"
+}
+
+model ExpectedPayment {
+  id            String   @id
+  amount        Float
+  reference     String   @unique
+  customerName  String
+  customerPhone String?
+  customerEmail String?
+  status        String   @default("PENDING") // PENDING, MATCHED, PARTIAL, EXPIRED
+  createdAt     DateTime @default(now())
+  dueDate       DateTime?
+  description   String?
+  
+  matches       ReconciliationMatch[]
+}
+
+model ReceivedPayment {
+  id            String   @id // e.g. transaction session ID or unique reference
+  amount        Float
+  channel       String   // BANK_TRANSFER, POS, WALLET, CASH
+  provider      String   // OPay, Moniepoint, GTBank, etc.
+  reference     String   @unique // Session ID, RRN, or provider transaction reference
+  narrative     String?  // Full narration string
+  senderName    String?  // Payer bank name
+  senderAccount String?  // Payer account number or card PAN masked
+  status        String   @default("UNMATCHED") // UNMATCHED, MATCHED, IGNORED
+  createdAt     DateTime // Transaction timestamp from provider
+  ingestedAt    DateTime @default(now())
+  
+  matches       ReconciliationMatch[]
+}
+
+model ReconciliationMatch {
+  id                String          @id @default(uuid())
+  expectedPaymentId String
+  receivedPaymentId String
+  matchMethod       String          // AUTOMATIC_EXACT, AUTOMATIC_FUZZY, MANUAL
+  confidenceScore   Float           // 0.0 to 1.0
+  matchedRules      String          // JSON array of matched rules, e.g. '["amount", "narrative_ref"]'
+  matchedAt         DateTime        @default(now())
+  matchedBy         String          @default("SYSTEM") // SYSTEM or user email
+  notes             String?
+
+  expectedPayment   ExpectedPayment @relation(fields: [expectedPaymentId], references: [id], onDelete: Cascade)
+  receivedPayment   ReceivedPayment @relation(fields: [receivedPaymentId], references: [id], onDelete: Cascade)
+
+  @@unique([expectedPaymentId, receivedPaymentId])
+}
+
+model ReconciliationRule {
+  id          String   @id
+  name        String
+  description String
+  isActive    Boolean  @default(true)
+  priority    Int      // Higher value = higher priority
+  ruleType    String   // EXACT_AMOUNT_AND_REF, EXACT_AMOUNT_AND_NARRATIVE_REF, EXACT_AMOUNT_AND_FUZZY_NAME, etc.
+  config      String   @default("{}") // JSON string of parameters
+}
