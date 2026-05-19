@@ -1,11 +1,24 @@
 import { Controller, Get, Post, Body, Query } from '@nestjs/common';
 import { ReceivedPaymentsService } from './received-payments.service';
+import { ApiQuery, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Received Payments')
 @Controller('received')
 export class ReceivedPaymentsController {
   constructor(private readonly receivedService: ReceivedPaymentsService) {}
 
   @Get()
+  @ApiQuery({
+    name: 'status',
+    required: false,
+    description: 'Filter payments by matching status (e.g. UNMATCHED, MATCHED)',
+  })
+  @ApiQuery({
+    name: 'search',
+    required: false,
+    description:
+      'Search string matching reference, sender name, or bank narrative',
+  })
   async findAll(
     @Query('status') status?: string,
     @Query('search') search?: string,
