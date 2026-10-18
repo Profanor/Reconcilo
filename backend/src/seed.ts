@@ -145,6 +145,24 @@ async function main() {
         createdAt: new Date(now.getTime() - 5 * 60 * 60 * 1000), // 5 hours ago
         description: 'Hair Extension Bundle',
       },
+      {
+        id: 'EXP-1008',
+        amount: 10000.0,
+        reference: 'ORD-2026-0008',
+        customerName: 'Kelechi Uzo',
+        status: 'PENDING',
+        createdAt: new Date(now.getTime() - 8 * 60 * 60 * 1000),
+        description: 'Lagos Logistics Dispatch Delivery',
+      },
+      {
+        id: 'EXP-1009',
+        amount: 10000.0,
+        reference: 'ORD-2026-0009',
+        customerName: 'Zainab Bello',
+        status: 'PENDING',
+        createdAt: new Date(now.getTime() - 7 * 60 * 60 * 1000),
+        description: 'Skincare Package Mini',
+      },
     ],
   });
 
@@ -234,6 +252,48 @@ async function main() {
         narrative: 'Transfer for hair goods',
         createdAt: new Date(now.getTime() - 3 * 60 * 60 * 1000),
         status: 'UNMATCHED',
+      },
+      {
+        id: 'TX-900008',
+        amount: 10000.0,
+        channel: 'POS',
+        provider: 'Moniepoint',
+        reference: 'MP-POS-9928172',
+        senderName: 'WALK-IN CUSTOMER',
+        senderAccount: '5061********1209',
+        narrative: 'MONIEPOINT POS TERMINAL RECONCILO PAYMENT 10000',
+        createdAt: new Date(now.getTime() - 4 * 60 * 60 * 1000),
+        status: 'UNMATCHED',
+      },
+    ],
+  });
+
+  console.log('Seeding initial AuditLog entries...');
+  await prisma.auditLog.deleteMany({});
+  await prisma.auditLog.createMany({
+    data: [
+      {
+        action: 'DUPLICATE_FLAGGED',
+        user: 'adaobi.accountant@reconcilo.ng',
+        reason: '1 duplicate reference "ORD-2026-0001" flagged and blocked during Shopify CSV import',
+        details: JSON.stringify([
+          {
+            reference: 'ORD-2026-0001',
+            reason: 'Duplicate reference detected; original already pending',
+          },
+        ]),
+        createdAt: new Date(now.getTime() - 15 * 60 * 60 * 1000),
+      },
+      {
+        action: 'REJECT_SUGGESTION',
+        targetId: 'EXP-1006:TX-900006',
+        user: 'adaobi.accountant@reconcilo.ng',
+        reason: 'Rejected false match suggestion: payment amount was ₦5,500 but order was ₦5,000 (discrepancy)',
+        details: JSON.stringify({
+          expectedPaymentId: 'EXP-1006',
+          receivedPaymentId: 'TX-900006',
+        }),
+        createdAt: new Date(now.getTime() - 2 * 60 * 60 * 1000),
       },
     ],
   });

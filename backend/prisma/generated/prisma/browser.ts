@@ -37,3 +37,8 @@ export type ReconciliationMatch = Prisma.ReconciliationMatchModel
  * 
  */
 export type ReconciliationRule = Prisma.ReconciliationRuleModel
+/**
+ * Model AuditLog
+ * 
+ */
+export type AuditLog = Prisma.AuditLogModel

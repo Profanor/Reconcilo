@@ -57,6 +57,14 @@ export class ExpectedPaymentsController {
     });
   }
 
+  @Post('csv')
+  async importCsv(
+    @Body('csvText') csvText: string,
+    @Body('actor') actor?: string,
+  ) {
+    return await this.expectedService.importCsv(csvText, actor);
+  }
+
   @Delete(':id')
   async remove(@Param('id') id: string) {
     return await this.expectedService.remove(id);
