@@ -86,98 +86,94 @@ export class ReceivedPaymentsService {
     });
   }
 
-  async importCsv(csvText: string): Promise<any> {
-    if (!csvText) {
-      throw new BadRequestException('Missing CSV content (csvText)');
-    }
+  async importCsv(
+    csvText: string,
+    actor: string = 'AUTHORIZED_USER',
+  ): Promise<any> {
+    const { normalizeReceivedPaymentsCsv } = await import(
+      '../engine/normalizer'
+    );
+    const parsed = normalizeReceivedPaymentsCsv(csvText);
 
-    const lines = csvText.split(/\r?\n/).filter((l) => l.trim() !== '');
-    if (lines.length <= 1) {
-      throw new BadRequestException('CSV has no data rows');
-    }
-
-    const headers = lines[0].split(',').map((h) => h.trim().toLowerCase());
-
-    const required = ['amount', 'channel', 'provider', 'reference'];
-    const missing = required.filter((r) => !headers.includes(r));
-    if (missing.length > 0) {
+    if (!parsed.success && parsed.validRecords.length === 0) {
       throw new BadRequestException(
-        `CSV missing required columns: ${missing.join(', ')}`,
+        parsed.errors.length > 0
+          ? parsed.errors[0].reason
+          : 'Invalid or empty bank statement CSV content',
       );
     }
 
-    let successCount = 0;
-    let skipCount = 0;
-    const errors: string[] = [];
+    const duplicates = [...parsed.duplicates];
+    const errors = [...parsed.errors];
+    let importedCount = 0;
 
-    for (let i = 1; i < lines.length; i++) {
-      const row = lines[i]
-        .split(',')
-        .map((cell) => cell.trim().replace(/^["']|["']$/g, ''));
-      if (row.length < headers.length) continue;
-
-      const rowObj: any = {};
-      headers.forEach((header, index) => {
-        rowObj[header] = row[index];
+    for (const record of parsed.validRecords) {
+      const existing = await this.prisma.receivedPayment.findUnique({
+        where: { reference: record.reference },
       });
 
-      try {
-        const amount = parseFloat(rowObj.amount);
-        const {
-          channel,
-          provider,
-          reference,
-          narrative,
-          sendername,
-          senderaccount,
-          createdat,
-        } = rowObj;
-
-        if (isNaN(amount) || !channel || !provider || !reference) {
-          errors.push(`Row ${i + 1}: Invalid data`);
-          continue;
-        }
-
-        const existing = await this.prisma.receivedPayment.findUnique({
-          where: { reference },
+      if (existing) {
+        duplicates.push({
+          rowNumber: 0,
+          reference: record.reference,
+          reason: `Transaction reference/session ID "${record.reference}" already recorded in database`,
         });
+        continue;
+      }
 
-        if (existing) {
-          skipCount++;
-          continue;
-        }
+      const id = `TX-${Math.floor(100000 + Math.random() * 900000)}`;
 
-        const id = `TX-${Math.floor(100000 + Math.random() * 900000)}`;
-
+      try {
         await this.prisma.receivedPayment.create({
           data: {
             id,
-            amount,
-            channel,
-            provider,
-            reference,
-            narrative: narrative || null,
-            senderName: sendername || null,
-            senderAccount: senderaccount || null,
-            createdAt: createdat ? new Date(createdat) : new Date(),
+            amount: record.amount,
+            channel: record.channel,
+            provider: record.provider,
+            reference: record.reference,
+            narrative: record.narrative || null,
+            senderName: record.senderName || null,
+            senderAccount: record.senderAccount || null,
+            createdAt: record.createdAt,
             status: 'UNMATCHED',
           },
         });
-
-        successCount++;
+        importedCount++;
       } catch (err: any) {
-        errors.push(`Row ${i + 1}: ${err.message}`);
+        errors.push({
+          rowNumber: 0,
+          raw: record.reference,
+          reason: `Database error: ${err.message}`,
+        });
+      }
+    }
+
+    if (duplicates.length > 0) {
+      try {
+        await this.prisma.auditLog.create({
+          data: {
+            action: 'DUPLICATE_FLAGGED',
+            user: actor,
+            reason: `${duplicates.length} duplicate received bank transactions detected during upload`,
+            details: JSON.stringify(duplicates),
+          },
+        });
+      } catch (e) {
+        // Log gracefully
       }
     }
 
     return {
-      message: `CSV ingestion completed: ${successCount} imported, ${skipCount} skipped, ${errors.length} errors.`,
+      message: `Bank statement processed: ${importedCount} imported, ${duplicates.length} duplicate transactions flagged, ${errors.length} failed rows.`,
       details: {
-        successCount,
-        skipCount,
+        totalRows: parsed.totalRows,
+        importedCount,
+        duplicateCount: duplicates.length,
         errorCount: errors.length,
+        duplicates,
         errors,
       },
     };
   }
 }
+

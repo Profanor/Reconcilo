@@ -89,4 +89,95 @@ export class ExpectedPaymentsService {
 
     return { message: "Expected payment deleted successfully" };
   }
+
+  async importCsv(
+    csvText: string,
+    actor: string = "AUTHORIZED_USER",
+  ): Promise<any> {
+    const { normalizeExpectedPaymentsCsv } = await import(
+      "../engine/normalizer"
+    );
+    const parsed = normalizeExpectedPaymentsCsv(csvText);
+
+    if (!parsed.success && parsed.validRecords.length === 0) {
+      throw new BadRequestException(
+        parsed.errors.length > 0
+          ? parsed.errors[0].reason
+          : "Invalid or empty CSV content",
+      );
+    }
+
+    const duplicates = [...parsed.duplicates];
+    const errors = [...parsed.errors];
+    let importedCount = 0;
+
+    for (const record of parsed.validRecords) {
+      const existing = await this.prisma.expectedPayment.findUnique({
+        where: { reference: record.reference },
+      });
+
+      if (existing) {
+        duplicates.push({
+          rowNumber: 0,
+          reference: record.reference,
+          reason: `Reference "${record.reference}" already exists in Expected Payments database`,
+        });
+        continue;
+      }
+
+      const expId = `EXP-${Math.floor(100000 + Math.random() * 900000)}`;
+
+      try {
+        await this.prisma.expectedPayment.create({
+          data: {
+            id: expId,
+            amount: record.amount,
+            reference: record.reference,
+            customerName: record.customerName,
+            customerPhone: record.customerPhone || null,
+            customerEmail: record.customerEmail || null,
+            dueDate: record.dueDate || null,
+            description: record.description || null,
+            createdAt: record.createdAt || new Date(),
+            status: "PENDING",
+          },
+        });
+        importedCount++;
+      } catch (err: any) {
+        errors.push({
+          rowNumber: 0,
+          raw: record.reference,
+          reason: `Failed to insert record: ${err.message}`,
+        });
+      }
+    }
+
+    if (duplicates.length > 0) {
+      try {
+        await this.prisma.auditLog.create({
+          data: {
+            action: "DUPLICATE_FLAGGED",
+            user: actor,
+            reason: `${duplicates.length} duplicate expected payment records flagged during CSV upload`,
+            details: JSON.stringify(duplicates),
+          },
+        });
+      } catch (e) {
+        // Log gracefully
+      }
+    }
+
+    return {
+      message: `Expected payments processed: ${importedCount} imported, ${duplicates.length} duplicates detected, ${errors.length} failed rows.`,
+      details: {
+        totalRows: parsed.totalRows,
+        importedCount,
+        duplicateCount: duplicates.length,
+        errorCount: errors.length,
+        duplicates,
+        errors,
+      },
+    };
+  }
 }
+

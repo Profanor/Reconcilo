@@ -243,3 +243,47 @@ export class ExactAmountAndFuzzyNameRule implements MatchingRule {
     return { isMatch: false, confidenceScore: 0, matchedRules: [] };
   }
 }
+
+export class ExactAmountOnlyRule implements MatchingRule {
+  id = 'EXACT_AMOUNT_ONLY';
+  name = 'Exact Amount Match (Requires Review)';
+  description =
+    'Matches when the payment amount matches an expected order within date tolerance, but reference or sender name is absent or unrecognized. Never auto-committed.';
+  priority = 4;
+
+  evaluate(
+    expected: ExpectedPayment,
+    received: ReceivedPayment,
+    config: any = {},
+  ): MatchResult {
+    const tolerance = config.amountTolerance || 0;
+    const isAmountMatch = amountsMatch(
+      expected.amount,
+      received.amount,
+      tolerance,
+    );
+
+    if (!isAmountMatch) {
+      return { isMatch: false, confidenceScore: 0, matchedRules: [] };
+    }
+
+    const timeWindowHrs = config.timeWindowHours || 120;
+    const timeWindowMs = timeWindowHrs * 60 * 60 * 1000;
+
+    const expectedTime = new Date(expected.createdAt).getTime();
+    const receivedTime = new Date(received.createdAt).getTime();
+
+    const timeDiff = Math.abs(receivedTime - expectedTime);
+    if (timeDiff > timeWindowMs) {
+      return { isMatch: false, confidenceScore: 0, matchedRules: [] };
+    }
+
+    return {
+      isMatch: true,
+      confidenceScore: 0.60,
+      matchedRules: [this.id],
+      notes: `Amount matches exactly (₦${expected.amount.toLocaleString()}). No verified reference or customer name found. Requires confirmation.`,
+    };
+  }
+}
+

@@ -64,3 +64,14 @@ model ReconciliationRule {
   ruleType    String   // EXACT_AMOUNT_AND_REF, EXACT_AMOUNT_AND_NARRATIVE_REF, EXACT_AMOUNT_AND_FUZZY_NAME, etc.
   config      String   @default("{}") // JSON string of parameters
 }
+
+model AuditLog {
+  id        String   @id @default(uuid())
+  action    String   // MANUAL_MATCH, CONFIRM_SUGGESTION, REJECT_SUGGESTION, UNMATCH, DUPLICATE_FLAGGED
+  targetId  String?  // Reference or ID
+  user      String   // Email or name of authorized actor
+  reason    String?  // Explanation/notes
+  details   String?  // JSON metadata string
+  createdAt DateTime @default(now())
+}
+

@@ -54,7 +54,8 @@ export const ModelName = {
   ExpectedPayment: 'ExpectedPayment',
   ReceivedPayment: 'ReceivedPayment',
   ReconciliationMatch: 'ReconciliationMatch',
-  ReconciliationRule: 'ReconciliationRule'
+  ReconciliationRule: 'ReconciliationRule',
+  AuditLog: 'AuditLog'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -132,6 +133,19 @@ export const ReconciliationRuleScalarFieldEnum = {
 } as const
 
 export type ReconciliationRuleScalarFieldEnum = (typeof ReconciliationRuleScalarFieldEnum)[keyof typeof ReconciliationRuleScalarFieldEnum]
+
+
+export const AuditLogScalarFieldEnum = {
+  id: 'id',
+  action: 'action',
+  targetId: 'targetId',
+  user: 'user',
+  reason: 'reason',
+  details: 'details',
+  createdAt: 'createdAt'
+} as const
+
+export type AuditLogScalarFieldEnum = (typeof AuditLogScalarFieldEnum)[keyof typeof AuditLogScalarFieldEnum]
 
 
 export const SortOrder = {

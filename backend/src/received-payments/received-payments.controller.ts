@@ -52,7 +52,10 @@ export class ReceivedPaymentsController {
   }
 
   @Post('csv')
-  async importCsv(@Body('csvText') csvText: string) {
-    return await this.receivedService.importCsv(csvText);
+  async importCsv(
+    @Body('csvText') csvText: string,
+    @Body('actor') actor?: string,
+  ) {
+    return await this.receivedService.importCsv(csvText, actor);
   }
 }
