@@ -6,6 +6,14 @@
 export const API_BASE = "http://localhost:4000/api";
 export const PRODUCT_NAME = "Lissafi";
 
+export const formatNGN = (amt: number): string => {
+  return new Intl.NumberFormat("en-NG", {
+    style: "currency",
+    currency: "NGN",
+    maximumFractionDigits: 0,
+  }).format(amt);
+};
+
 export interface ExpectedPayment {
   id: string;
   amount: number;
