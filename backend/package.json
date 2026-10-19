@@ -12,7 +12,7 @@
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
-    "deploy:prod": "npx prisma db push --skip-generate && npm run seed && npm run start:prod",
+    "deploy:prod": "npx prisma db push && npm run seed && npm run start:prod",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev --name init",
     "prisma:studio": "prisma studio",
