@@ -49,11 +49,20 @@ export class TenantGuard implements CanActivate {
     if (authHeader && authHeader.startsWith('Bearer ')) {
       const token = authHeader.substring(7);
       try {
-        const payloadStr = Buffer.from(
-          token.split('.')[1] || '',
-          'base64',
-        ).toString();
-        const decoded = JSON.parse(payloadStr);
+        let decoded: any = null;
+
+        if (token.startsWith('pilot_')) {
+          // Pilot token format: pilot_<base64(json)>
+          const b64 = token.substring(6); // strip "pilot_"
+          decoded = JSON.parse(Buffer.from(b64, 'base64').toString());
+        } else {
+          // Standard JWT format: header.payload.signature
+          const payloadStr = Buffer.from(
+            token.split('.')[1] || '',
+            'base64',
+          ).toString();
+          decoded = JSON.parse(payloadStr);
+        }
 
         if (decoded?.tenantId) {
           tokenTenantId = decoded.tenantId;
@@ -61,7 +70,7 @@ export class TenantGuard implements CanActivate {
           request.user = decoded;
         }
       } catch {
-        // Invalid JWT format
+        // Invalid token format
       }
     }
 
