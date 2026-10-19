@@ -6,6 +6,14 @@
 export const API_BASE = "http://localhost:4000/api";
 export const PRODUCT_NAME = "Lissafi";
 
+export const formatNGN = (amt: number): string => {
+  return new Intl.NumberFormat("en-NG", {
+    style: "currency",
+    currency: "NGN",
+    maximumFractionDigits: 0,
+  }).format(amt);
+};
+
 export interface ExpectedPayment {
   id: string;
   amount: number;
@@ -155,10 +163,12 @@ export interface IngestionResult {
 // Network Request Helper
 async function request<T>(path: string, options?: RequestInit): Promise<T> {
   const url = `${API_BASE}${path}`;
+  const tenantId = localStorage.getItem("lissafi_tenant_id") || "tenant-apex-001";
   const response = await fetch(url, {
     ...options,
     headers: {
       "Content-Type": "application/json",
+      "x-tenant-id": tenantId,
       ...(options?.headers || {}),
     },
   });
