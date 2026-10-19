@@ -57,6 +57,7 @@ describe('ReconciliationService', () => {
       },
       receivedPayment: {
         findUnique: jest.fn(),
+        findFirst: jest.fn(),
         update: jest.fn(),
       },
       expectedPayment: {
@@ -111,14 +112,14 @@ describe('ReconciliationService', () => {
         },
       ];
 
-      prismaMock.receivedPayment.findUnique.mockResolvedValue(receivedPayment);
+      prismaMock.receivedPayment.findFirst.mockResolvedValue(receivedPayment);
       prismaMock.expectedPayment.findMany.mockResolvedValue(pendingExpected);
       prismaMock.reconciliationMatch.create.mockImplementation((args: any) => ({
         id: 'MATCH-UUID',
         ...args.data,
       }));
 
-      const match = await service.reconcilePayment('TX-9911');
+      const match = await service.reconcilePayment('tenant-apex-001', 'TX-9911');
 
       expect(match).not.toBeNull();
       expect(match?.expectedPaymentId).toBe('EXP-101');
@@ -158,14 +159,14 @@ describe('ReconciliationService', () => {
         },
       ];
 
-      prismaMock.receivedPayment.findUnique.mockResolvedValue(receivedPayment);
+      prismaMock.receivedPayment.findFirst.mockResolvedValue(receivedPayment);
       prismaMock.expectedPayment.findMany.mockResolvedValue(pendingExpected);
       prismaMock.reconciliationMatch.create.mockImplementation((args: any) => ({
         id: 'MATCH-UUID-2',
         ...args.data,
       }));
 
-      const match = await service.reconcilePayment('TX-9912');
+      const match = await service.reconcilePayment('tenant-apex-001', 'TX-9912');
 
       expect(match).not.toBeNull();
       expect(match?.expectedPaymentId).toBe('EXP-102');
@@ -203,14 +204,14 @@ describe('ReconciliationService', () => {
         },
       ];
 
-      prismaMock.receivedPayment.findUnique.mockResolvedValue(receivedPayment);
+      prismaMock.receivedPayment.findFirst.mockResolvedValue(receivedPayment);
       prismaMock.expectedPayment.findMany.mockResolvedValue(pendingExpected);
       prismaMock.reconciliationMatch.create.mockImplementation((args: any) => ({
         id: 'MATCH-UUID-3',
         ...args.data,
       }));
 
-      const match = await service.reconcilePayment('TX-9913');
+      const match = await service.reconcilePayment('tenant-apex-001', 'TX-9913');
 
       expect(match).not.toBeNull();
       expect(match?.expectedPaymentId).toBe('EXP-103');
@@ -248,10 +249,10 @@ describe('ReconciliationService', () => {
         },
       ];
 
-      prismaMock.receivedPayment.findUnique.mockResolvedValue(receivedPayment);
+      prismaMock.receivedPayment.findFirst.mockResolvedValue(receivedPayment);
       prismaMock.expectedPayment.findMany.mockResolvedValue(pendingExpected);
 
-      const match = await service.reconcilePayment('TX-9914');
+      const match = await service.reconcilePayment('tenant-apex-001', 'TX-9914');
 
       expect(match).toBeNull();
     });

@@ -6,20 +6,25 @@ import { ExpectedPayment } from "../../prisma/generated/prisma/client";
 export class ExpectedPaymentsService {
   constructor(private prisma: PrismaService) {}
 
-  async findAll(status?: string, search?: string): Promise<ExpectedPayment[]> {
-    const where: any = {};
+  async findAll(tenantId: string, status?: string, search?: string): Promise<ExpectedPayment[]> {
+    const where: any = { tenantId };
     
     if (status) {
       where.status = status;
     }
     
     if (search) {
-      where.OR = [
-        { id: { contains: search, mode: "insensitive" } },
-        { reference: { contains: search, mode: "insensitive" } },
-        { customerName: { contains: search, mode: "insensitive" } },
-        { customerPhone: { contains: search, mode: "insensitive" } },
-        { customerEmail: { contains: search, mode: "insensitive" } },
+      where.AND = [
+        { tenantId },
+        {
+          OR: [
+            { id: { contains: search, mode: "insensitive" } },
+            { reference: { contains: search, mode: "insensitive" } },
+            { customerName: { contains: search, mode: "insensitive" } },
+            { customerPhone: { contains: search, mode: "insensitive" } },
+            { customerEmail: { contains: search, mode: "insensitive" } },
+          ],
+        },
       ];
     }
 
@@ -29,7 +34,7 @@ export class ExpectedPaymentsService {
     });
   }
 
-  async create(data: {
+  async create(tenantId: string, data: {
     id?: string;
     amount: number;
     reference: string;
@@ -46,11 +51,16 @@ export class ExpectedPaymentsService {
     }
 
     const existing = await this.prisma.expectedPayment.findUnique({
-      where: { reference },
+      where: {
+        tenantId_reference: {
+          tenantId,
+          reference: reference.trim(),
+        },
+      },
     });
 
     if (existing) {
-      throw new BadRequestException(`An expected payment with reference '${reference}' already exists.`);
+      throw new BadRequestException(`An expected payment with reference '${reference}' already exists in your workspace.`);
     }
 
     const expId = id || `EXP-${Math.floor(100000 + Math.random() * 900000)}`;
@@ -58,21 +68,22 @@ export class ExpectedPaymentsService {
     return await this.prisma.expectedPayment.create({
       data: {
         id: expId,
+        tenantId,
         amount,
-        reference,
-        customerName,
-        customerPhone: customerPhone || null,
-        customerEmail: customerEmail || null,
+        reference: reference.trim(),
+        customerName: customerName.trim(),
+        customerPhone: customerPhone?.trim() || null,
+        customerEmail: customerEmail?.trim() || null,
         dueDate: dueDate ? new Date(dueDate) : null,
-        description: description || null,
+        description: description?.trim() || null,
         status: "PENDING",
       },
     });
   }
 
-  async remove(id: string): Promise<{ message: string }> {
-    const payment = await this.prisma.expectedPayment.findUnique({
-      where: { id },
+  async remove(tenantId: string, id: string): Promise<{ message: string }> {
+    const payment = await this.prisma.expectedPayment.findFirst({
+      where: { id, tenantId },
     });
 
     if (!payment) {
@@ -91,6 +102,7 @@ export class ExpectedPaymentsService {
   }
 
   async importCsv(
+    tenantId: string,
     csvText: string,
     actor: string = "AUTHORIZED_USER",
   ): Promise<any> {
@@ -113,7 +125,12 @@ export class ExpectedPaymentsService {
 
     for (const record of parsed.validRecords) {
       const existing = await this.prisma.expectedPayment.findUnique({
-        where: { reference: record.reference },
+        where: {
+          tenantId_reference: {
+            tenantId,
+            reference: record.reference,
+          },
+        },
       });
 
       if (existing) {
@@ -131,6 +148,7 @@ export class ExpectedPaymentsService {
         await this.prisma.expectedPayment.create({
           data: {
             id: expId,
+            tenantId,
             amount: record.amount,
             reference: record.reference,
             customerName: record.customerName,
@@ -156,6 +174,7 @@ export class ExpectedPaymentsService {
       try {
         await this.prisma.auditLog.create({
           data: {
+            tenantId,
             action: "DUPLICATE_FLAGGED",
             user: actor,
             reason: `${duplicates.length} duplicate expected payment records flagged during CSV upload`,

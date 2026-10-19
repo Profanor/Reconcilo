@@ -36,6 +36,7 @@ export type ReconciliationMatchSumAggregateOutputType = {
 
 export type ReconciliationMatchMinAggregateOutputType = {
   id: string | null
+  tenantId: string | null
   expectedPaymentId: string | null
   receivedPaymentId: string | null
   matchMethod: string | null
@@ -48,6 +49,7 @@ export type ReconciliationMatchMinAggregateOutputType = {
 
 export type ReconciliationMatchMaxAggregateOutputType = {
   id: string | null
+  tenantId: string | null
   expectedPaymentId: string | null
   receivedPaymentId: string | null
   matchMethod: string | null
@@ -60,6 +62,7 @@ export type ReconciliationMatchMaxAggregateOutputType = {
 
 export type ReconciliationMatchCountAggregateOutputType = {
   id: number
+  tenantId: number
   expectedPaymentId: number
   receivedPaymentId: number
   matchMethod: number
@@ -82,6 +85,7 @@ export type ReconciliationMatchSumAggregateInputType = {
 
 export type ReconciliationMatchMinAggregateInputType = {
   id?: true
+  tenantId?: true
   expectedPaymentId?: true
   receivedPaymentId?: true
   matchMethod?: true
@@ -94,6 +98,7 @@ export type ReconciliationMatchMinAggregateInputType = {
 
 export type ReconciliationMatchMaxAggregateInputType = {
   id?: true
+  tenantId?: true
   expectedPaymentId?: true
   receivedPaymentId?: true
   matchMethod?: true
@@ -106,6 +111,7 @@ export type ReconciliationMatchMaxAggregateInputType = {
 
 export type ReconciliationMatchCountAggregateInputType = {
   id?: true
+  tenantId?: true
   expectedPaymentId?: true
   receivedPaymentId?: true
   matchMethod?: true
@@ -205,6 +211,7 @@ export type ReconciliationMatchGroupByArgs<ExtArgs extends runtime.Types.Extensi
 
 export type ReconciliationMatchGroupByOutputType = {
   id: string
+  tenantId: string
   expectedPaymentId: string
   receivedPaymentId: string
   matchMethod: string
@@ -240,6 +247,7 @@ export type ReconciliationMatchWhereInput = {
   OR?: Prisma.ReconciliationMatchWhereInput[]
   NOT?: Prisma.ReconciliationMatchWhereInput | Prisma.ReconciliationMatchWhereInput[]
   id?: Prisma.StringFilter<"ReconciliationMatch"> | string
+  tenantId?: Prisma.StringFilter<"ReconciliationMatch"> | string
   expectedPaymentId?: Prisma.StringFilter<"ReconciliationMatch"> | string
   receivedPaymentId?: Prisma.StringFilter<"ReconciliationMatch"> | string
   matchMethod?: Prisma.StringFilter<"ReconciliationMatch"> | string
@@ -248,12 +256,14 @@ export type ReconciliationMatchWhereInput = {
   matchedAt?: Prisma.DateTimeFilter<"ReconciliationMatch"> | Date | string
   matchedBy?: Prisma.StringFilter<"ReconciliationMatch"> | string
   notes?: Prisma.StringNullableFilter<"ReconciliationMatch"> | string | null
+  tenant?: Prisma.XOR<Prisma.TenantScalarRelationFilter, Prisma.TenantWhereInput>
   expectedPayment?: Prisma.XOR<Prisma.ExpectedPaymentScalarRelationFilter, Prisma.ExpectedPaymentWhereInput>
   receivedPayment?: Prisma.XOR<Prisma.ReceivedPaymentScalarRelationFilter, Prisma.ReceivedPaymentWhereInput>
 }
 
 export type ReconciliationMatchOrderByWithRelationInput = {
   id?: Prisma.SortOrder
+  tenantId?: Prisma.SortOrder
   expectedPaymentId?: Prisma.SortOrder
   receivedPaymentId?: Prisma.SortOrder
   matchMethod?: Prisma.SortOrder
@@ -262,16 +272,18 @@ export type ReconciliationMatchOrderByWithRelationInput = {
   matchedAt?: Prisma.SortOrder
   matchedBy?: Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
+  tenant?: Prisma.TenantOrderByWithRelationInput
   expectedPayment?: Prisma.ExpectedPaymentOrderByWithRelationInput
   receivedPayment?: Prisma.ReceivedPaymentOrderByWithRelationInput
 }
 
 export type ReconciliationMatchWhereUniqueInput = Prisma.AtLeast<{
   id?: string
-  expectedPaymentId_receivedPaymentId?: Prisma.ReconciliationMatchExpectedPaymentIdReceivedPaymentIdCompoundUniqueInput
+  tenantId_expectedPaymentId_receivedPaymentId?: Prisma.ReconciliationMatchTenantIdExpectedPaymentIdReceivedPaymentIdCompoundUniqueInput
   AND?: Prisma.ReconciliationMatchWhereInput | Prisma.ReconciliationMatchWhereInput[]
   OR?: Prisma.ReconciliationMatchWhereInput[]
   NOT?: Prisma.ReconciliationMatchWhereInput | Prisma.ReconciliationMatchWhereInput[]
+  tenantId?: Prisma.StringFilter<"ReconciliationMatch"> | string
   expectedPaymentId?: Prisma.StringFilter<"ReconciliationMatch"> | string
   receivedPaymentId?: Prisma.StringFilter<"ReconciliationMatch"> | string
   matchMethod?: Prisma.StringFilter<"ReconciliationMatch"> | string
@@ -280,12 +292,14 @@ export type ReconciliationMatchWhereUniqueInput = Prisma.AtLeast<{
   matchedAt?: Prisma.DateTimeFilter<"ReconciliationMatch"> | Date | string
   matchedBy?: Prisma.StringFilter<"ReconciliationMatch"> | string
   notes?: Prisma.StringNullableFilter<"ReconciliationMatch"> | string | null
+  tenant?: Prisma.XOR<Prisma.TenantScalarRelationFilter, Prisma.TenantWhereInput>
   expectedPayment?: Prisma.XOR<Prisma.ExpectedPaymentScalarRelationFilter, Prisma.ExpectedPaymentWhereInput>
   receivedPayment?: Prisma.XOR<Prisma.ReceivedPaymentScalarRelationFilter, Prisma.ReceivedPaymentWhereInput>
-}, "id" | "expectedPaymentId_receivedPaymentId">
+}, "id" | "tenantId_expectedPaymentId_receivedPaymentId">
 
 export type ReconciliationMatchOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
+  tenantId?: Prisma.SortOrder
   expectedPaymentId?: Prisma.SortOrder
   receivedPaymentId?: Prisma.SortOrder
   matchMethod?: Prisma.SortOrder
@@ -306,6 +320,7 @@ export type ReconciliationMatchScalarWhereWithAggregatesInput = {
   OR?: Prisma.ReconciliationMatchScalarWhereWithAggregatesInput[]
   NOT?: Prisma.ReconciliationMatchScalarWhereWithAggregatesInput | Prisma.ReconciliationMatchScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"ReconciliationMatch"> | string
+  tenantId?: Prisma.StringWithAggregatesFilter<"ReconciliationMatch"> | string
   expectedPaymentId?: Prisma.StringWithAggregatesFilter<"ReconciliationMatch"> | string
   receivedPaymentId?: Prisma.StringWithAggregatesFilter<"ReconciliationMatch"> | string
   matchMethod?: Prisma.StringWithAggregatesFilter<"ReconciliationMatch"> | string
@@ -324,12 +339,14 @@ export type ReconciliationMatchCreateInput = {
   matchedAt?: Date | string
   matchedBy?: string
   notes?: string | null
+  tenant: Prisma.TenantCreateNestedOneWithoutMatchesInput
   expectedPayment: Prisma.ExpectedPaymentCreateNestedOneWithoutMatchesInput
   receivedPayment: Prisma.ReceivedPaymentCreateNestedOneWithoutMatchesInput
 }
 
 export type ReconciliationMatchUncheckedCreateInput = {
   id?: string
+  tenantId: string
   expectedPaymentId: string
   receivedPaymentId: string
   matchMethod: string
@@ -348,12 +365,14 @@ export type ReconciliationMatchUpdateInput = {
   matchedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   matchedBy?: Prisma.StringFieldUpdateOperationsInput | string
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tenant?: Prisma.TenantUpdateOneRequiredWithoutMatchesNestedInput
   expectedPayment?: Prisma.ExpectedPaymentUpdateOneRequiredWithoutMatchesNestedInput
   receivedPayment?: Prisma.ReceivedPaymentUpdateOneRequiredWithoutMatchesNestedInput
 }
 
 export type ReconciliationMatchUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.StringFieldUpdateOperationsInput | string
   expectedPaymentId?: Prisma.StringFieldUpdateOperationsInput | string
   receivedPaymentId?: Prisma.StringFieldUpdateOperationsInput | string
   matchMethod?: Prisma.StringFieldUpdateOperationsInput | string
@@ -366,6 +385,7 @@ export type ReconciliationMatchUncheckedUpdateInput = {
 
 export type ReconciliationMatchCreateManyInput = {
   id?: string
+  tenantId: string
   expectedPaymentId: string
   receivedPaymentId: string
   matchMethod: string
@@ -388,6 +408,7 @@ export type ReconciliationMatchUpdateManyMutationInput = {
 
 export type ReconciliationMatchUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.StringFieldUpdateOperationsInput | string
   expectedPaymentId?: Prisma.StringFieldUpdateOperationsInput | string
   receivedPaymentId?: Prisma.StringFieldUpdateOperationsInput | string
   matchMethod?: Prisma.StringFieldUpdateOperationsInput | string
@@ -408,13 +429,15 @@ export type ReconciliationMatchOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
-export type ReconciliationMatchExpectedPaymentIdReceivedPaymentIdCompoundUniqueInput = {
+export type ReconciliationMatchTenantIdExpectedPaymentIdReceivedPaymentIdCompoundUniqueInput = {
+  tenantId: string
   expectedPaymentId: string
   receivedPaymentId: string
 }
 
 export type ReconciliationMatchCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  tenantId?: Prisma.SortOrder
   expectedPaymentId?: Prisma.SortOrder
   receivedPaymentId?: Prisma.SortOrder
   matchMethod?: Prisma.SortOrder
@@ -431,6 +454,7 @@ export type ReconciliationMatchAvgOrderByAggregateInput = {
 
 export type ReconciliationMatchMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  tenantId?: Prisma.SortOrder
   expectedPaymentId?: Prisma.SortOrder
   receivedPaymentId?: Prisma.SortOrder
   matchMethod?: Prisma.SortOrder
@@ -443,6 +467,7 @@ export type ReconciliationMatchMaxOrderByAggregateInput = {
 
 export type ReconciliationMatchMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  tenantId?: Prisma.SortOrder
   expectedPaymentId?: Prisma.SortOrder
   receivedPaymentId?: Prisma.SortOrder
   matchMethod?: Prisma.SortOrder
@@ -455,6 +480,48 @@ export type ReconciliationMatchMinOrderByAggregateInput = {
 
 export type ReconciliationMatchSumOrderByAggregateInput = {
   confidenceScore?: Prisma.SortOrder
+}
+
+export type ReconciliationMatchCreateNestedManyWithoutTenantInput = {
+  create?: Prisma.XOR<Prisma.ReconciliationMatchCreateWithoutTenantInput, Prisma.ReconciliationMatchUncheckedCreateWithoutTenantInput> | Prisma.ReconciliationMatchCreateWithoutTenantInput[] | Prisma.ReconciliationMatchUncheckedCreateWithoutTenantInput[]
+  connectOrCreate?: Prisma.ReconciliationMatchCreateOrConnectWithoutTenantInput | Prisma.ReconciliationMatchCreateOrConnectWithoutTenantInput[]
+  createMany?: Prisma.ReconciliationMatchCreateManyTenantInputEnvelope
+  connect?: Prisma.ReconciliationMatchWhereUniqueInput | Prisma.ReconciliationMatchWhereUniqueInput[]
+}
+
+export type ReconciliationMatchUncheckedCreateNestedManyWithoutTenantInput = {
+  create?: Prisma.XOR<Prisma.ReconciliationMatchCreateWithoutTenantInput, Prisma.ReconciliationMatchUncheckedCreateWithoutTenantInput> | Prisma.ReconciliationMatchCreateWithoutTenantInput[] | Prisma.ReconciliationMatchUncheckedCreateWithoutTenantInput[]
+  connectOrCreate?: Prisma.ReconciliationMatchCreateOrConnectWithoutTenantInput | Prisma.ReconciliationMatchCreateOrConnectWithoutTenantInput[]
+  createMany?: Prisma.ReconciliationMatchCreateManyTenantInputEnvelope
+  connect?: Prisma.ReconciliationMatchWhereUniqueInput | Prisma.ReconciliationMatchWhereUniqueInput[]
+}
+
+export type ReconciliationMatchUpdateManyWithoutTenantNestedInput = {
+  create?: Prisma.XOR<Prisma.ReconciliationMatchCreateWithoutTenantInput, Prisma.ReconciliationMatchUncheckedCreateWithoutTenantInput> | Prisma.ReconciliationMatchCreateWithoutTenantInput[] | Prisma.ReconciliationMatchUncheckedCreateWithoutTenantInput[]
+  connectOrCreate?: Prisma.ReconciliationMatchCreateOrConnectWithoutTenantInput | Prisma.ReconciliationMatchCreateOrConnectWithoutTenantInput[]
+  upsert?: Prisma.ReconciliationMatchUpsertWithWhereUniqueWithoutTenantInput | Prisma.ReconciliationMatchUpsertWithWhereUniqueWithoutTenantInput[]
+  createMany?: Prisma.ReconciliationMatchCreateManyTenantInputEnvelope
+  set?: Prisma.ReconciliationMatchWhereUniqueInput | Prisma.ReconciliationMatchWhereUniqueInput[]
+  disconnect?: Prisma.ReconciliationMatchWhereUniqueInput | Prisma.ReconciliationMatchWhereUniqueInput[]
+  delete?: Prisma.ReconciliationMatchWhereUniqueInput | Prisma.ReconciliationMatchWhereUniqueInput[]
+  connect?: Prisma.ReconciliationMatchWhereUniqueInput | Prisma.ReconciliationMatchWhereUniqueInput[]
+  update?: Prisma.ReconciliationMatchUpdateWithWhereUniqueWithoutTenantInput | Prisma.ReconciliationMatchUpdateWithWhereUniqueWithoutTenantInput[]
+  updateMany?: Prisma.ReconciliationMatchUpdateManyWithWhereWithoutTenantInput | Prisma.ReconciliationMatchUpdateManyWithWhereWithoutTenantInput[]
+  deleteMany?: Prisma.ReconciliationMatchScalarWhereInput | Prisma.ReconciliationMatchScalarWhereInput[]
+}
+
+export type ReconciliationMatchUncheckedUpdateManyWithoutTenantNestedInput = {
+  create?: Prisma.XOR<Prisma.ReconciliationMatchCreateWithoutTenantInput, Prisma.ReconciliationMatchUncheckedCreateWithoutTenantInput> | Prisma.ReconciliationMatchCreateWithoutTenantInput[] | Prisma.ReconciliationMatchUncheckedCreateWithoutTenantInput[]
+  connectOrCreate?: Prisma.ReconciliationMatchCreateOrConnectWithoutTenantInput | Prisma.ReconciliationMatchCreateOrConnectWithoutTenantInput[]
+  upsert?: Prisma.ReconciliationMatchUpsertWithWhereUniqueWithoutTenantInput | Prisma.ReconciliationMatchUpsertWithWhereUniqueWithoutTenantInput[]
+  createMany?: Prisma.ReconciliationMatchCreateManyTenantInputEnvelope
+  set?: Prisma.ReconciliationMatchWhereUniqueInput | Prisma.ReconciliationMatchWhereUniqueInput[]
+  disconnect?: Prisma.ReconciliationMatchWhereUniqueInput | Prisma.ReconciliationMatchWhereUniqueInput[]
+  delete?: Prisma.ReconciliationMatchWhereUniqueInput | Prisma.ReconciliationMatchWhereUniqueInput[]
+  connect?: Prisma.ReconciliationMatchWhereUniqueInput | Prisma.ReconciliationMatchWhereUniqueInput[]
+  update?: Prisma.ReconciliationMatchUpdateWithWhereUniqueWithoutTenantInput | Prisma.ReconciliationMatchUpdateWithWhereUniqueWithoutTenantInput[]
+  updateMany?: Prisma.ReconciliationMatchUpdateManyWithWhereWithoutTenantInput | Prisma.ReconciliationMatchUpdateManyWithWhereWithoutTenantInput[]
+  deleteMany?: Prisma.ReconciliationMatchScalarWhereInput | Prisma.ReconciliationMatchScalarWhereInput[]
 }
 
 export type ReconciliationMatchCreateNestedManyWithoutExpectedPaymentInput = {
@@ -541,6 +608,72 @@ export type ReconciliationMatchUncheckedUpdateManyWithoutReceivedPaymentNestedIn
   deleteMany?: Prisma.ReconciliationMatchScalarWhereInput | Prisma.ReconciliationMatchScalarWhereInput[]
 }
 
+export type ReconciliationMatchCreateWithoutTenantInput = {
+  id?: string
+  matchMethod: string
+  confidenceScore: number
+  matchedRules: string
+  matchedAt?: Date | string
+  matchedBy?: string
+  notes?: string | null
+  expectedPayment: Prisma.ExpectedPaymentCreateNestedOneWithoutMatchesInput
+  receivedPayment: Prisma.ReceivedPaymentCreateNestedOneWithoutMatchesInput
+}
+
+export type ReconciliationMatchUncheckedCreateWithoutTenantInput = {
+  id?: string
+  expectedPaymentId: string
+  receivedPaymentId: string
+  matchMethod: string
+  confidenceScore: number
+  matchedRules: string
+  matchedAt?: Date | string
+  matchedBy?: string
+  notes?: string | null
+}
+
+export type ReconciliationMatchCreateOrConnectWithoutTenantInput = {
+  where: Prisma.ReconciliationMatchWhereUniqueInput
+  create: Prisma.XOR<Prisma.ReconciliationMatchCreateWithoutTenantInput, Prisma.ReconciliationMatchUncheckedCreateWithoutTenantInput>
+}
+
+export type ReconciliationMatchCreateManyTenantInputEnvelope = {
+  data: Prisma.ReconciliationMatchCreateManyTenantInput | Prisma.ReconciliationMatchCreateManyTenantInput[]
+  skipDuplicates?: boolean
+}
+
+export type ReconciliationMatchUpsertWithWhereUniqueWithoutTenantInput = {
+  where: Prisma.ReconciliationMatchWhereUniqueInput
+  update: Prisma.XOR<Prisma.ReconciliationMatchUpdateWithoutTenantInput, Prisma.ReconciliationMatchUncheckedUpdateWithoutTenantInput>
+  create: Prisma.XOR<Prisma.ReconciliationMatchCreateWithoutTenantInput, Prisma.ReconciliationMatchUncheckedCreateWithoutTenantInput>
+}
+
+export type ReconciliationMatchUpdateWithWhereUniqueWithoutTenantInput = {
+  where: Prisma.ReconciliationMatchWhereUniqueInput
+  data: Prisma.XOR<Prisma.ReconciliationMatchUpdateWithoutTenantInput, Prisma.ReconciliationMatchUncheckedUpdateWithoutTenantInput>
+}
+
+export type ReconciliationMatchUpdateManyWithWhereWithoutTenantInput = {
+  where: Prisma.ReconciliationMatchScalarWhereInput
+  data: Prisma.XOR<Prisma.ReconciliationMatchUpdateManyMutationInput, Prisma.ReconciliationMatchUncheckedUpdateManyWithoutTenantInput>
+}
+
+export type ReconciliationMatchScalarWhereInput = {
+  AND?: Prisma.ReconciliationMatchScalarWhereInput | Prisma.ReconciliationMatchScalarWhereInput[]
+  OR?: Prisma.ReconciliationMatchScalarWhereInput[]
+  NOT?: Prisma.ReconciliationMatchScalarWhereInput | Prisma.ReconciliationMatchScalarWhereInput[]
+  id?: Prisma.StringFilter<"ReconciliationMatch"> | string
+  tenantId?: Prisma.StringFilter<"ReconciliationMatch"> | string
+  expectedPaymentId?: Prisma.StringFilter<"ReconciliationMatch"> | string
+  receivedPaymentId?: Prisma.StringFilter<"ReconciliationMatch"> | string
+  matchMethod?: Prisma.StringFilter<"ReconciliationMatch"> | string
+  confidenceScore?: Prisma.FloatFilter<"ReconciliationMatch"> | number
+  matchedRules?: Prisma.StringFilter<"ReconciliationMatch"> | string
+  matchedAt?: Prisma.DateTimeFilter<"ReconciliationMatch"> | Date | string
+  matchedBy?: Prisma.StringFilter<"ReconciliationMatch"> | string
+  notes?: Prisma.StringNullableFilter<"ReconciliationMatch"> | string | null
+}
+
 export type ReconciliationMatchCreateWithoutExpectedPaymentInput = {
   id?: string
   matchMethod: string
@@ -549,11 +682,13 @@ export type ReconciliationMatchCreateWithoutExpectedPaymentInput = {
   matchedAt?: Date | string
   matchedBy?: string
   notes?: string | null
+  tenant: Prisma.TenantCreateNestedOneWithoutMatchesInput
   receivedPayment: Prisma.ReceivedPaymentCreateNestedOneWithoutMatchesInput
 }
 
 export type ReconciliationMatchUncheckedCreateWithoutExpectedPaymentInput = {
   id?: string
+  tenantId: string
   receivedPaymentId: string
   matchMethod: string
   confidenceScore: number
@@ -589,21 +724,6 @@ export type ReconciliationMatchUpdateManyWithWhereWithoutExpectedPaymentInput = 
   data: Prisma.XOR<Prisma.ReconciliationMatchUpdateManyMutationInput, Prisma.ReconciliationMatchUncheckedUpdateManyWithoutExpectedPaymentInput>
 }
 
-export type ReconciliationMatchScalarWhereInput = {
-  AND?: Prisma.ReconciliationMatchScalarWhereInput | Prisma.ReconciliationMatchScalarWhereInput[]
-  OR?: Prisma.ReconciliationMatchScalarWhereInput[]
-  NOT?: Prisma.ReconciliationMatchScalarWhereInput | Prisma.ReconciliationMatchScalarWhereInput[]
-  id?: Prisma.StringFilter<"ReconciliationMatch"> | string
-  expectedPaymentId?: Prisma.StringFilter<"ReconciliationMatch"> | string
-  receivedPaymentId?: Prisma.StringFilter<"ReconciliationMatch"> | string
-  matchMethod?: Prisma.StringFilter<"ReconciliationMatch"> | string
-  confidenceScore?: Prisma.FloatFilter<"ReconciliationMatch"> | number
-  matchedRules?: Prisma.StringFilter<"ReconciliationMatch"> | string
-  matchedAt?: Prisma.DateTimeFilter<"ReconciliationMatch"> | Date | string
-  matchedBy?: Prisma.StringFilter<"ReconciliationMatch"> | string
-  notes?: Prisma.StringNullableFilter<"ReconciliationMatch"> | string | null
-}
-
 export type ReconciliationMatchCreateWithoutReceivedPaymentInput = {
   id?: string
   matchMethod: string
@@ -612,11 +732,13 @@ export type ReconciliationMatchCreateWithoutReceivedPaymentInput = {
   matchedAt?: Date | string
   matchedBy?: string
   notes?: string | null
+  tenant: Prisma.TenantCreateNestedOneWithoutMatchesInput
   expectedPayment: Prisma.ExpectedPaymentCreateNestedOneWithoutMatchesInput
 }
 
 export type ReconciliationMatchUncheckedCreateWithoutReceivedPaymentInput = {
   id?: string
+  tenantId: string
   expectedPaymentId: string
   matchMethod: string
   confidenceScore: number
@@ -652,8 +774,57 @@ export type ReconciliationMatchUpdateManyWithWhereWithoutReceivedPaymentInput = 
   data: Prisma.XOR<Prisma.ReconciliationMatchUpdateManyMutationInput, Prisma.ReconciliationMatchUncheckedUpdateManyWithoutReceivedPaymentInput>
 }
 
+export type ReconciliationMatchCreateManyTenantInput = {
+  id?: string
+  expectedPaymentId: string
+  receivedPaymentId: string
+  matchMethod: string
+  confidenceScore: number
+  matchedRules: string
+  matchedAt?: Date | string
+  matchedBy?: string
+  notes?: string | null
+}
+
+export type ReconciliationMatchUpdateWithoutTenantInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  matchMethod?: Prisma.StringFieldUpdateOperationsInput | string
+  confidenceScore?: Prisma.FloatFieldUpdateOperationsInput | number
+  matchedRules?: Prisma.StringFieldUpdateOperationsInput | string
+  matchedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  matchedBy?: Prisma.StringFieldUpdateOperationsInput | string
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  expectedPayment?: Prisma.ExpectedPaymentUpdateOneRequiredWithoutMatchesNestedInput
+  receivedPayment?: Prisma.ReceivedPaymentUpdateOneRequiredWithoutMatchesNestedInput
+}
+
+export type ReconciliationMatchUncheckedUpdateWithoutTenantInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  expectedPaymentId?: Prisma.StringFieldUpdateOperationsInput | string
+  receivedPaymentId?: Prisma.StringFieldUpdateOperationsInput | string
+  matchMethod?: Prisma.StringFieldUpdateOperationsInput | string
+  confidenceScore?: Prisma.FloatFieldUpdateOperationsInput | number
+  matchedRules?: Prisma.StringFieldUpdateOperationsInput | string
+  matchedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  matchedBy?: Prisma.StringFieldUpdateOperationsInput | string
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+}
+
+export type ReconciliationMatchUncheckedUpdateManyWithoutTenantInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  expectedPaymentId?: Prisma.StringFieldUpdateOperationsInput | string
+  receivedPaymentId?: Prisma.StringFieldUpdateOperationsInput | string
+  matchMethod?: Prisma.StringFieldUpdateOperationsInput | string
+  confidenceScore?: Prisma.FloatFieldUpdateOperationsInput | number
+  matchedRules?: Prisma.StringFieldUpdateOperationsInput | string
+  matchedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  matchedBy?: Prisma.StringFieldUpdateOperationsInput | string
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+}
+
 export type ReconciliationMatchCreateManyExpectedPaymentInput = {
   id?: string
+  tenantId: string
   receivedPaymentId: string
   matchMethod: string
   confidenceScore: number
@@ -671,11 +842,13 @@ export type ReconciliationMatchUpdateWithoutExpectedPaymentInput = {
   matchedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   matchedBy?: Prisma.StringFieldUpdateOperationsInput | string
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tenant?: Prisma.TenantUpdateOneRequiredWithoutMatchesNestedInput
   receivedPayment?: Prisma.ReceivedPaymentUpdateOneRequiredWithoutMatchesNestedInput
 }
 
 export type ReconciliationMatchUncheckedUpdateWithoutExpectedPaymentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.StringFieldUpdateOperationsInput | string
   receivedPaymentId?: Prisma.StringFieldUpdateOperationsInput | string
   matchMethod?: Prisma.StringFieldUpdateOperationsInput | string
   confidenceScore?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -687,6 +860,7 @@ export type ReconciliationMatchUncheckedUpdateWithoutExpectedPaymentInput = {
 
 export type ReconciliationMatchUncheckedUpdateManyWithoutExpectedPaymentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.StringFieldUpdateOperationsInput | string
   receivedPaymentId?: Prisma.StringFieldUpdateOperationsInput | string
   matchMethod?: Prisma.StringFieldUpdateOperationsInput | string
   confidenceScore?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -698,6 +872,7 @@ export type ReconciliationMatchUncheckedUpdateManyWithoutExpectedPaymentInput = 
 
 export type ReconciliationMatchCreateManyReceivedPaymentInput = {
   id?: string
+  tenantId: string
   expectedPaymentId: string
   matchMethod: string
   confidenceScore: number
@@ -715,11 +890,13 @@ export type ReconciliationMatchUpdateWithoutReceivedPaymentInput = {
   matchedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   matchedBy?: Prisma.StringFieldUpdateOperationsInput | string
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tenant?: Prisma.TenantUpdateOneRequiredWithoutMatchesNestedInput
   expectedPayment?: Prisma.ExpectedPaymentUpdateOneRequiredWithoutMatchesNestedInput
 }
 
 export type ReconciliationMatchUncheckedUpdateWithoutReceivedPaymentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.StringFieldUpdateOperationsInput | string
   expectedPaymentId?: Prisma.StringFieldUpdateOperationsInput | string
   matchMethod?: Prisma.StringFieldUpdateOperationsInput | string
   confidenceScore?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -731,6 +908,7 @@ export type ReconciliationMatchUncheckedUpdateWithoutReceivedPaymentInput = {
 
 export type ReconciliationMatchUncheckedUpdateManyWithoutReceivedPaymentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.StringFieldUpdateOperationsInput | string
   expectedPaymentId?: Prisma.StringFieldUpdateOperationsInput | string
   matchMethod?: Prisma.StringFieldUpdateOperationsInput | string
   confidenceScore?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -744,6 +922,7 @@ export type ReconciliationMatchUncheckedUpdateManyWithoutReceivedPaymentInput = 
 
 export type ReconciliationMatchSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  tenantId?: boolean
   expectedPaymentId?: boolean
   receivedPaymentId?: boolean
   matchMethod?: boolean
@@ -752,12 +931,14 @@ export type ReconciliationMatchSelect<ExtArgs extends runtime.Types.Extensions.I
   matchedAt?: boolean
   matchedBy?: boolean
   notes?: boolean
+  tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
   expectedPayment?: boolean | Prisma.ExpectedPaymentDefaultArgs<ExtArgs>
   receivedPayment?: boolean | Prisma.ReceivedPaymentDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["reconciliationMatch"]>
 
 export type ReconciliationMatchSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  tenantId?: boolean
   expectedPaymentId?: boolean
   receivedPaymentId?: boolean
   matchMethod?: boolean
@@ -766,12 +947,14 @@ export type ReconciliationMatchSelectCreateManyAndReturn<ExtArgs extends runtime
   matchedAt?: boolean
   matchedBy?: boolean
   notes?: boolean
+  tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
   expectedPayment?: boolean | Prisma.ExpectedPaymentDefaultArgs<ExtArgs>
   receivedPayment?: boolean | Prisma.ReceivedPaymentDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["reconciliationMatch"]>
 
 export type ReconciliationMatchSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  tenantId?: boolean
   expectedPaymentId?: boolean
   receivedPaymentId?: boolean
   matchMethod?: boolean
@@ -780,12 +963,14 @@ export type ReconciliationMatchSelectUpdateManyAndReturn<ExtArgs extends runtime
   matchedAt?: boolean
   matchedBy?: boolean
   notes?: boolean
+  tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
   expectedPayment?: boolean | Prisma.ExpectedPaymentDefaultArgs<ExtArgs>
   receivedPayment?: boolean | Prisma.ReceivedPaymentDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["reconciliationMatch"]>
 
 export type ReconciliationMatchSelectScalar = {
   id?: boolean
+  tenantId?: boolean
   expectedPaymentId?: boolean
   receivedPaymentId?: boolean
   matchMethod?: boolean
@@ -796,16 +981,19 @@ export type ReconciliationMatchSelectScalar = {
   notes?: boolean
 }
 
-export type ReconciliationMatchOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "expectedPaymentId" | "receivedPaymentId" | "matchMethod" | "confidenceScore" | "matchedRules" | "matchedAt" | "matchedBy" | "notes", ExtArgs["result"]["reconciliationMatch"]>
+export type ReconciliationMatchOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "tenantId" | "expectedPaymentId" | "receivedPaymentId" | "matchMethod" | "confidenceScore" | "matchedRules" | "matchedAt" | "matchedBy" | "notes", ExtArgs["result"]["reconciliationMatch"]>
 export type ReconciliationMatchInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
   expectedPayment?: boolean | Prisma.ExpectedPaymentDefaultArgs<ExtArgs>
   receivedPayment?: boolean | Prisma.ReceivedPaymentDefaultArgs<ExtArgs>
 }
 export type ReconciliationMatchIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
   expectedPayment?: boolean | Prisma.ExpectedPaymentDefaultArgs<ExtArgs>
   receivedPayment?: boolean | Prisma.ReceivedPaymentDefaultArgs<ExtArgs>
 }
 export type ReconciliationMatchIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
   expectedPayment?: boolean | Prisma.ExpectedPaymentDefaultArgs<ExtArgs>
   receivedPayment?: boolean | Prisma.ReceivedPaymentDefaultArgs<ExtArgs>
 }
@@ -813,11 +1001,13 @@ export type ReconciliationMatchIncludeUpdateManyAndReturn<ExtArgs extends runtim
 export type $ReconciliationMatchPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "ReconciliationMatch"
   objects: {
+    tenant: Prisma.$TenantPayload<ExtArgs>
     expectedPayment: Prisma.$ExpectedPaymentPayload<ExtArgs>
     receivedPayment: Prisma.$ReceivedPaymentPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
+    tenantId: string
     expectedPaymentId: string
     receivedPaymentId: string
     matchMethod: string
@@ -1220,6 +1410,7 @@ readonly fields: ReconciliationMatchFieldRefs;
  */
 export interface Prisma__ReconciliationMatchClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  tenant<T extends Prisma.TenantDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TenantDefaultArgs<ExtArgs>>): Prisma.Prisma__TenantClient<runtime.Types.Result.GetResult<Prisma.$TenantPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   expectedPayment<T extends Prisma.ExpectedPaymentDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ExpectedPaymentDefaultArgs<ExtArgs>>): Prisma.Prisma__ExpectedPaymentClient<runtime.Types.Result.GetResult<Prisma.$ExpectedPaymentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   receivedPayment<T extends Prisma.ReceivedPaymentDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ReceivedPaymentDefaultArgs<ExtArgs>>): Prisma.Prisma__ReceivedPaymentClient<runtime.Types.Result.GetResult<Prisma.$ReceivedPaymentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
@@ -1252,6 +1443,7 @@ export interface Prisma__ReconciliationMatchClient<T, Null = never, ExtArgs exte
  */
 export interface ReconciliationMatchFieldRefs {
   readonly id: Prisma.FieldRef<"ReconciliationMatch", 'String'>
+  readonly tenantId: Prisma.FieldRef<"ReconciliationMatch", 'String'>
   readonly expectedPaymentId: Prisma.FieldRef<"ReconciliationMatch", 'String'>
   readonly receivedPaymentId: Prisma.FieldRef<"ReconciliationMatch", 'String'>
   readonly matchMethod: Prisma.FieldRef<"ReconciliationMatch", 'String'>

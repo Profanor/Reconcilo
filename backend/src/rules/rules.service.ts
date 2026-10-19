@@ -10,13 +10,15 @@ import { ReconciliationRule } from '../../prisma/generated/prisma/client';
 export class RulesService {
   constructor(private prisma: PrismaService) {}
 
-  async findAll(): Promise<ReconciliationRule[]> {
+  async findAll(tenantId: string): Promise<ReconciliationRule[]> {
     return await this.prisma.reconciliationRule.findMany({
+      where: { tenantId },
       orderBy: { priority: 'desc' },
     });
   }
 
   async update(
+    tenantId: string,
     id: string,
     data: {
       isActive?: boolean;
@@ -25,12 +27,17 @@ export class RulesService {
     },
   ): Promise<ReconciliationRule> {
     const rule = await this.prisma.reconciliationRule.findUnique({
-      where: { id },
+      where: {
+        tenantId_id: {
+          tenantId,
+          id,
+        },
+      },
     });
 
     if (!rule) {
       throw new NotFoundException(
-        `Reconciliation rule with ID ${id} not found`,
+        `Reconciliation rule with ID ${id} not found in workspace`,
       );
     }
 
@@ -59,7 +66,12 @@ export class RulesService {
     }
 
     return await this.prisma.reconciliationRule.update({
-      where: { id },
+      where: {
+        tenantId_id: {
+          tenantId,
+          id,
+        },
+      },
       data: updateData,
     });
   }

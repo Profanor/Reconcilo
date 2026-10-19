@@ -36,6 +36,7 @@ export type ExpectedPaymentSumAggregateOutputType = {
 
 export type ExpectedPaymentMinAggregateOutputType = {
   id: string | null
+  tenantId: string | null
   amount: number | null
   reference: string | null
   customerName: string | null
@@ -49,6 +50,7 @@ export type ExpectedPaymentMinAggregateOutputType = {
 
 export type ExpectedPaymentMaxAggregateOutputType = {
   id: string | null
+  tenantId: string | null
   amount: number | null
   reference: string | null
   customerName: string | null
@@ -62,6 +64,7 @@ export type ExpectedPaymentMaxAggregateOutputType = {
 
 export type ExpectedPaymentCountAggregateOutputType = {
   id: number
+  tenantId: number
   amount: number
   reference: number
   customerName: number
@@ -85,6 +88,7 @@ export type ExpectedPaymentSumAggregateInputType = {
 
 export type ExpectedPaymentMinAggregateInputType = {
   id?: true
+  tenantId?: true
   amount?: true
   reference?: true
   customerName?: true
@@ -98,6 +102,7 @@ export type ExpectedPaymentMinAggregateInputType = {
 
 export type ExpectedPaymentMaxAggregateInputType = {
   id?: true
+  tenantId?: true
   amount?: true
   reference?: true
   customerName?: true
@@ -111,6 +116,7 @@ export type ExpectedPaymentMaxAggregateInputType = {
 
 export type ExpectedPaymentCountAggregateInputType = {
   id?: true
+  tenantId?: true
   amount?: true
   reference?: true
   customerName?: true
@@ -211,6 +217,7 @@ export type ExpectedPaymentGroupByArgs<ExtArgs extends runtime.Types.Extensions.
 
 export type ExpectedPaymentGroupByOutputType = {
   id: string
+  tenantId: string
   amount: number
   reference: string
   customerName: string
@@ -247,6 +254,7 @@ export type ExpectedPaymentWhereInput = {
   OR?: Prisma.ExpectedPaymentWhereInput[]
   NOT?: Prisma.ExpectedPaymentWhereInput | Prisma.ExpectedPaymentWhereInput[]
   id?: Prisma.StringFilter<"ExpectedPayment"> | string
+  tenantId?: Prisma.StringFilter<"ExpectedPayment"> | string
   amount?: Prisma.FloatFilter<"ExpectedPayment"> | number
   reference?: Prisma.StringFilter<"ExpectedPayment"> | string
   customerName?: Prisma.StringFilter<"ExpectedPayment"> | string
@@ -256,11 +264,13 @@ export type ExpectedPaymentWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"ExpectedPayment"> | Date | string
   dueDate?: Prisma.DateTimeNullableFilter<"ExpectedPayment"> | Date | string | null
   description?: Prisma.StringNullableFilter<"ExpectedPayment"> | string | null
+  tenant?: Prisma.XOR<Prisma.TenantScalarRelationFilter, Prisma.TenantWhereInput>
   matches?: Prisma.ReconciliationMatchListRelationFilter
 }
 
 export type ExpectedPaymentOrderByWithRelationInput = {
   id?: Prisma.SortOrder
+  tenantId?: Prisma.SortOrder
   amount?: Prisma.SortOrder
   reference?: Prisma.SortOrder
   customerName?: Prisma.SortOrder
@@ -270,16 +280,19 @@ export type ExpectedPaymentOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   dueDate?: Prisma.SortOrderInput | Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
+  tenant?: Prisma.TenantOrderByWithRelationInput
   matches?: Prisma.ReconciliationMatchOrderByRelationAggregateInput
 }
 
 export type ExpectedPaymentWhereUniqueInput = Prisma.AtLeast<{
   id?: string
-  reference?: string
+  tenantId_reference?: Prisma.ExpectedPaymentTenantIdReferenceCompoundUniqueInput
   AND?: Prisma.ExpectedPaymentWhereInput | Prisma.ExpectedPaymentWhereInput[]
   OR?: Prisma.ExpectedPaymentWhereInput[]
   NOT?: Prisma.ExpectedPaymentWhereInput | Prisma.ExpectedPaymentWhereInput[]
+  tenantId?: Prisma.StringFilter<"ExpectedPayment"> | string
   amount?: Prisma.FloatFilter<"ExpectedPayment"> | number
+  reference?: Prisma.StringFilter<"ExpectedPayment"> | string
   customerName?: Prisma.StringFilter<"ExpectedPayment"> | string
   customerPhone?: Prisma.StringNullableFilter<"ExpectedPayment"> | string | null
   customerEmail?: Prisma.StringNullableFilter<"ExpectedPayment"> | string | null
@@ -287,11 +300,13 @@ export type ExpectedPaymentWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"ExpectedPayment"> | Date | string
   dueDate?: Prisma.DateTimeNullableFilter<"ExpectedPayment"> | Date | string | null
   description?: Prisma.StringNullableFilter<"ExpectedPayment"> | string | null
+  tenant?: Prisma.XOR<Prisma.TenantScalarRelationFilter, Prisma.TenantWhereInput>
   matches?: Prisma.ReconciliationMatchListRelationFilter
-}, "id" | "reference">
+}, "id" | "tenantId_reference">
 
 export type ExpectedPaymentOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
+  tenantId?: Prisma.SortOrder
   amount?: Prisma.SortOrder
   reference?: Prisma.SortOrder
   customerName?: Prisma.SortOrder
@@ -313,6 +328,7 @@ export type ExpectedPaymentScalarWhereWithAggregatesInput = {
   OR?: Prisma.ExpectedPaymentScalarWhereWithAggregatesInput[]
   NOT?: Prisma.ExpectedPaymentScalarWhereWithAggregatesInput | Prisma.ExpectedPaymentScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"ExpectedPayment"> | string
+  tenantId?: Prisma.StringWithAggregatesFilter<"ExpectedPayment"> | string
   amount?: Prisma.FloatWithAggregatesFilter<"ExpectedPayment"> | number
   reference?: Prisma.StringWithAggregatesFilter<"ExpectedPayment"> | string
   customerName?: Prisma.StringWithAggregatesFilter<"ExpectedPayment"> | string
@@ -325,7 +341,7 @@ export type ExpectedPaymentScalarWhereWithAggregatesInput = {
 }
 
 export type ExpectedPaymentCreateInput = {
-  id: string
+  id?: string
   amount: number
   reference: string
   customerName: string
@@ -335,11 +351,13 @@ export type ExpectedPaymentCreateInput = {
   createdAt?: Date | string
   dueDate?: Date | string | null
   description?: string | null
+  tenant: Prisma.TenantCreateNestedOneWithoutExpectedPaymentsInput
   matches?: Prisma.ReconciliationMatchCreateNestedManyWithoutExpectedPaymentInput
 }
 
 export type ExpectedPaymentUncheckedCreateInput = {
-  id: string
+  id?: string
+  tenantId: string
   amount: number
   reference: string
   customerName: string
@@ -363,11 +381,13 @@ export type ExpectedPaymentUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tenant?: Prisma.TenantUpdateOneRequiredWithoutExpectedPaymentsNestedInput
   matches?: Prisma.ReconciliationMatchUpdateManyWithoutExpectedPaymentNestedInput
 }
 
 export type ExpectedPaymentUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.StringFieldUpdateOperationsInput | string
   amount?: Prisma.FloatFieldUpdateOperationsInput | number
   reference?: Prisma.StringFieldUpdateOperationsInput | string
   customerName?: Prisma.StringFieldUpdateOperationsInput | string
@@ -381,7 +401,8 @@ export type ExpectedPaymentUncheckedUpdateInput = {
 }
 
 export type ExpectedPaymentCreateManyInput = {
-  id: string
+  id?: string
+  tenantId: string
   amount: number
   reference: string
   customerName: string
@@ -408,6 +429,7 @@ export type ExpectedPaymentUpdateManyMutationInput = {
 
 export type ExpectedPaymentUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.StringFieldUpdateOperationsInput | string
   amount?: Prisma.FloatFieldUpdateOperationsInput | number
   reference?: Prisma.StringFieldUpdateOperationsInput | string
   customerName?: Prisma.StringFieldUpdateOperationsInput | string
@@ -419,8 +441,24 @@ export type ExpectedPaymentUncheckedUpdateManyInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
+export type ExpectedPaymentListRelationFilter = {
+  every?: Prisma.ExpectedPaymentWhereInput
+  some?: Prisma.ExpectedPaymentWhereInput
+  none?: Prisma.ExpectedPaymentWhereInput
+}
+
+export type ExpectedPaymentOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
+}
+
+export type ExpectedPaymentTenantIdReferenceCompoundUniqueInput = {
+  tenantId: string
+  reference: string
+}
+
 export type ExpectedPaymentCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  tenantId?: Prisma.SortOrder
   amount?: Prisma.SortOrder
   reference?: Prisma.SortOrder
   customerName?: Prisma.SortOrder
@@ -438,6 +476,7 @@ export type ExpectedPaymentAvgOrderByAggregateInput = {
 
 export type ExpectedPaymentMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  tenantId?: Prisma.SortOrder
   amount?: Prisma.SortOrder
   reference?: Prisma.SortOrder
   customerName?: Prisma.SortOrder
@@ -451,6 +490,7 @@ export type ExpectedPaymentMaxOrderByAggregateInput = {
 
 export type ExpectedPaymentMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  tenantId?: Prisma.SortOrder
   amount?: Prisma.SortOrder
   reference?: Prisma.SortOrder
   customerName?: Prisma.SortOrder
@@ -471,8 +511,46 @@ export type ExpectedPaymentScalarRelationFilter = {
   isNot?: Prisma.ExpectedPaymentWhereInput
 }
 
-export type StringFieldUpdateOperationsInput = {
-  set?: string
+export type ExpectedPaymentCreateNestedManyWithoutTenantInput = {
+  create?: Prisma.XOR<Prisma.ExpectedPaymentCreateWithoutTenantInput, Prisma.ExpectedPaymentUncheckedCreateWithoutTenantInput> | Prisma.ExpectedPaymentCreateWithoutTenantInput[] | Prisma.ExpectedPaymentUncheckedCreateWithoutTenantInput[]
+  connectOrCreate?: Prisma.ExpectedPaymentCreateOrConnectWithoutTenantInput | Prisma.ExpectedPaymentCreateOrConnectWithoutTenantInput[]
+  createMany?: Prisma.ExpectedPaymentCreateManyTenantInputEnvelope
+  connect?: Prisma.ExpectedPaymentWhereUniqueInput | Prisma.ExpectedPaymentWhereUniqueInput[]
+}
+
+export type ExpectedPaymentUncheckedCreateNestedManyWithoutTenantInput = {
+  create?: Prisma.XOR<Prisma.ExpectedPaymentCreateWithoutTenantInput, Prisma.ExpectedPaymentUncheckedCreateWithoutTenantInput> | Prisma.ExpectedPaymentCreateWithoutTenantInput[] | Prisma.ExpectedPaymentUncheckedCreateWithoutTenantInput[]
+  connectOrCreate?: Prisma.ExpectedPaymentCreateOrConnectWithoutTenantInput | Prisma.ExpectedPaymentCreateOrConnectWithoutTenantInput[]
+  createMany?: Prisma.ExpectedPaymentCreateManyTenantInputEnvelope
+  connect?: Prisma.ExpectedPaymentWhereUniqueInput | Prisma.ExpectedPaymentWhereUniqueInput[]
+}
+
+export type ExpectedPaymentUpdateManyWithoutTenantNestedInput = {
+  create?: Prisma.XOR<Prisma.ExpectedPaymentCreateWithoutTenantInput, Prisma.ExpectedPaymentUncheckedCreateWithoutTenantInput> | Prisma.ExpectedPaymentCreateWithoutTenantInput[] | Prisma.ExpectedPaymentUncheckedCreateWithoutTenantInput[]
+  connectOrCreate?: Prisma.ExpectedPaymentCreateOrConnectWithoutTenantInput | Prisma.ExpectedPaymentCreateOrConnectWithoutTenantInput[]
+  upsert?: Prisma.ExpectedPaymentUpsertWithWhereUniqueWithoutTenantInput | Prisma.ExpectedPaymentUpsertWithWhereUniqueWithoutTenantInput[]
+  createMany?: Prisma.ExpectedPaymentCreateManyTenantInputEnvelope
+  set?: Prisma.ExpectedPaymentWhereUniqueInput | Prisma.ExpectedPaymentWhereUniqueInput[]
+  disconnect?: Prisma.ExpectedPaymentWhereUniqueInput | Prisma.ExpectedPaymentWhereUniqueInput[]
+  delete?: Prisma.ExpectedPaymentWhereUniqueInput | Prisma.ExpectedPaymentWhereUniqueInput[]
+  connect?: Prisma.ExpectedPaymentWhereUniqueInput | Prisma.ExpectedPaymentWhereUniqueInput[]
+  update?: Prisma.ExpectedPaymentUpdateWithWhereUniqueWithoutTenantInput | Prisma.ExpectedPaymentUpdateWithWhereUniqueWithoutTenantInput[]
+  updateMany?: Prisma.ExpectedPaymentUpdateManyWithWhereWithoutTenantInput | Prisma.ExpectedPaymentUpdateManyWithWhereWithoutTenantInput[]
+  deleteMany?: Prisma.ExpectedPaymentScalarWhereInput | Prisma.ExpectedPaymentScalarWhereInput[]
+}
+
+export type ExpectedPaymentUncheckedUpdateManyWithoutTenantNestedInput = {
+  create?: Prisma.XOR<Prisma.ExpectedPaymentCreateWithoutTenantInput, Prisma.ExpectedPaymentUncheckedCreateWithoutTenantInput> | Prisma.ExpectedPaymentCreateWithoutTenantInput[] | Prisma.ExpectedPaymentUncheckedCreateWithoutTenantInput[]
+  connectOrCreate?: Prisma.ExpectedPaymentCreateOrConnectWithoutTenantInput | Prisma.ExpectedPaymentCreateOrConnectWithoutTenantInput[]
+  upsert?: Prisma.ExpectedPaymentUpsertWithWhereUniqueWithoutTenantInput | Prisma.ExpectedPaymentUpsertWithWhereUniqueWithoutTenantInput[]
+  createMany?: Prisma.ExpectedPaymentCreateManyTenantInputEnvelope
+  set?: Prisma.ExpectedPaymentWhereUniqueInput | Prisma.ExpectedPaymentWhereUniqueInput[]
+  disconnect?: Prisma.ExpectedPaymentWhereUniqueInput | Prisma.ExpectedPaymentWhereUniqueInput[]
+  delete?: Prisma.ExpectedPaymentWhereUniqueInput | Prisma.ExpectedPaymentWhereUniqueInput[]
+  connect?: Prisma.ExpectedPaymentWhereUniqueInput | Prisma.ExpectedPaymentWhereUniqueInput[]
+  update?: Prisma.ExpectedPaymentUpdateWithWhereUniqueWithoutTenantInput | Prisma.ExpectedPaymentUpdateWithWhereUniqueWithoutTenantInput[]
+  updateMany?: Prisma.ExpectedPaymentUpdateManyWithWhereWithoutTenantInput | Prisma.ExpectedPaymentUpdateManyWithWhereWithoutTenantInput[]
+  deleteMany?: Prisma.ExpectedPaymentScalarWhereInput | Prisma.ExpectedPaymentScalarWhereInput[]
 }
 
 export type FloatFieldUpdateOperationsInput = {
@@ -481,14 +559,6 @@ export type FloatFieldUpdateOperationsInput = {
   decrement?: number
   multiply?: number
   divide?: number
-}
-
-export type NullableStringFieldUpdateOperationsInput = {
-  set?: string | null
-}
-
-export type DateTimeFieldUpdateOperationsInput = {
-  set?: Date | string
 }
 
 export type NullableDateTimeFieldUpdateOperationsInput = {
@@ -509,8 +579,8 @@ export type ExpectedPaymentUpdateOneRequiredWithoutMatchesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ExpectedPaymentUpdateToOneWithWhereWithoutMatchesInput, Prisma.ExpectedPaymentUpdateWithoutMatchesInput>, Prisma.ExpectedPaymentUncheckedUpdateWithoutMatchesInput>
 }
 
-export type ExpectedPaymentCreateWithoutMatchesInput = {
-  id: string
+export type ExpectedPaymentCreateWithoutTenantInput = {
+  id?: string
   amount: number
   reference: string
   customerName: string
@@ -520,10 +590,83 @@ export type ExpectedPaymentCreateWithoutMatchesInput = {
   createdAt?: Date | string
   dueDate?: Date | string | null
   description?: string | null
+  matches?: Prisma.ReconciliationMatchCreateNestedManyWithoutExpectedPaymentInput
+}
+
+export type ExpectedPaymentUncheckedCreateWithoutTenantInput = {
+  id?: string
+  amount: number
+  reference: string
+  customerName: string
+  customerPhone?: string | null
+  customerEmail?: string | null
+  status?: string
+  createdAt?: Date | string
+  dueDate?: Date | string | null
+  description?: string | null
+  matches?: Prisma.ReconciliationMatchUncheckedCreateNestedManyWithoutExpectedPaymentInput
+}
+
+export type ExpectedPaymentCreateOrConnectWithoutTenantInput = {
+  where: Prisma.ExpectedPaymentWhereUniqueInput
+  create: Prisma.XOR<Prisma.ExpectedPaymentCreateWithoutTenantInput, Prisma.ExpectedPaymentUncheckedCreateWithoutTenantInput>
+}
+
+export type ExpectedPaymentCreateManyTenantInputEnvelope = {
+  data: Prisma.ExpectedPaymentCreateManyTenantInput | Prisma.ExpectedPaymentCreateManyTenantInput[]
+  skipDuplicates?: boolean
+}
+
+export type ExpectedPaymentUpsertWithWhereUniqueWithoutTenantInput = {
+  where: Prisma.ExpectedPaymentWhereUniqueInput
+  update: Prisma.XOR<Prisma.ExpectedPaymentUpdateWithoutTenantInput, Prisma.ExpectedPaymentUncheckedUpdateWithoutTenantInput>
+  create: Prisma.XOR<Prisma.ExpectedPaymentCreateWithoutTenantInput, Prisma.ExpectedPaymentUncheckedCreateWithoutTenantInput>
+}
+
+export type ExpectedPaymentUpdateWithWhereUniqueWithoutTenantInput = {
+  where: Prisma.ExpectedPaymentWhereUniqueInput
+  data: Prisma.XOR<Prisma.ExpectedPaymentUpdateWithoutTenantInput, Prisma.ExpectedPaymentUncheckedUpdateWithoutTenantInput>
+}
+
+export type ExpectedPaymentUpdateManyWithWhereWithoutTenantInput = {
+  where: Prisma.ExpectedPaymentScalarWhereInput
+  data: Prisma.XOR<Prisma.ExpectedPaymentUpdateManyMutationInput, Prisma.ExpectedPaymentUncheckedUpdateManyWithoutTenantInput>
+}
+
+export type ExpectedPaymentScalarWhereInput = {
+  AND?: Prisma.ExpectedPaymentScalarWhereInput | Prisma.ExpectedPaymentScalarWhereInput[]
+  OR?: Prisma.ExpectedPaymentScalarWhereInput[]
+  NOT?: Prisma.ExpectedPaymentScalarWhereInput | Prisma.ExpectedPaymentScalarWhereInput[]
+  id?: Prisma.StringFilter<"ExpectedPayment"> | string
+  tenantId?: Prisma.StringFilter<"ExpectedPayment"> | string
+  amount?: Prisma.FloatFilter<"ExpectedPayment"> | number
+  reference?: Prisma.StringFilter<"ExpectedPayment"> | string
+  customerName?: Prisma.StringFilter<"ExpectedPayment"> | string
+  customerPhone?: Prisma.StringNullableFilter<"ExpectedPayment"> | string | null
+  customerEmail?: Prisma.StringNullableFilter<"ExpectedPayment"> | string | null
+  status?: Prisma.StringFilter<"ExpectedPayment"> | string
+  createdAt?: Prisma.DateTimeFilter<"ExpectedPayment"> | Date | string
+  dueDate?: Prisma.DateTimeNullableFilter<"ExpectedPayment"> | Date | string | null
+  description?: Prisma.StringNullableFilter<"ExpectedPayment"> | string | null
+}
+
+export type ExpectedPaymentCreateWithoutMatchesInput = {
+  id?: string
+  amount: number
+  reference: string
+  customerName: string
+  customerPhone?: string | null
+  customerEmail?: string | null
+  status?: string
+  createdAt?: Date | string
+  dueDate?: Date | string | null
+  description?: string | null
+  tenant: Prisma.TenantCreateNestedOneWithoutExpectedPaymentsInput
 }
 
 export type ExpectedPaymentUncheckedCreateWithoutMatchesInput = {
-  id: string
+  id?: string
+  tenantId: string
   amount: number
   reference: string
   customerName: string
@@ -562,9 +705,65 @@ export type ExpectedPaymentUpdateWithoutMatchesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tenant?: Prisma.TenantUpdateOneRequiredWithoutExpectedPaymentsNestedInput
 }
 
 export type ExpectedPaymentUncheckedUpdateWithoutMatchesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.StringFieldUpdateOperationsInput | string
+  amount?: Prisma.FloatFieldUpdateOperationsInput | number
+  reference?: Prisma.StringFieldUpdateOperationsInput | string
+  customerName?: Prisma.StringFieldUpdateOperationsInput | string
+  customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+}
+
+export type ExpectedPaymentCreateManyTenantInput = {
+  id?: string
+  amount: number
+  reference: string
+  customerName: string
+  customerPhone?: string | null
+  customerEmail?: string | null
+  status?: string
+  createdAt?: Date | string
+  dueDate?: Date | string | null
+  description?: string | null
+}
+
+export type ExpectedPaymentUpdateWithoutTenantInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  amount?: Prisma.FloatFieldUpdateOperationsInput | number
+  reference?: Prisma.StringFieldUpdateOperationsInput | string
+  customerName?: Prisma.StringFieldUpdateOperationsInput | string
+  customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  matches?: Prisma.ReconciliationMatchUpdateManyWithoutExpectedPaymentNestedInput
+}
+
+export type ExpectedPaymentUncheckedUpdateWithoutTenantInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  amount?: Prisma.FloatFieldUpdateOperationsInput | number
+  reference?: Prisma.StringFieldUpdateOperationsInput | string
+  customerName?: Prisma.StringFieldUpdateOperationsInput | string
+  customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  matches?: Prisma.ReconciliationMatchUncheckedUpdateManyWithoutExpectedPaymentNestedInput
+}
+
+export type ExpectedPaymentUncheckedUpdateManyWithoutTenantInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   amount?: Prisma.FloatFieldUpdateOperationsInput | number
   reference?: Prisma.StringFieldUpdateOperationsInput | string
@@ -610,6 +809,7 @@ export type ExpectedPaymentCountOutputTypeCountMatchesArgs<ExtArgs extends runti
 
 export type ExpectedPaymentSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  tenantId?: boolean
   amount?: boolean
   reference?: boolean
   customerName?: boolean
@@ -619,12 +819,14 @@ export type ExpectedPaymentSelect<ExtArgs extends runtime.Types.Extensions.Inter
   createdAt?: boolean
   dueDate?: boolean
   description?: boolean
+  tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
   matches?: boolean | Prisma.ExpectedPayment$matchesArgs<ExtArgs>
   _count?: boolean | Prisma.ExpectedPaymentCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["expectedPayment"]>
 
 export type ExpectedPaymentSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  tenantId?: boolean
   amount?: boolean
   reference?: boolean
   customerName?: boolean
@@ -634,10 +836,12 @@ export type ExpectedPaymentSelectCreateManyAndReturn<ExtArgs extends runtime.Typ
   createdAt?: boolean
   dueDate?: boolean
   description?: boolean
+  tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["expectedPayment"]>
 
 export type ExpectedPaymentSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  tenantId?: boolean
   amount?: boolean
   reference?: boolean
   customerName?: boolean
@@ -647,10 +851,12 @@ export type ExpectedPaymentSelectUpdateManyAndReturn<ExtArgs extends runtime.Typ
   createdAt?: boolean
   dueDate?: boolean
   description?: boolean
+  tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["expectedPayment"]>
 
 export type ExpectedPaymentSelectScalar = {
   id?: boolean
+  tenantId?: boolean
   amount?: boolean
   reference?: boolean
   customerName?: boolean
@@ -662,21 +868,28 @@ export type ExpectedPaymentSelectScalar = {
   description?: boolean
 }
 
-export type ExpectedPaymentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "amount" | "reference" | "customerName" | "customerPhone" | "customerEmail" | "status" | "createdAt" | "dueDate" | "description", ExtArgs["result"]["expectedPayment"]>
+export type ExpectedPaymentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "tenantId" | "amount" | "reference" | "customerName" | "customerPhone" | "customerEmail" | "status" | "createdAt" | "dueDate" | "description", ExtArgs["result"]["expectedPayment"]>
 export type ExpectedPaymentInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
   matches?: boolean | Prisma.ExpectedPayment$matchesArgs<ExtArgs>
   _count?: boolean | Prisma.ExpectedPaymentCountOutputTypeDefaultArgs<ExtArgs>
 }
-export type ExpectedPaymentIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
-export type ExpectedPaymentIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
+export type ExpectedPaymentIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
+}
+export type ExpectedPaymentIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
+}
 
 export type $ExpectedPaymentPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "ExpectedPayment"
   objects: {
+    tenant: Prisma.$TenantPayload<ExtArgs>
     matches: Prisma.$ReconciliationMatchPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
+    tenantId: string
     amount: number
     reference: string
     customerName: string
@@ -1080,6 +1293,7 @@ readonly fields: ExpectedPaymentFieldRefs;
  */
 export interface Prisma__ExpectedPaymentClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  tenant<T extends Prisma.TenantDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TenantDefaultArgs<ExtArgs>>): Prisma.Prisma__TenantClient<runtime.Types.Result.GetResult<Prisma.$TenantPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   matches<T extends Prisma.ExpectedPayment$matchesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ExpectedPayment$matchesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReconciliationMatchPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -1111,6 +1325,7 @@ export interface Prisma__ExpectedPaymentClient<T, Null = never, ExtArgs extends 
  */
 export interface ExpectedPaymentFieldRefs {
   readonly id: Prisma.FieldRef<"ExpectedPayment", 'String'>
+  readonly tenantId: Prisma.FieldRef<"ExpectedPayment", 'String'>
   readonly amount: Prisma.FieldRef<"ExpectedPayment", 'Float'>
   readonly reference: Prisma.FieldRef<"ExpectedPayment", 'String'>
   readonly customerName: Prisma.FieldRef<"ExpectedPayment", 'String'>
@@ -1374,6 +1589,10 @@ export type ExpectedPaymentCreateManyAndReturnArgs<ExtArgs extends runtime.Types
    */
   data: Prisma.ExpectedPaymentCreateManyInput | Prisma.ExpectedPaymentCreateManyInput[]
   skipDuplicates?: boolean
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ExpectedPaymentIncludeCreateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1444,6 +1663,10 @@ export type ExpectedPaymentUpdateManyAndReturnArgs<ExtArgs extends runtime.Types
    * Limit how many ExpectedPayments to update.
    */
   limit?: number
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ExpectedPaymentIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**

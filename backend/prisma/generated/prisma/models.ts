@@ -8,9 +8,12 @@
  *
  * 🟢 You can import this file directly.
  */
+export type * from './models/Tenant'
+export type * from './models/User'
 export type * from './models/ExpectedPayment'
 export type * from './models/ReceivedPayment'
 export type * from './models/ReconciliationMatch'
+export type * from './models/ReconciliationRun'
 export type * from './models/ReconciliationRule'
 export type * from './models/AuditLog'
 export type * from './commonInputTypes'

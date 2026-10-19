@@ -18,6 +18,16 @@ export { Prisma }
 export * as $Enums from './enums'
 export * from './enums';
 /**
+ * Model Tenant
+ * 
+ */
+export type Tenant = Prisma.TenantModel
+/**
+ * Model User
+ * 
+ */
+export type User = Prisma.UserModel
+/**
  * Model ExpectedPayment
  * 
  */
@@ -32,6 +42,11 @@ export type ReceivedPayment = Prisma.ReceivedPaymentModel
  * 
  */
 export type ReconciliationMatch = Prisma.ReconciliationMatchModel
+/**
+ * Model ReconciliationRun
+ * 
+ */
+export type ReconciliationRun = Prisma.ReconciliationRunModel
 /**
  * Model ReconciliationRule
  * 

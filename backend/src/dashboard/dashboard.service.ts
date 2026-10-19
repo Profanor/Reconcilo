@@ -5,29 +5,31 @@ import { PrismaService } from "../prisma/prisma.service";
 export class DashboardService {
   constructor(private prisma: PrismaService) {}
 
-  async getStats(): Promise<any> {
+  async getStats(tenantId: string): Promise<any> {
     const expectedCounts = await this.prisma.expectedPayment.groupBy({
       by: ["status"],
+      where: { tenantId },
       _count: { id: true },
       _sum: { amount: true },
     });
 
     const receivedCounts = await this.prisma.receivedPayment.groupBy({
       by: ["status"],
+      where: { tenantId },
       _count: { id: true },
       _sum: { amount: true },
     });
 
     const channelBreakdown = await this.prisma.receivedPayment.groupBy({
       by: ["channel"],
-      where: { status: "MATCHED" },
+      where: { tenantId, status: "MATCHED" },
       _sum: { amount: true },
       _count: { id: true },
     });
 
     const providerBreakdown = await this.prisma.receivedPayment.groupBy({
       by: ["provider"],
-      where: { status: "MATCHED" },
+      where: { tenantId, status: "MATCHED" },
       _sum: { amount: true },
       _count: { id: true },
     });
@@ -44,7 +46,7 @@ export class DashboardService {
       const sum = group._sum.amount || 0;
       totalExpectedCount += count;
       totalExpectedAmount += sum;
-
+      
       if (group.status === "MATCHED") {
         matchedExpectedCount = count;
         matchedExpectedAmount = sum;
@@ -76,75 +78,42 @@ export class DashboardService {
       }
     }
 
-    const reconciliationRate =
-      totalExpectedCount > 0
-        ? parseFloat(
-            ((matchedExpectedCount / totalExpectedCount) * 100).toFixed(1),
-          )
-        : 0;
-
-    const matches = await this.prisma.reconciliationMatch.findMany({
-      select: {
-        id: true,
-        matchMethod: true,
-        confidenceScore: true,
-        matchedAt: true,
-      },
-    });
-
-    let exactAutomaticCount = 0;
-    let confirmedSuggestionsCount = 0;
-    let manualMatchesCount = 0;
-
-    for (const m of matches) {
-      if (m.matchMethod === "AUTOMATIC_EXACT") exactAutomaticCount++;
-      else if (m.matchMethod === "CONFIRMED_SUGGESTION")
-        confirmedSuggestionsCount++;
-      else if (m.matchMethod === "MANUAL") manualMatchesCount++;
-    }
-
-    let falseMatchesPrevented = 0;
-    let unmatchesCount = 0;
-    let duplicatesCount = 0;
-    let recentAudit: any[] = [];
-
-    if (this.prisma.auditLog) {
-      try {
-        const auditLogs = await this.prisma.auditLog.findMany({
-          orderBy: { createdAt: "desc" },
-          take: 100,
-        });
-        falseMatchesPrevented = auditLogs.filter(
-          (l) => l.action === "REJECT_SUGGESTION",
-        ).length;
-        unmatchesCount = auditLogs.filter((l) => l.action === "UNMATCH").length;
-        duplicatesCount = auditLogs.filter(
-          (l) => l.action === "DUPLICATE_FLAGGED",
-        ).length;
-        recentAudit = auditLogs.slice(0, 10);
-      } catch (e) {
-        // gracefully handle if audit table empty
-      }
-    }
+    const reconciliationRate = totalExpectedCount > 0 
+      ? parseFloat(((matchedExpectedCount / totalExpectedCount) * 100).toFixed(1))
+      : 0;
 
     const recentMatches = await this.prisma.reconciliationMatch.findMany({
-      take: 8,
+      where: { tenantId },
+      take: 5,
       orderBy: { matchedAt: "desc" },
       include: {
         expectedPayment: {
-          select: { reference: true, customerName: true, amount: true },
+          select: { reference: true, customerName: true },
         },
         receivedPayment: {
-          select: {
-            channel: true,
-            provider: true,
-            reference: true,
-            amount: true,
-            senderName: true,
-          },
+          select: { channel: true, provider: true, reference: true },
         },
       },
     });
+
+    const matchesAll = await this.prisma.reconciliationMatch.findMany({
+      where: { tenantId },
+    });
+    const exactAutomaticCount = matchesAll.filter(m => m.matchMethod === "AUTOMATIC_EXACT").length;
+    const confirmedSuggestionsCount = matchesAll.filter(m => m.matchMethod === "CONFIRMED_SUGGESTION").length;
+    const manualMatchesCount = matchesAll.filter(m => m.matchMethod === "MANUAL").length;
+
+    let auditLogs: any[] = [];
+    try {
+      auditLogs = await this.prisma.auditLog.findMany({
+        where: { tenantId },
+        orderBy: { createdAt: "desc" },
+      });
+    } catch (e) {}
+
+    const falseMatchesPrevented = auditLogs.filter((l: any) => l.action === "REJECT_SUGGESTION").length;
+    const unmatchesCount = auditLogs.filter((l: any) => l.action === "UNMATCH").length;
+    const duplicatesCount = auditLogs.filter((l: any) => l.action === "DUPLICATE_FLAGGED").length;
 
     return {
       expected: {
@@ -165,7 +134,7 @@ export class DashboardService {
       },
       reconciliationRate,
       trustMetrics: {
-        totalMatchedCount: matches.length,
+        totalMatchedCount: matchesAll.length,
         exactAutomaticCount,
         confirmedSuggestionsCount,
         manualMatchesCount,
@@ -173,18 +142,18 @@ export class DashboardService {
         unmatchesCount,
         duplicatesCount,
       },
-      channelBreakdown: channelBreakdown.map((c) => ({
+      channelBreakdown: channelBreakdown.map(c => ({
         channel: c.channel,
         count: c._count.id,
         amount: c._sum.amount || 0,
       })),
-      providerBreakdown: providerBreakdown.map((p) => ({
+      providerBreakdown: providerBreakdown.map(p => ({
         provider: p.provider,
         count: p._count.id,
         amount: p._sum.amount || 0,
       })),
       recentMatches,
-      recentAudit,
+      recentAudit: auditLogs.slice(0, 10),
     };
   }
 }
