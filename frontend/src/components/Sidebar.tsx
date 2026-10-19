@@ -9,9 +9,9 @@ import {
   BarChart3,
   Settings,
   Building,
-  ChevronDown,
   Globe,
   ArrowRight,
+  SlidersHorizontal,
 } from "lucide-react";
 
 export type NavTab =
@@ -29,7 +29,10 @@ interface SidebarProps {
   reviewCount: number;
   operatorName: string;
   operatorRole: string;
+  companyName: string;
+  rcNumber: string;
   onNavigateLanding: () => void;
+  onOpenPilotSetup: () => void;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
@@ -38,8 +41,17 @@ export const Sidebar: React.FC<SidebarProps> = ({
   reviewCount,
   operatorName,
   operatorRole,
+  companyName,
+  rcNumber,
   onNavigateLanding,
+  onOpenPilotSetup,
 }) => {
+  const getInitials = (name: string) => {
+    const parts = name.trim().split(/\s+/);
+    if (parts.length >= 2) return `${parts[0][0]}${parts[1][0]}`.toUpperCase();
+    return name.slice(0, 2).toUpperCase() || "OP";
+  };
+
   return (
     <aside className="w-64 bg-slate-900 text-slate-300 flex flex-col border-r border-slate-800 shrink-0 select-none">
       {/* Brand Header */}
@@ -78,7 +90,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           }`}
         >
           <ArrowLeftRight size={16} />
-          <span>Reconciliation</span>
+          <span>Reconciliation Ledger</span>
         </button>
 
         <button
@@ -90,7 +102,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           }`}
         >
           <FileText size={16} />
-          <span>Expected Payments</span>
+          <span>Expected Registry</span>
         </button>
 
         <button
@@ -102,7 +114,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           }`}
         >
           <CreditCard size={16} />
-          <span>Received Transactions</span>
+          <span>Received Inflows</span>
         </button>
 
         <button
@@ -114,7 +126,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           }`}
         >
           <div className="flex items-center gap-3">
-            <ShieldAlert size={16} className={reviewCount > 0 ? "text-amber-400" : ""} />
+            <ShieldAlert size={16} />
             <span>Exceptions Queue</span>
           </div>
           {reviewCount > 0 && (
@@ -154,7 +166,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         {/* Back to Marketing Site */}
         <button
           onClick={onNavigateLanding}
-          className="w-full flex items-center justify-between px-2.5 py-1.5 rounded text-xs font-medium text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+          className="w-full flex items-center justify-between px-2.5 py-1.5 rounded text-xs font-medium text-slate-400 hover:text-white hover:bg-slate-800 transition-colors cursor-pointer"
         >
           <div className="flex items-center gap-2">
             <Globe size={13} className="text-slate-400" />
@@ -163,27 +175,35 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <ArrowRight size={11} className="text-slate-500" />
         </button>
 
-        {/* Workspace Switcher */}
-        <div className="px-2.5 py-2 rounded bg-slate-800/40 border border-slate-800 flex items-center justify-between text-xs">
+        {/* Workspace Switcher with Demo Configuration Trigger */}
+        <button
+          onClick={onOpenPilotSetup}
+          title="Click to customize demo company and operator"
+          className="w-full px-2.5 py-2 rounded bg-slate-800/60 hover:bg-slate-800 border border-slate-700/80 hover:border-slate-600 flex items-center justify-between text-xs text-left transition-all cursor-pointer group"
+        >
           <div className="flex items-center gap-2 overflow-hidden">
-            <Building size={14} className="text-slate-400 shrink-0" />
+            <Building size={14} className="text-slate-400 group-hover:text-emerald-400 shrink-0 transition-colors" />
             <div className="truncate">
-              <div className="text-slate-200 font-medium truncate">Apex Superstores Ltd</div>
-              <div className="text-[10px] text-slate-500 font-mono">RC-1849201</div>
+              <div className="text-slate-200 font-medium truncate">{companyName}</div>
+              <div className="text-[10px] text-slate-500 font-mono">{rcNumber}</div>
             </div>
           </div>
-          <ChevronDown size={12} className="text-slate-400 shrink-0" />
-        </div>
+          <SlidersHorizontal size={12} className="text-slate-400 group-hover:text-white shrink-0 ml-1 transition-colors" />
+        </button>
 
         {/* User Profile */}
-        <div className="px-2.5 py-1.5 flex items-center justify-between text-xs">
+        <div
+          onClick={onOpenPilotSetup}
+          title="Click to change operator profile"
+          className="px-2.5 py-1.5 flex items-center justify-between text-xs rounded hover:bg-slate-800/40 cursor-pointer transition-colors"
+        >
           <div className="flex items-center gap-2 overflow-hidden">
-            <div className="w-6 h-6 rounded-full bg-slate-700 flex items-center justify-center text-[10px] font-semibold text-slate-300 shrink-0">
-              DO
+            <div className="w-6 h-6 rounded-full bg-slate-700 border border-slate-600 flex items-center justify-center text-[10px] font-semibold text-slate-200 shrink-0">
+              {getInitials(operatorName)}
             </div>
             <div className="truncate">
               <div className="text-slate-200 font-medium truncate">{operatorName}</div>
-              <div className="text-[10px] text-slate-500">{operatorRole}</div>
+              <div className="text-[10px] text-slate-400">{operatorRole}</div>
             </div>
           </div>
         </div>

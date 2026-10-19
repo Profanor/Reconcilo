@@ -1,0 +1,257 @@
+import React, { useState } from "react";
+import { X, Building, User, Briefcase, Hash, Sparkles, Check } from "lucide-react";
+
+export interface PilotProfile {
+  companyName: string;
+  rcNumber: string;
+  operatorName: string;
+  operatorRole: string;
+  currency: string;
+  tenantId?: string;
+}
+
+interface PilotSetupModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  currentProfile: PilotProfile;
+  onSave: (profile: PilotProfile) => void;
+}
+
+const PRESET_PILOTS: Array<{
+  name: string;
+  profile: PilotProfile;
+  badge: string;
+}> = [
+  {
+    name: "Apex Superstores (Retail Chain)",
+    badge: "Retail & POS",
+    profile: {
+      tenantId: "tenant-apex-001",
+      companyName: "Apex Superstores & Logistics Nigeria Ltd",
+      rcNumber: "RC-1849201",
+      operatorName: "David Okoye",
+      operatorRole: "Finance Lead",
+      currency: "NGN (₦)",
+    },
+  },
+  {
+    name: "Alaba Wholesale Electronics",
+    badge: "B2B Trade & Invoicing",
+    profile: {
+      tenantId: "tenant-alaba-002",
+      companyName: "Alaba Prime Wholesale Electronics Ltd",
+      rcNumber: "RC-948123",
+      operatorName: "Chidi Anozie",
+      operatorRole: "Chief Financial Officer",
+      currency: "NGN (₦)",
+    },
+  },
+  {
+    name: "PayPulse Merchant Services",
+    badge: "Fintech & PSP",
+    profile: {
+      tenantId: "tenant-apex-001",
+      companyName: "PayPulse Solutions Nigeria Limited",
+      rcNumber: "RC-2041992",
+      operatorName: "Amina Bello",
+      operatorRole: "Head of Settlement & Treasury",
+      currency: "NGN (₦)",
+    },
+  },
+  {
+    name: "Kano Agro Commodities",
+    badge: "Commodities & Bulk",
+    profile: {
+      tenantId: "tenant-apex-001",
+      companyName: "Sahel Agro Ventures Ltd",
+      rcNumber: "RC-1102948",
+      operatorName: "Ibrahim Danjuma",
+      operatorRole: "Treasury Manager",
+      currency: "NGN (₦)",
+    },
+  },
+];
+
+export const PilotSetupModal: React.FC<PilotSetupModalProps> = ({
+  isOpen,
+  onClose,
+  currentProfile,
+  onSave,
+}) => {
+  const [profile, setProfile] = useState<PilotProfile>(currentProfile);
+
+  if (!isOpen) return null;
+
+  const handleApplyPreset = (preset: PilotProfile) => {
+    setProfile(preset);
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onSave(profile);
+    onClose();
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-xs p-4">
+      <div className="bg-white rounded-xl border border-slate-200 shadow-2xl max-w-xl w-full overflow-hidden flex flex-col max-h-[92vh]">
+        {/* Header */}
+        <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between bg-slate-50/50">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-lg bg-indigo-50 border border-indigo-200 flex items-center justify-center text-indigo-600">
+              <Sparkles size={16} />
+            </div>
+            <div>
+              <h3 className="text-sm font-semibold text-slate-900">Configure Pilot Demo</h3>
+              <p className="text-xs text-slate-500">
+                Personalize company, tenant isolation, and operator identity for prospective customer walkthroughs
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={onClose}
+            className="text-slate-400 hover:text-slate-600 p-1 rounded-md transition-colors cursor-pointer"
+          >
+            <X size={16} />
+          </button>
+        </div>
+
+        <form onSubmit={handleSubmit} className="p-6 overflow-y-auto space-y-5 text-xs">
+          {/* Quick Presets */}
+          <div>
+            <label className="text-[11px] font-bold uppercase tracking-wider text-slate-500 block mb-2">
+              1-Click Industry Presets (Switch Isolated Tenant Database)
+            </label>
+            <div className="grid grid-cols-2 gap-2">
+              {PRESET_PILOTS.map((p) => {
+                const isSelected = profile.companyName === p.profile.companyName;
+                return (
+                  <button
+                    key={p.name}
+                    type="button"
+                    onClick={() => handleApplyPreset(p.profile)}
+                    className={`p-2.5 rounded-lg border text-left transition-all cursor-pointer ${
+                      isSelected
+                        ? "border-indigo-600 bg-indigo-50/40 ring-1 ring-indigo-600"
+                        : "border-slate-200 bg-slate-50/50 hover:bg-slate-100/70"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="font-semibold text-slate-900 truncate text-[11px]">
+                        {p.name}
+                      </span>
+                      {isSelected && <Check size={12} className="text-indigo-600 shrink-0 ml-1" />}
+                    </div>
+                    <div className="text-[10px] text-slate-500 mt-0.5">{p.badge}</div>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="border-t border-slate-100 pt-4 space-y-3.5">
+            <label className="text-[11px] font-bold uppercase tracking-wider text-slate-500 block">
+              Custom Organization & Operator Details
+            </label>
+
+            {/* Company Name */}
+            <div>
+              <label className="text-slate-700 font-medium mb-1 flex items-center gap-1.5">
+                <Building size={13} className="text-slate-400" />
+                <span>Company Legal Name</span>
+              </label>
+              <input
+                type="text"
+                required
+                value={profile.companyName}
+                onChange={(e) => setProfile({ ...profile, companyName: e.target.value })}
+                placeholder="e.g. Acme Logistics Nigeria Ltd"
+                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded text-slate-900 outline-none focus:border-slate-400 focus:bg-white transition-colors"
+              />
+            </div>
+
+            {/* CAC Number */}
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="text-slate-700 font-medium mb-1 flex items-center gap-1.5">
+                  <Hash size={13} className="text-slate-400" />
+                  <span>CAC RC / BN Number</span>
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={profile.rcNumber}
+                  onChange={(e) => setProfile({ ...profile, rcNumber: e.target.value })}
+                  placeholder="e.g. RC-1849201"
+                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded text-slate-900 outline-none focus:border-slate-400 focus:bg-white transition-colors"
+                />
+              </div>
+
+              <div>
+                <label className="text-slate-700 font-medium mb-1 flex items-center gap-1.5">
+                  <span>Operating Currency</span>
+                </label>
+                <input
+                  type="text"
+                  disabled
+                  value="NGN (₦) - Nigerian Naira"
+                  className="w-full px-3 py-2 bg-slate-100 border border-slate-200 rounded text-slate-600 font-medium cursor-not-allowed"
+                />
+              </div>
+            </div>
+
+            {/* Operator Details */}
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="text-slate-700 font-medium mb-1 flex items-center gap-1.5">
+                  <User size={13} className="text-slate-400" />
+                  <span>Demo Operator Name</span>
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={profile.operatorName}
+                  onChange={(e) => setProfile({ ...profile, operatorName: e.target.value })}
+                  placeholder="e.g. David Okoye"
+                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded text-slate-900 outline-none focus:border-slate-400 focus:bg-white transition-colors"
+                />
+              </div>
+
+              <div>
+                <label className="text-slate-700 font-medium mb-1 flex items-center gap-1.5">
+                  <Briefcase size={13} className="text-slate-400" />
+                  <span>Operator Job Role</span>
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={profile.operatorRole}
+                  onChange={(e) => setProfile({ ...profile, operatorRole: e.target.value })}
+                  placeholder="e.g. Finance Lead / CFO"
+                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded text-slate-900 outline-none focus:border-slate-400 focus:bg-white transition-colors"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Footer Actions */}
+          <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-slate-100">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-4 py-2 border border-slate-300 rounded text-slate-700 hover:bg-slate-50 font-medium transition-colors cursor-pointer"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded font-semibold transition-colors shadow-xs cursor-pointer"
+            >
+              Apply to Demo Session
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};

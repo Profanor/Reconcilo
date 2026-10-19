@@ -23,6 +23,7 @@ import { SettingsTab } from "./components/tabs/SettingsTab";
 import { AddExpectedModal } from "./components/modals/AddExpectedModal";
 import { InspectMatchModal } from "./components/modals/InspectMatchModal";
 import { ManualMatchModal, type ManualMatchModalData } from "./components/modals/ManualMatchModal";
+import { PilotSetupModal, type PilotProfile } from "./components/modals/PilotSetupModal";
 
 const initialExceptions: ExceptionQueueData = {
   suggestions: [],
@@ -74,10 +75,55 @@ export default function App() {
   const [actionLoading, setActionLoading] = useState(false);
   const [toasts, setToasts] = useState<Toast[]>([]);
 
-  // Current Operator Attribution (Recorded on all changes)
-  const [operatorName, setOperatorName] = useState("David Okoye");
-  const [operatorRole] = useState("Finance Lead");
+  // Dynamic Pilot & Operator Attribution (Persisted in localStorage across sessions)
+  const [operatorName, setOperatorNameState] = useState(
+    () => localStorage.getItem("lissafi_operator_name") || "David Okoye"
+  );
+  const [operatorRole, setOperatorRoleState] = useState(
+    () => localStorage.getItem("lissafi_operator_role") || "Finance Lead"
+  );
+  const [companyName, setCompanyNameState] = useState(
+    () => localStorage.getItem("lissafi_company_name") || "Apex Superstores & Logistics Nigeria Ltd"
+  );
+  const [rcNumber, setRcNumberState] = useState(
+    () => localStorage.getItem("lissafi_rc_number") || "RC-1849201"
+  );
   const [selectedPeriod, setSelectedPeriod] = useState("October 2026");
+
+  // Pilot Modal
+  const [showPilotModal, setShowPilotModal] = useState(false);
+
+  const setOperatorName = (val: string) => {
+    setOperatorNameState(val);
+    localStorage.setItem("lissafi_operator_name", val);
+  };
+
+  const setOperatorRole = (val: string) => {
+    setOperatorRoleState(val);
+    localStorage.setItem("lissafi_operator_role", val);
+  };
+
+  const setCompanyName = (val: string) => {
+    setCompanyNameState(val);
+    localStorage.setItem("lissafi_company_name", val);
+  };
+
+  const setRcNumber = (val: string) => {
+    setRcNumberState(val);
+    localStorage.setItem("lissafi_rc_number", val);
+  };
+
+  const handleSavePilotProfile = async (profile: PilotProfile) => {
+    setCompanyName(profile.companyName);
+    setRcNumber(profile.rcNumber);
+    setOperatorName(profile.operatorName);
+    setOperatorRole(profile.operatorRole);
+    if (profile.tenantId) {
+      localStorage.setItem("lissafi_tenant_id", profile.tenantId);
+    }
+    addToast(`Switched workspace to ${profile.companyName}!`, "info");
+    await loadAllData();
+  };
 
   // Core Data States
   const [stats, setStats] = useState<DashboardStats>(initialStats);
@@ -299,7 +345,10 @@ export default function App() {
         reviewCount={reviewCount}
         operatorName={operatorName}
         operatorRole={operatorRole}
+        companyName={companyName}
+        rcNumber={rcNumber}
         onNavigateLanding={() => setViewMode("landing")}
+        onOpenPilotSetup={() => setShowPilotModal(true)}
       />
 
       {/* Main Workspace Frame */}
@@ -399,8 +448,15 @@ export default function App() {
 
           {activeTab === "settings" && (
             <SettingsTab
+              companyName={companyName}
+              setCompanyName={setCompanyName}
+              rcNumber={rcNumber}
+              setRcNumber={setRcNumber}
               operatorName={operatorName}
               setOperatorName={setOperatorName}
+              operatorRole={operatorRole}
+              setOperatorRole={setOperatorRole}
+              onOpenPilotSetup={() => setShowPilotModal(true)}
               rules={rules}
             />
           )}
@@ -428,6 +484,19 @@ export default function App() {
         isOpen={showAddModal}
         onClose={() => setShowAddModal(false)}
         onSubmit={handleAddExpectedSubmit}
+      />
+
+      <PilotSetupModal
+        isOpen={showPilotModal}
+        onClose={() => setShowPilotModal(false)}
+        currentProfile={{
+          companyName,
+          rcNumber,
+          operatorName,
+          operatorRole,
+          currency: "NGN (₦)",
+        }}
+        onSave={handleSavePilotProfile}
       />
 
       {/* Floating Notifications */}

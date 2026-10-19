@@ -163,10 +163,12 @@ export interface IngestionResult {
 // Network Request Helper
 async function request<T>(path: string, options?: RequestInit): Promise<T> {
   const url = `${API_BASE}${path}`;
+  const tenantId = localStorage.getItem("lissafi_tenant_id") || "tenant-apex-001";
   const response = await fetch(url, {
     ...options,
     headers: {
       "Content-Type": "application/json",
+      "x-tenant-id": tenantId,
       ...(options?.headers || {}),
     },
   });
