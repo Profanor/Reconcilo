@@ -200,9 +200,15 @@ export default function App() {
     setReconciling(true);
     try {
       const result = await api.runAutoReconciliation(false, `${operatorName} (${operatorRole})`);
+      const matchMsg = result.matchedCount === 1
+        ? `1 new match found`
+        : `${result.matchedCount} new matches found`;
+      const remainingMsg = result.remainingUnmatched === 0
+        ? `All records matched`
+        : `${result.remainingUnmatched} unmatched record${result.remainingUnmatched === 1 ? '' : 's'} remaining`;
       addToast(
-        `Reconciliation complete: ${result.matchedCount} new matches found. ${result.remainingUnmatched} unmatched records remaining.`,
-        "success",
+        `Reconciliation complete: ${matchMsg}. ${remainingMsg}.`,
+        result.matchedCount > 0 ? "success" : "info",
       );
       await loadAllData();
     } catch (err: any) {
@@ -327,10 +333,23 @@ export default function App() {
     (exceptions?.ambiguous.length || 0) +
     (exceptions?.duplicates.length || 0);
 
+  const handleLaunchApp = () => {
+    // Re-sync latest provisioned profile from localStorage
+    const storedCompany = localStorage.getItem("lissafi_company_name");
+    const storedOperator = localStorage.getItem("lissafi_operator_name");
+    const storedRole = localStorage.getItem("lissafi_operator_role");
+    if (storedCompany) setCompanyNameState(storedCompany);
+    if (storedOperator) setOperatorNameState(storedOperator);
+    if (storedRole) setOperatorRoleState(storedRole);
+
+    setViewMode("app");
+    loadAllData();
+  };
+
   if (viewMode === "landing") {
     return (
       <>
-        <LandingPage onLaunchApp={() => setViewMode("app")} stats={stats} />
+        <LandingPage onLaunchApp={handleLaunchApp} stats={stats} />
         <ToastContainer toasts={toasts} />
       </>
     );

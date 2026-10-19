@@ -156,7 +156,10 @@ export class ReconciliationService {
     });
   }
 
-  public async reconcileAllUnmatched(tenantId: string, actor = 'SYSTEM'): Promise<number> {
+  public async reconcileAllUnmatched(
+    tenantId: string,
+    actor = 'SYSTEM',
+  ): Promise<{ matchedCount: number; remainingUnmatched: number }> {
     const unmatchedPayments = await this.prisma.receivedPayment.findMany({
       where: { tenantId, status: 'UNMATCHED' },
     });
@@ -183,7 +186,12 @@ export class ReconciliationService {
       },
     });
 
-    return matchCount;
+    // Count remaining unmatched received payments after the run
+    const remainingUnmatched = await this.prisma.receivedPayment.count({
+      where: { tenantId, status: 'UNMATCHED' },
+    });
+
+    return { matchedCount: matchCount, remainingUnmatched };
   }
 
   public async manualMatch(

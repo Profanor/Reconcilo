@@ -17,10 +17,11 @@ export class ReconciliationController {
     @CurrentTenant() tenantId: string,
     @Body("actor") actor?: string,
   ) {
-    const matchedCount = await this.reconciliationService.reconcileAllUnmatched(tenantId, actor);
+    const { matchedCount, remainingUnmatched } = await this.reconciliationService.reconcileAllUnmatched(tenantId, actor);
     return {
       message: "Batch auto-reconciliation run completed.",
       matchedCount,
+      remainingUnmatched,
     };
   }
 
