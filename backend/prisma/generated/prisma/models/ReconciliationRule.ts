@@ -36,6 +36,7 @@ export type ReconciliationRuleSumAggregateOutputType = {
 
 export type ReconciliationRuleMinAggregateOutputType = {
   id: string | null
+  tenantId: string | null
   name: string | null
   description: string | null
   isActive: boolean | null
@@ -46,6 +47,7 @@ export type ReconciliationRuleMinAggregateOutputType = {
 
 export type ReconciliationRuleMaxAggregateOutputType = {
   id: string | null
+  tenantId: string | null
   name: string | null
   description: string | null
   isActive: boolean | null
@@ -56,6 +58,7 @@ export type ReconciliationRuleMaxAggregateOutputType = {
 
 export type ReconciliationRuleCountAggregateOutputType = {
   id: number
+  tenantId: number
   name: number
   description: number
   isActive: number
@@ -76,6 +79,7 @@ export type ReconciliationRuleSumAggregateInputType = {
 
 export type ReconciliationRuleMinAggregateInputType = {
   id?: true
+  tenantId?: true
   name?: true
   description?: true
   isActive?: true
@@ -86,6 +90,7 @@ export type ReconciliationRuleMinAggregateInputType = {
 
 export type ReconciliationRuleMaxAggregateInputType = {
   id?: true
+  tenantId?: true
   name?: true
   description?: true
   isActive?: true
@@ -96,6 +101,7 @@ export type ReconciliationRuleMaxAggregateInputType = {
 
 export type ReconciliationRuleCountAggregateInputType = {
   id?: true
+  tenantId?: true
   name?: true
   description?: true
   isActive?: true
@@ -193,6 +199,7 @@ export type ReconciliationRuleGroupByArgs<ExtArgs extends runtime.Types.Extensio
 
 export type ReconciliationRuleGroupByOutputType = {
   id: string
+  tenantId: string
   name: string
   description: string
   isActive: boolean
@@ -226,39 +233,47 @@ export type ReconciliationRuleWhereInput = {
   OR?: Prisma.ReconciliationRuleWhereInput[]
   NOT?: Prisma.ReconciliationRuleWhereInput | Prisma.ReconciliationRuleWhereInput[]
   id?: Prisma.StringFilter<"ReconciliationRule"> | string
+  tenantId?: Prisma.StringFilter<"ReconciliationRule"> | string
   name?: Prisma.StringFilter<"ReconciliationRule"> | string
   description?: Prisma.StringFilter<"ReconciliationRule"> | string
   isActive?: Prisma.BoolFilter<"ReconciliationRule"> | boolean
   priority?: Prisma.IntFilter<"ReconciliationRule"> | number
   ruleType?: Prisma.StringFilter<"ReconciliationRule"> | string
   config?: Prisma.StringFilter<"ReconciliationRule"> | string
+  tenant?: Prisma.XOR<Prisma.TenantScalarRelationFilter, Prisma.TenantWhereInput>
 }
 
 export type ReconciliationRuleOrderByWithRelationInput = {
   id?: Prisma.SortOrder
+  tenantId?: Prisma.SortOrder
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   priority?: Prisma.SortOrder
   ruleType?: Prisma.SortOrder
   config?: Prisma.SortOrder
+  tenant?: Prisma.TenantOrderByWithRelationInput
 }
 
 export type ReconciliationRuleWhereUniqueInput = Prisma.AtLeast<{
-  id?: string
+  tenantId_id?: Prisma.ReconciliationRuleTenantIdIdCompoundUniqueInput
   AND?: Prisma.ReconciliationRuleWhereInput | Prisma.ReconciliationRuleWhereInput[]
   OR?: Prisma.ReconciliationRuleWhereInput[]
   NOT?: Prisma.ReconciliationRuleWhereInput | Prisma.ReconciliationRuleWhereInput[]
+  id?: Prisma.StringFilter<"ReconciliationRule"> | string
+  tenantId?: Prisma.StringFilter<"ReconciliationRule"> | string
   name?: Prisma.StringFilter<"ReconciliationRule"> | string
   description?: Prisma.StringFilter<"ReconciliationRule"> | string
   isActive?: Prisma.BoolFilter<"ReconciliationRule"> | boolean
   priority?: Prisma.IntFilter<"ReconciliationRule"> | number
   ruleType?: Prisma.StringFilter<"ReconciliationRule"> | string
   config?: Prisma.StringFilter<"ReconciliationRule"> | string
-}, "id">
+  tenant?: Prisma.XOR<Prisma.TenantScalarRelationFilter, Prisma.TenantWhereInput>
+}, "tenantId_id">
 
 export type ReconciliationRuleOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
+  tenantId?: Prisma.SortOrder
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
@@ -277,6 +292,7 @@ export type ReconciliationRuleScalarWhereWithAggregatesInput = {
   OR?: Prisma.ReconciliationRuleScalarWhereWithAggregatesInput[]
   NOT?: Prisma.ReconciliationRuleScalarWhereWithAggregatesInput | Prisma.ReconciliationRuleScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"ReconciliationRule"> | string
+  tenantId?: Prisma.StringWithAggregatesFilter<"ReconciliationRule"> | string
   name?: Prisma.StringWithAggregatesFilter<"ReconciliationRule"> | string
   description?: Prisma.StringWithAggregatesFilter<"ReconciliationRule"> | string
   isActive?: Prisma.BoolWithAggregatesFilter<"ReconciliationRule"> | boolean
@@ -293,10 +309,12 @@ export type ReconciliationRuleCreateInput = {
   priority: number
   ruleType: string
   config?: string
+  tenant: Prisma.TenantCreateNestedOneWithoutRulesInput
 }
 
 export type ReconciliationRuleUncheckedCreateInput = {
   id: string
+  tenantId: string
   name: string
   description: string
   isActive?: boolean
@@ -313,10 +331,12 @@ export type ReconciliationRuleUpdateInput = {
   priority?: Prisma.IntFieldUpdateOperationsInput | number
   ruleType?: Prisma.StringFieldUpdateOperationsInput | string
   config?: Prisma.StringFieldUpdateOperationsInput | string
+  tenant?: Prisma.TenantUpdateOneRequiredWithoutRulesNestedInput
 }
 
 export type ReconciliationRuleUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -327,6 +347,7 @@ export type ReconciliationRuleUncheckedUpdateInput = {
 
 export type ReconciliationRuleCreateManyInput = {
   id: string
+  tenantId: string
   name: string
   description: string
   isActive?: boolean
@@ -347,6 +368,7 @@ export type ReconciliationRuleUpdateManyMutationInput = {
 
 export type ReconciliationRuleUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -355,8 +377,24 @@ export type ReconciliationRuleUncheckedUpdateManyInput = {
   config?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
+export type ReconciliationRuleListRelationFilter = {
+  every?: Prisma.ReconciliationRuleWhereInput
+  some?: Prisma.ReconciliationRuleWhereInput
+  none?: Prisma.ReconciliationRuleWhereInput
+}
+
+export type ReconciliationRuleOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
+}
+
+export type ReconciliationRuleTenantIdIdCompoundUniqueInput = {
+  tenantId: string
+  id: string
+}
+
 export type ReconciliationRuleCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  tenantId?: Prisma.SortOrder
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
@@ -371,6 +409,7 @@ export type ReconciliationRuleAvgOrderByAggregateInput = {
 
 export type ReconciliationRuleMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  tenantId?: Prisma.SortOrder
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
@@ -381,6 +420,7 @@ export type ReconciliationRuleMaxOrderByAggregateInput = {
 
 export type ReconciliationRuleMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  tenantId?: Prisma.SortOrder
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
@@ -393,52 +433,193 @@ export type ReconciliationRuleSumOrderByAggregateInput = {
   priority?: Prisma.SortOrder
 }
 
+export type ReconciliationRuleCreateNestedManyWithoutTenantInput = {
+  create?: Prisma.XOR<Prisma.ReconciliationRuleCreateWithoutTenantInput, Prisma.ReconciliationRuleUncheckedCreateWithoutTenantInput> | Prisma.ReconciliationRuleCreateWithoutTenantInput[] | Prisma.ReconciliationRuleUncheckedCreateWithoutTenantInput[]
+  connectOrCreate?: Prisma.ReconciliationRuleCreateOrConnectWithoutTenantInput | Prisma.ReconciliationRuleCreateOrConnectWithoutTenantInput[]
+  createMany?: Prisma.ReconciliationRuleCreateManyTenantInputEnvelope
+  connect?: Prisma.ReconciliationRuleWhereUniqueInput | Prisma.ReconciliationRuleWhereUniqueInput[]
+}
+
+export type ReconciliationRuleUncheckedCreateNestedManyWithoutTenantInput = {
+  create?: Prisma.XOR<Prisma.ReconciliationRuleCreateWithoutTenantInput, Prisma.ReconciliationRuleUncheckedCreateWithoutTenantInput> | Prisma.ReconciliationRuleCreateWithoutTenantInput[] | Prisma.ReconciliationRuleUncheckedCreateWithoutTenantInput[]
+  connectOrCreate?: Prisma.ReconciliationRuleCreateOrConnectWithoutTenantInput | Prisma.ReconciliationRuleCreateOrConnectWithoutTenantInput[]
+  createMany?: Prisma.ReconciliationRuleCreateManyTenantInputEnvelope
+  connect?: Prisma.ReconciliationRuleWhereUniqueInput | Prisma.ReconciliationRuleWhereUniqueInput[]
+}
+
+export type ReconciliationRuleUpdateManyWithoutTenantNestedInput = {
+  create?: Prisma.XOR<Prisma.ReconciliationRuleCreateWithoutTenantInput, Prisma.ReconciliationRuleUncheckedCreateWithoutTenantInput> | Prisma.ReconciliationRuleCreateWithoutTenantInput[] | Prisma.ReconciliationRuleUncheckedCreateWithoutTenantInput[]
+  connectOrCreate?: Prisma.ReconciliationRuleCreateOrConnectWithoutTenantInput | Prisma.ReconciliationRuleCreateOrConnectWithoutTenantInput[]
+  upsert?: Prisma.ReconciliationRuleUpsertWithWhereUniqueWithoutTenantInput | Prisma.ReconciliationRuleUpsertWithWhereUniqueWithoutTenantInput[]
+  createMany?: Prisma.ReconciliationRuleCreateManyTenantInputEnvelope
+  set?: Prisma.ReconciliationRuleWhereUniqueInput | Prisma.ReconciliationRuleWhereUniqueInput[]
+  disconnect?: Prisma.ReconciliationRuleWhereUniqueInput | Prisma.ReconciliationRuleWhereUniqueInput[]
+  delete?: Prisma.ReconciliationRuleWhereUniqueInput | Prisma.ReconciliationRuleWhereUniqueInput[]
+  connect?: Prisma.ReconciliationRuleWhereUniqueInput | Prisma.ReconciliationRuleWhereUniqueInput[]
+  update?: Prisma.ReconciliationRuleUpdateWithWhereUniqueWithoutTenantInput | Prisma.ReconciliationRuleUpdateWithWhereUniqueWithoutTenantInput[]
+  updateMany?: Prisma.ReconciliationRuleUpdateManyWithWhereWithoutTenantInput | Prisma.ReconciliationRuleUpdateManyWithWhereWithoutTenantInput[]
+  deleteMany?: Prisma.ReconciliationRuleScalarWhereInput | Prisma.ReconciliationRuleScalarWhereInput[]
+}
+
+export type ReconciliationRuleUncheckedUpdateManyWithoutTenantNestedInput = {
+  create?: Prisma.XOR<Prisma.ReconciliationRuleCreateWithoutTenantInput, Prisma.ReconciliationRuleUncheckedCreateWithoutTenantInput> | Prisma.ReconciliationRuleCreateWithoutTenantInput[] | Prisma.ReconciliationRuleUncheckedCreateWithoutTenantInput[]
+  connectOrCreate?: Prisma.ReconciliationRuleCreateOrConnectWithoutTenantInput | Prisma.ReconciliationRuleCreateOrConnectWithoutTenantInput[]
+  upsert?: Prisma.ReconciliationRuleUpsertWithWhereUniqueWithoutTenantInput | Prisma.ReconciliationRuleUpsertWithWhereUniqueWithoutTenantInput[]
+  createMany?: Prisma.ReconciliationRuleCreateManyTenantInputEnvelope
+  set?: Prisma.ReconciliationRuleWhereUniqueInput | Prisma.ReconciliationRuleWhereUniqueInput[]
+  disconnect?: Prisma.ReconciliationRuleWhereUniqueInput | Prisma.ReconciliationRuleWhereUniqueInput[]
+  delete?: Prisma.ReconciliationRuleWhereUniqueInput | Prisma.ReconciliationRuleWhereUniqueInput[]
+  connect?: Prisma.ReconciliationRuleWhereUniqueInput | Prisma.ReconciliationRuleWhereUniqueInput[]
+  update?: Prisma.ReconciliationRuleUpdateWithWhereUniqueWithoutTenantInput | Prisma.ReconciliationRuleUpdateWithWhereUniqueWithoutTenantInput[]
+  updateMany?: Prisma.ReconciliationRuleUpdateManyWithWhereWithoutTenantInput | Prisma.ReconciliationRuleUpdateManyWithWhereWithoutTenantInput[]
+  deleteMany?: Prisma.ReconciliationRuleScalarWhereInput | Prisma.ReconciliationRuleScalarWhereInput[]
+}
+
 export type BoolFieldUpdateOperationsInput = {
   set?: boolean
 }
 
-export type IntFieldUpdateOperationsInput = {
-  set?: number
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
+export type ReconciliationRuleCreateWithoutTenantInput = {
+  id: string
+  name: string
+  description: string
+  isActive?: boolean
+  priority: number
+  ruleType: string
+  config?: string
+}
+
+export type ReconciliationRuleUncheckedCreateWithoutTenantInput = {
+  id: string
+  name: string
+  description: string
+  isActive?: boolean
+  priority: number
+  ruleType: string
+  config?: string
+}
+
+export type ReconciliationRuleCreateOrConnectWithoutTenantInput = {
+  where: Prisma.ReconciliationRuleWhereUniqueInput
+  create: Prisma.XOR<Prisma.ReconciliationRuleCreateWithoutTenantInput, Prisma.ReconciliationRuleUncheckedCreateWithoutTenantInput>
+}
+
+export type ReconciliationRuleCreateManyTenantInputEnvelope = {
+  data: Prisma.ReconciliationRuleCreateManyTenantInput | Prisma.ReconciliationRuleCreateManyTenantInput[]
+  skipDuplicates?: boolean
+}
+
+export type ReconciliationRuleUpsertWithWhereUniqueWithoutTenantInput = {
+  where: Prisma.ReconciliationRuleWhereUniqueInput
+  update: Prisma.XOR<Prisma.ReconciliationRuleUpdateWithoutTenantInput, Prisma.ReconciliationRuleUncheckedUpdateWithoutTenantInput>
+  create: Prisma.XOR<Prisma.ReconciliationRuleCreateWithoutTenantInput, Prisma.ReconciliationRuleUncheckedCreateWithoutTenantInput>
+}
+
+export type ReconciliationRuleUpdateWithWhereUniqueWithoutTenantInput = {
+  where: Prisma.ReconciliationRuleWhereUniqueInput
+  data: Prisma.XOR<Prisma.ReconciliationRuleUpdateWithoutTenantInput, Prisma.ReconciliationRuleUncheckedUpdateWithoutTenantInput>
+}
+
+export type ReconciliationRuleUpdateManyWithWhereWithoutTenantInput = {
+  where: Prisma.ReconciliationRuleScalarWhereInput
+  data: Prisma.XOR<Prisma.ReconciliationRuleUpdateManyMutationInput, Prisma.ReconciliationRuleUncheckedUpdateManyWithoutTenantInput>
+}
+
+export type ReconciliationRuleScalarWhereInput = {
+  AND?: Prisma.ReconciliationRuleScalarWhereInput | Prisma.ReconciliationRuleScalarWhereInput[]
+  OR?: Prisma.ReconciliationRuleScalarWhereInput[]
+  NOT?: Prisma.ReconciliationRuleScalarWhereInput | Prisma.ReconciliationRuleScalarWhereInput[]
+  id?: Prisma.StringFilter<"ReconciliationRule"> | string
+  tenantId?: Prisma.StringFilter<"ReconciliationRule"> | string
+  name?: Prisma.StringFilter<"ReconciliationRule"> | string
+  description?: Prisma.StringFilter<"ReconciliationRule"> | string
+  isActive?: Prisma.BoolFilter<"ReconciliationRule"> | boolean
+  priority?: Prisma.IntFilter<"ReconciliationRule"> | number
+  ruleType?: Prisma.StringFilter<"ReconciliationRule"> | string
+  config?: Prisma.StringFilter<"ReconciliationRule"> | string
+}
+
+export type ReconciliationRuleCreateManyTenantInput = {
+  id: string
+  name: string
+  description: string
+  isActive?: boolean
+  priority: number
+  ruleType: string
+  config?: string
+}
+
+export type ReconciliationRuleUpdateWithoutTenantInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  priority?: Prisma.IntFieldUpdateOperationsInput | number
+  ruleType?: Prisma.StringFieldUpdateOperationsInput | string
+  config?: Prisma.StringFieldUpdateOperationsInput | string
+}
+
+export type ReconciliationRuleUncheckedUpdateWithoutTenantInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  priority?: Prisma.IntFieldUpdateOperationsInput | number
+  ruleType?: Prisma.StringFieldUpdateOperationsInput | string
+  config?: Prisma.StringFieldUpdateOperationsInput | string
+}
+
+export type ReconciliationRuleUncheckedUpdateManyWithoutTenantInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  priority?: Prisma.IntFieldUpdateOperationsInput | number
+  ruleType?: Prisma.StringFieldUpdateOperationsInput | string
+  config?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 
 
 export type ReconciliationRuleSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  tenantId?: boolean
   name?: boolean
   description?: boolean
   isActive?: boolean
   priority?: boolean
   ruleType?: boolean
   config?: boolean
+  tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["reconciliationRule"]>
 
 export type ReconciliationRuleSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  tenantId?: boolean
   name?: boolean
   description?: boolean
   isActive?: boolean
   priority?: boolean
   ruleType?: boolean
   config?: boolean
+  tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["reconciliationRule"]>
 
 export type ReconciliationRuleSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  tenantId?: boolean
   name?: boolean
   description?: boolean
   isActive?: boolean
   priority?: boolean
   ruleType?: boolean
   config?: boolean
+  tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["reconciliationRule"]>
 
 export type ReconciliationRuleSelectScalar = {
   id?: boolean
+  tenantId?: boolean
   name?: boolean
   description?: boolean
   isActive?: boolean
@@ -447,13 +628,25 @@ export type ReconciliationRuleSelectScalar = {
   config?: boolean
 }
 
-export type ReconciliationRuleOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "isActive" | "priority" | "ruleType" | "config", ExtArgs["result"]["reconciliationRule"]>
+export type ReconciliationRuleOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "tenantId" | "name" | "description" | "isActive" | "priority" | "ruleType" | "config", ExtArgs["result"]["reconciliationRule"]>
+export type ReconciliationRuleInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
+}
+export type ReconciliationRuleIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
+}
+export type ReconciliationRuleIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
+}
 
 export type $ReconciliationRulePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "ReconciliationRule"
-  objects: {}
+  objects: {
+    tenant: Prisma.$TenantPayload<ExtArgs>
+  }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
+    tenantId: string
     name: string
     description: string
     isActive: boolean
@@ -854,6 +1047,7 @@ readonly fields: ReconciliationRuleFieldRefs;
  */
 export interface Prisma__ReconciliationRuleClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  tenant<T extends Prisma.TenantDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TenantDefaultArgs<ExtArgs>>): Prisma.Prisma__TenantClient<runtime.Types.Result.GetResult<Prisma.$TenantPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -884,6 +1078,7 @@ export interface Prisma__ReconciliationRuleClient<T, Null = never, ExtArgs exten
  */
 export interface ReconciliationRuleFieldRefs {
   readonly id: Prisma.FieldRef<"ReconciliationRule", 'String'>
+  readonly tenantId: Prisma.FieldRef<"ReconciliationRule", 'String'>
   readonly name: Prisma.FieldRef<"ReconciliationRule", 'String'>
   readonly description: Prisma.FieldRef<"ReconciliationRule", 'String'>
   readonly isActive: Prisma.FieldRef<"ReconciliationRule", 'Boolean'>
@@ -907,6 +1102,10 @@ export type ReconciliationRuleFindUniqueArgs<ExtArgs extends runtime.Types.Exten
    */
   omit?: Prisma.ReconciliationRuleOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ReconciliationRuleInclude<ExtArgs> | null
+  /**
    * Filter, which ReconciliationRule to fetch.
    */
   where: Prisma.ReconciliationRuleWhereUniqueInput
@@ -925,6 +1124,10 @@ export type ReconciliationRuleFindUniqueOrThrowArgs<ExtArgs extends runtime.Type
    */
   omit?: Prisma.ReconciliationRuleOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ReconciliationRuleInclude<ExtArgs> | null
+  /**
    * Filter, which ReconciliationRule to fetch.
    */
   where: Prisma.ReconciliationRuleWhereUniqueInput
@@ -942,6 +1145,10 @@ export type ReconciliationRuleFindFirstArgs<ExtArgs extends runtime.Types.Extens
    * Omit specific fields from the ReconciliationRule
    */
   omit?: Prisma.ReconciliationRuleOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ReconciliationRuleInclude<ExtArgs> | null
   /**
    * Filter, which ReconciliationRule to fetch.
    */
@@ -991,6 +1198,10 @@ export type ReconciliationRuleFindFirstOrThrowArgs<ExtArgs extends runtime.Types
    */
   omit?: Prisma.ReconciliationRuleOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ReconciliationRuleInclude<ExtArgs> | null
+  /**
    * Filter, which ReconciliationRule to fetch.
    */
   where?: Prisma.ReconciliationRuleWhereInput
@@ -1038,6 +1249,10 @@ export type ReconciliationRuleFindManyArgs<ExtArgs extends runtime.Types.Extensi
    * Omit specific fields from the ReconciliationRule
    */
   omit?: Prisma.ReconciliationRuleOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ReconciliationRuleInclude<ExtArgs> | null
   /**
    * Filter, which ReconciliationRules to fetch.
    */
@@ -1087,6 +1302,10 @@ export type ReconciliationRuleCreateArgs<ExtArgs extends runtime.Types.Extension
    */
   omit?: Prisma.ReconciliationRuleOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ReconciliationRuleInclude<ExtArgs> | null
+  /**
    * The data needed to create a ReconciliationRule.
    */
   data: Prisma.XOR<Prisma.ReconciliationRuleCreateInput, Prisma.ReconciliationRuleUncheckedCreateInput>
@@ -1120,6 +1339,10 @@ export type ReconciliationRuleCreateManyAndReturnArgs<ExtArgs extends runtime.Ty
    */
   data: Prisma.ReconciliationRuleCreateManyInput | Prisma.ReconciliationRuleCreateManyInput[]
   skipDuplicates?: boolean
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ReconciliationRuleIncludeCreateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1134,6 +1357,10 @@ export type ReconciliationRuleUpdateArgs<ExtArgs extends runtime.Types.Extension
    * Omit specific fields from the ReconciliationRule
    */
   omit?: Prisma.ReconciliationRuleOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ReconciliationRuleInclude<ExtArgs> | null
   /**
    * The data needed to update a ReconciliationRule.
    */
@@ -1186,6 +1413,10 @@ export type ReconciliationRuleUpdateManyAndReturnArgs<ExtArgs extends runtime.Ty
    * Limit how many ReconciliationRules to update.
    */
   limit?: number
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ReconciliationRuleIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1200,6 +1431,10 @@ export type ReconciliationRuleUpsertArgs<ExtArgs extends runtime.Types.Extension
    * Omit specific fields from the ReconciliationRule
    */
   omit?: Prisma.ReconciliationRuleOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ReconciliationRuleInclude<ExtArgs> | null
   /**
    * The filter to search for the ReconciliationRule to update in case it exists.
    */
@@ -1226,6 +1461,10 @@ export type ReconciliationRuleDeleteArgs<ExtArgs extends runtime.Types.Extension
    * Omit specific fields from the ReconciliationRule
    */
   omit?: Prisma.ReconciliationRuleOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ReconciliationRuleInclude<ExtArgs> | null
   /**
    * Filter which ReconciliationRule to delete.
    */
@@ -1258,4 +1497,8 @@ export type ReconciliationRuleDefaultArgs<ExtArgs extends runtime.Types.Extensio
    * Omit specific fields from the ReconciliationRule
    */
   omit?: Prisma.ReconciliationRuleOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ReconciliationRuleInclude<ExtArgs> | null
 }

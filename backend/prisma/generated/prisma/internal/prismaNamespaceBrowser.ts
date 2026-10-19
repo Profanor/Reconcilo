@@ -51,9 +51,12 @@ export const AnyNull = runtime.AnyNull
 
 
 export const ModelName = {
+  Tenant: 'Tenant',
+  User: 'User',
   ExpectedPayment: 'ExpectedPayment',
   ReceivedPayment: 'ReceivedPayment',
   ReconciliationMatch: 'ReconciliationMatch',
+  ReconciliationRun: 'ReconciliationRun',
   ReconciliationRule: 'ReconciliationRule',
   AuditLog: 'AuditLog'
 } as const
@@ -74,8 +77,35 @@ export const TransactionIsolationLevel = runtime.makeStrictEnum({
 export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
 
 
+export const TenantScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  slug: 'slug',
+  cacNumber: 'cacNumber',
+  currency: 'currency',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TenantScalarFieldEnum = (typeof TenantScalarFieldEnum)[keyof typeof TenantScalarFieldEnum]
+
+
+export const UserScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  email: 'email',
+  name: 'name',
+  role: 'role',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
+
+
 export const ExpectedPaymentScalarFieldEnum = {
   id: 'id',
+  tenantId: 'tenantId',
   amount: 'amount',
   reference: 'reference',
   customerName: 'customerName',
@@ -92,6 +122,7 @@ export type ExpectedPaymentScalarFieldEnum = (typeof ExpectedPaymentScalarFieldE
 
 export const ReceivedPaymentScalarFieldEnum = {
   id: 'id',
+  tenantId: 'tenantId',
   amount: 'amount',
   channel: 'channel',
   provider: 'provider',
@@ -109,6 +140,7 @@ export type ReceivedPaymentScalarFieldEnum = (typeof ReceivedPaymentScalarFieldE
 
 export const ReconciliationMatchScalarFieldEnum = {
   id: 'id',
+  tenantId: 'tenantId',
   expectedPaymentId: 'expectedPaymentId',
   receivedPaymentId: 'receivedPaymentId',
   matchMethod: 'matchMethod',
@@ -122,8 +154,22 @@ export const ReconciliationMatchScalarFieldEnum = {
 export type ReconciliationMatchScalarFieldEnum = (typeof ReconciliationMatchScalarFieldEnum)[keyof typeof ReconciliationMatchScalarFieldEnum]
 
 
+export const ReconciliationRunScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  matchedCount: 'matchedCount',
+  pendingExceptions: 'pendingExceptions',
+  actor: 'actor',
+  startedAt: 'startedAt',
+  completedAt: 'completedAt'
+} as const
+
+export type ReconciliationRunScalarFieldEnum = (typeof ReconciliationRunScalarFieldEnum)[keyof typeof ReconciliationRunScalarFieldEnum]
+
+
 export const ReconciliationRuleScalarFieldEnum = {
   id: 'id',
+  tenantId: 'tenantId',
   name: 'name',
   description: 'description',
   isActive: 'isActive',
@@ -137,6 +183,7 @@ export type ReconciliationRuleScalarFieldEnum = (typeof ReconciliationRuleScalar
 
 export const AuditLogScalarFieldEnum = {
   id: 'id',
+  tenantId: 'tenantId',
   action: 'action',
   targetId: 'targetId',
   user: 'user',

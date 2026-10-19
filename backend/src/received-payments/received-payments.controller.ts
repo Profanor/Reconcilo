@@ -1,6 +1,7 @@
 import { Controller, Get, Post, Body, Query } from '@nestjs/common';
 import { ReceivedPaymentsService } from './received-payments.service';
 import { ApiQuery, ApiTags } from '@nestjs/swagger';
+import { CurrentTenant } from '../auth/tenant.decorator';
 
 @ApiTags('Received Payments')
 @Controller('received')
@@ -20,14 +21,16 @@ export class ReceivedPaymentsController {
       'Search string matching reference, sender name, or bank narrative',
   })
   async findAll(
+    @CurrentTenant() tenantId: string,
     @Query('status') status?: string,
     @Query('search') search?: string,
   ) {
-    return await this.receivedService.findAll(status, search);
+    return await this.receivedService.findAll(tenantId, status, search);
   }
 
   @Post()
   async create(
+    @CurrentTenant() tenantId: string,
     @Body('id') id?: string,
     @Body('amount') amount?: number,
     @Body('channel') channel?: string,
@@ -38,7 +41,7 @@ export class ReceivedPaymentsController {
     @Body('senderAccount') senderAccount?: string,
     @Body('createdAt') createdAt?: string,
   ) {
-    return await this.receivedService.create({
+    return await this.receivedService.create(tenantId, {
       id,
       amount: amount ? Number(amount) : 0,
       channel: channel || '',
@@ -53,9 +56,9 @@ export class ReceivedPaymentsController {
 
   @Post('csv')
   async importCsv(
+    @CurrentTenant() tenantId: string,
     @Body('csvText') csvText: string,
-    @Body('actor') actor?: string,
   ) {
-    return await this.receivedService.importCsv(csvText, actor);
+    return await this.receivedService.importCsv(tenantId, csvText);
   }
 }
