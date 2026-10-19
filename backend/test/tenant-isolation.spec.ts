@@ -4,6 +4,7 @@ import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from '../src/app.module';
 import { PrismaService } from '../src/prisma/prisma.service';
+import { RuleType, PaymentChannel } from '../prisma/generated/prisma/client';
 
 describe('Multi-Tenant Data Isolation & Security Verification (e2e)', () => {
   let app: INestApplication;
@@ -41,13 +42,21 @@ describe('Multi-Tenant Data Isolation & Security Verification (e2e)', () => {
       ],
     });
 
-    const baseRules = [
+    const baseRules: Array<{
+      id: string;
+      name: string;
+      description: string;
+      priority: number;
+      ruleType: RuleType;
+      isActive: boolean;
+      config: string;
+    }> = [
       {
         id: 'EXACT_AMOUNT_AND_REF',
         name: 'Exact Amount & Reference Match',
         description: 'Matches when payment amount and reference match exactly.',
         priority: 10,
-        ruleType: 'EXACT_AMOUNT_AND_REF',
+        ruleType: RuleType.EXACT_AMOUNT_AND_REF,
         isActive: true,
         config: JSON.stringify({ amountTolerance: 0 }),
       },
@@ -56,7 +65,7 @@ describe('Multi-Tenant Data Isolation & Security Verification (e2e)', () => {
         name: 'Exact Amount & Narrative Reference Match',
         description: 'Matches when reference is in narrative.',
         priority: 8,
-        ruleType: 'EXACT_AMOUNT_AND_NARRATIVE_REF',
+        ruleType: RuleType.EXACT_AMOUNT_AND_NARRATIVE_REF,
         isActive: true,
         config: JSON.stringify({ amountTolerance: 0 }),
       },
@@ -298,6 +307,95 @@ describe('Multi-Tenant Data Isolation & Security Verification (e2e)', () => {
         where: { tenantId: TENANT_A_ID, status: 'PENDING' },
       });
       expect(countAfterA).toBe(countBeforeA);
+    });
+  });
+
+  describe('4. Authentication & Public Endpoints Enforcement', () => {
+    it('Public endpoint /api/health should be accessible without tenant or auth headers', async () => {
+      const res = await request(app.getHttpServer())
+        .get('/api/health')
+        .expect(200);
+
+      expect(res.body.status).toBe('ok');
+      expect(res.body.service).toBe('lissafi-reconciliation-backend');
+    });
+
+    it('In strict production mode (DEMO_PILOT_MODE=false), unauthenticated requests must be rejected with 401', async () => {
+      const originalMode = process.env.DEMO_PILOT_MODE;
+      const originalEnv = process.env.NODE_ENV;
+      process.env.DEMO_PILOT_MODE = 'false';
+      process.env.NODE_ENV = 'production';
+
+      try {
+        const res = await request(app.getHttpServer())
+          .get('/api/expected')
+          .expect(401);
+
+        expect(res.body.message).toContain('Authentication required');
+      } finally {
+        process.env.DEMO_PILOT_MODE = originalMode;
+        process.env.NODE_ENV = originalEnv;
+      }
+    });
+
+    it('In strict production mode, valid X-API-Key should successfully authenticate the request', async () => {
+      const originalMode = process.env.DEMO_PILOT_MODE;
+      const originalEnv = process.env.NODE_ENV;
+      const originalKey = process.env.RECONCILO_API_KEY;
+
+      process.env.DEMO_PILOT_MODE = 'false';
+      process.env.NODE_ENV = 'production';
+      process.env.RECONCILO_API_KEY = 'test-secret-key-xyz';
+
+      try {
+        const res = await request(app.getHttpServer())
+          .get('/api/expected')
+          .set('x-api-key', 'test-secret-key-xyz')
+          .set('x-tenant-id', TENANT_A_ID)
+          .expect(200);
+
+        expect(Array.isArray(res.body)).toBe(true);
+      } finally {
+        process.env.DEMO_PILOT_MODE = originalMode;
+        process.env.NODE_ENV = originalEnv;
+        process.env.RECONCILO_API_KEY = originalKey;
+      }
+    });
+
+    it('Self-serve pilot onboarding: POST /api/auth/request-pilot should provision a new tenant and rules', async () => {
+      const res = await request(app.getHttpServer())
+        .post('/api/auth/request-pilot')
+        .send({
+          fullName: 'Bolanle Adeleke',
+          businessName: 'Lekki Organic Store',
+          email: 'bolanle@lekkiorganic.ng',
+          phone: '08099887766',
+          volume: '₦50M – ₦250M / month',
+        })
+        .expect(201);
+
+      expect(res.body.success).toBe(true);
+      expect(res.body.tenant.name).toBe('Lekki Organic Store');
+      expect(res.body.user.email).toBe('bolanle@lekkiorganic.ng');
+
+      // Verify rules were initialized for this tenant
+      const rules = await prisma.reconciliationRule.findMany({
+        where: { tenantId: res.body.tenant.id },
+      });
+      expect(rules.length).toBe(4);
+
+      // Verify idempotent re-request returns existing workspace
+      const repeatRes = await request(app.getHttpServer())
+        .post('/api/auth/request-pilot')
+        .send({
+          fullName: 'Bolanle Adeleke',
+          businessName: 'Lekki Organic Store',
+          email: 'bolanle@lekkiorganic.ng',
+        })
+        .expect(201);
+
+      expect(repeatRes.body.isExisting).toBe(true);
+      expect(repeatRes.body.tenant.id).toBe(res.body.tenant.id);
     });
   });
 });

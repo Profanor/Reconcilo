@@ -1,5 +1,14 @@
 import 'dotenv/config';
-import { PrismaClient } from '../prisma/generated/prisma/client';
+import {
+  PrismaClient,
+  UserRole,
+  RuleType,
+  ExpectedPaymentStatus,
+  ReceivedPaymentStatus,
+  PaymentChannel,
+  MatchMethod,
+  AuditAction,
+} from '../prisma/generated/prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { Pool } from 'pg';
 
@@ -60,20 +69,28 @@ async function main() {
         tenantId: tenantAlaba.id,
         name: 'Chidi Anozie',
         email: 'chidi@alabaprime.com',
-        role: 'CFO',
+        role: UserRole.FINANCE_LEAD,
       },
     ],
   });
 
   console.log('Seeding Rules for both tenants...');
-  const baseRules = [
+  const baseRules: Array<{
+    id: string;
+    name: string;
+    description: string;
+    priority: number;
+    ruleType: RuleType;
+    isActive: boolean;
+    config: string;
+  }> = [
     {
       id: 'EXACT_AMOUNT_AND_REF',
       name: 'Exact Amount & Reference Match',
       description:
         'Matches when the payment amount matches exactly and the transaction reference matches the order reference.',
       priority: 10,
-      ruleType: 'EXACT_AMOUNT_AND_REF',
+      ruleType: RuleType.EXACT_AMOUNT_AND_REF,
       isActive: true,
       config: JSON.stringify({ amountTolerance: 0 }),
     },
@@ -83,7 +100,7 @@ async function main() {
       description:
         'Matches when the payment amount matches exactly and the order reference is found within the bank narrative/memo.',
       priority: 8,
-      ruleType: 'EXACT_AMOUNT_AND_NARRATIVE_REF',
+      ruleType: RuleType.EXACT_AMOUNT_AND_NARRATIVE_REF,
       isActive: true,
       config: JSON.stringify({ amountTolerance: 0 }),
     },
@@ -93,7 +110,7 @@ async function main() {
       description:
         "Matches when the payment amount matches exactly and the customer's phone or email is found in the bank narrative.",
       priority: 7,
-      ruleType: 'EXACT_AMOUNT_AND_CUSTOMER_DETAILS',
+      ruleType: RuleType.EXACT_AMOUNT_AND_CUSTOMER_DETAILS,
       isActive: true,
       config: JSON.stringify({ amountTolerance: 0 }),
     },
@@ -103,7 +120,7 @@ async function main() {
       description:
         "Matches when the amount matches, the payment occurred within a 72-hour window, and the sender's name fuzzy-matches the customer name.",
       priority: 6,
-      ruleType: 'EXACT_AMOUNT_AND_FUZZY_NAME',
+      ruleType: RuleType.EXACT_AMOUNT_AND_FUZZY_NAME,
       isActive: true,
       config: JSON.stringify({
         amountTolerance: 0,

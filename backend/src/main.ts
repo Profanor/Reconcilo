@@ -51,6 +51,14 @@ async function bootstrap() {
       'Automated reconciliation & matching engine for expected invoices and bank/POS inflows.',
     )
     .setVersion('1.0')
+    .addBearerAuth()
+    .addApiKey({ type: 'apiKey', name: 'x-api-key', in: 'header' }, 'x-api-key')
+    .addGlobalParameters({
+      name: 'x-tenant-id',
+      in: 'header',
+      required: false,
+      description: 'Tenant ID context (e.g. tenant-apex-001, tenant-alaba-002)',
+    })
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/docs', app, document);

@@ -161,15 +161,44 @@ export interface IngestionResult {
   };
 }
 
+export interface PilotWorkspaceRequest {
+  fullName: string;
+  businessName: string;
+  email: string;
+  phone?: string;
+  volume?: string;
+}
+
+export interface PilotWorkspaceResponse {
+  success: boolean;
+  isExisting: boolean;
+  message: string;
+  tenant: {
+    id: string;
+    name: string;
+    slug: string;
+  };
+  user: {
+    id: string;
+    name: string;
+    email: string;
+    role: string;
+  };
+  token?: string;
+}
+
 // Network Request Helper
 async function request<T>(path: string, options?: RequestInit): Promise<T> {
   const url = `${API_BASE}${path}`;
   const tenantId = localStorage.getItem("lissafi_tenant_id") || "tenant-apex-001";
+  const token = localStorage.getItem("reconcilo_token");
+
   const response = await fetch(url, {
     ...options,
     headers: {
       "Content-Type": "application/json",
       "x-tenant-id": tenantId,
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
       ...(options?.headers || {}),
     },
   });
@@ -188,7 +217,34 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
   return response.json();
 }
 
+export async function requestPilotWorkspace(
+  data: PilotWorkspaceRequest
+): Promise<PilotWorkspaceResponse> {
+  const url = `${API_BASE}/auth/request-pilot`;
+  const response = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    let errorMsg = `Request failed (${response.status})`;
+    try {
+      const err = await response.json();
+      errorMsg = err.message || errorMsg;
+    } catch {}
+    throw new Error(errorMsg);
+  }
+
+  return response.json();
+}
+
 export const api = {
+  // Self-serve pilot onboarding
+  requestPilotWorkspace,
+
   // Dashboard Stats
   async getDashboardStats(): Promise<DashboardStats> {
     return request<DashboardStats>("/dashboard/stats");

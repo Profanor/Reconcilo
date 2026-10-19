@@ -41,7 +41,7 @@ export type ReconciliationRuleMinAggregateOutputType = {
   description: string | null
   isActive: boolean | null
   priority: number | null
-  ruleType: string | null
+  ruleType: $Enums.RuleType | null
   config: string | null
 }
 
@@ -52,7 +52,7 @@ export type ReconciliationRuleMaxAggregateOutputType = {
   description: string | null
   isActive: boolean | null
   priority: number | null
-  ruleType: string | null
+  ruleType: $Enums.RuleType | null
   config: string | null
 }
 
@@ -204,7 +204,7 @@ export type ReconciliationRuleGroupByOutputType = {
   description: string
   isActive: boolean
   priority: number
-  ruleType: string
+  ruleType: $Enums.RuleType
   config: string
   _count: ReconciliationRuleCountAggregateOutputType | null
   _avg: ReconciliationRuleAvgAggregateOutputType | null
@@ -238,7 +238,7 @@ export type ReconciliationRuleWhereInput = {
   description?: Prisma.StringFilter<"ReconciliationRule"> | string
   isActive?: Prisma.BoolFilter<"ReconciliationRule"> | boolean
   priority?: Prisma.IntFilter<"ReconciliationRule"> | number
-  ruleType?: Prisma.StringFilter<"ReconciliationRule"> | string
+  ruleType?: Prisma.EnumRuleTypeFilter<"ReconciliationRule"> | $Enums.RuleType
   config?: Prisma.StringFilter<"ReconciliationRule"> | string
   tenant?: Prisma.XOR<Prisma.TenantScalarRelationFilter, Prisma.TenantWhereInput>
 }
@@ -266,7 +266,7 @@ export type ReconciliationRuleWhereUniqueInput = Prisma.AtLeast<{
   description?: Prisma.StringFilter<"ReconciliationRule"> | string
   isActive?: Prisma.BoolFilter<"ReconciliationRule"> | boolean
   priority?: Prisma.IntFilter<"ReconciliationRule"> | number
-  ruleType?: Prisma.StringFilter<"ReconciliationRule"> | string
+  ruleType?: Prisma.EnumRuleTypeFilter<"ReconciliationRule"> | $Enums.RuleType
   config?: Prisma.StringFilter<"ReconciliationRule"> | string
   tenant?: Prisma.XOR<Prisma.TenantScalarRelationFilter, Prisma.TenantWhereInput>
 }, "tenantId_id">
@@ -297,7 +297,7 @@ export type ReconciliationRuleScalarWhereWithAggregatesInput = {
   description?: Prisma.StringWithAggregatesFilter<"ReconciliationRule"> | string
   isActive?: Prisma.BoolWithAggregatesFilter<"ReconciliationRule"> | boolean
   priority?: Prisma.IntWithAggregatesFilter<"ReconciliationRule"> | number
-  ruleType?: Prisma.StringWithAggregatesFilter<"ReconciliationRule"> | string
+  ruleType?: Prisma.EnumRuleTypeWithAggregatesFilter<"ReconciliationRule"> | $Enums.RuleType
   config?: Prisma.StringWithAggregatesFilter<"ReconciliationRule"> | string
 }
 
@@ -307,7 +307,7 @@ export type ReconciliationRuleCreateInput = {
   description: string
   isActive?: boolean
   priority: number
-  ruleType: string
+  ruleType: $Enums.RuleType
   config?: string
   tenant: Prisma.TenantCreateNestedOneWithoutRulesInput
 }
@@ -319,7 +319,7 @@ export type ReconciliationRuleUncheckedCreateInput = {
   description: string
   isActive?: boolean
   priority: number
-  ruleType: string
+  ruleType: $Enums.RuleType
   config?: string
 }
 
@@ -329,7 +329,7 @@ export type ReconciliationRuleUpdateInput = {
   description?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   priority?: Prisma.IntFieldUpdateOperationsInput | number
-  ruleType?: Prisma.StringFieldUpdateOperationsInput | string
+  ruleType?: Prisma.EnumRuleTypeFieldUpdateOperationsInput | $Enums.RuleType
   config?: Prisma.StringFieldUpdateOperationsInput | string
   tenant?: Prisma.TenantUpdateOneRequiredWithoutRulesNestedInput
 }
@@ -341,7 +341,7 @@ export type ReconciliationRuleUncheckedUpdateInput = {
   description?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   priority?: Prisma.IntFieldUpdateOperationsInput | number
-  ruleType?: Prisma.StringFieldUpdateOperationsInput | string
+  ruleType?: Prisma.EnumRuleTypeFieldUpdateOperationsInput | $Enums.RuleType
   config?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
@@ -352,7 +352,7 @@ export type ReconciliationRuleCreateManyInput = {
   description: string
   isActive?: boolean
   priority: number
-  ruleType: string
+  ruleType: $Enums.RuleType
   config?: string
 }
 
@@ -362,7 +362,7 @@ export type ReconciliationRuleUpdateManyMutationInput = {
   description?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   priority?: Prisma.IntFieldUpdateOperationsInput | number
-  ruleType?: Prisma.StringFieldUpdateOperationsInput | string
+  ruleType?: Prisma.EnumRuleTypeFieldUpdateOperationsInput | $Enums.RuleType
   config?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
@@ -373,7 +373,7 @@ export type ReconciliationRuleUncheckedUpdateManyInput = {
   description?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   priority?: Prisma.IntFieldUpdateOperationsInput | number
-  ruleType?: Prisma.StringFieldUpdateOperationsInput | string
+  ruleType?: Prisma.EnumRuleTypeFieldUpdateOperationsInput | $Enums.RuleType
   config?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
@@ -479,13 +479,17 @@ export type BoolFieldUpdateOperationsInput = {
   set?: boolean
 }
 
+export type EnumRuleTypeFieldUpdateOperationsInput = {
+  set?: $Enums.RuleType
+}
+
 export type ReconciliationRuleCreateWithoutTenantInput = {
   id: string
   name: string
   description: string
   isActive?: boolean
   priority: number
-  ruleType: string
+  ruleType: $Enums.RuleType
   config?: string
 }
 
@@ -495,7 +499,7 @@ export type ReconciliationRuleUncheckedCreateWithoutTenantInput = {
   description: string
   isActive?: boolean
   priority: number
-  ruleType: string
+  ruleType: $Enums.RuleType
   config?: string
 }
 
@@ -535,7 +539,7 @@ export type ReconciliationRuleScalarWhereInput = {
   description?: Prisma.StringFilter<"ReconciliationRule"> | string
   isActive?: Prisma.BoolFilter<"ReconciliationRule"> | boolean
   priority?: Prisma.IntFilter<"ReconciliationRule"> | number
-  ruleType?: Prisma.StringFilter<"ReconciliationRule"> | string
+  ruleType?: Prisma.EnumRuleTypeFilter<"ReconciliationRule"> | $Enums.RuleType
   config?: Prisma.StringFilter<"ReconciliationRule"> | string
 }
 
@@ -545,7 +549,7 @@ export type ReconciliationRuleCreateManyTenantInput = {
   description: string
   isActive?: boolean
   priority: number
-  ruleType: string
+  ruleType: $Enums.RuleType
   config?: string
 }
 
@@ -555,7 +559,7 @@ export type ReconciliationRuleUpdateWithoutTenantInput = {
   description?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   priority?: Prisma.IntFieldUpdateOperationsInput | number
-  ruleType?: Prisma.StringFieldUpdateOperationsInput | string
+  ruleType?: Prisma.EnumRuleTypeFieldUpdateOperationsInput | $Enums.RuleType
   config?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
@@ -565,7 +569,7 @@ export type ReconciliationRuleUncheckedUpdateWithoutTenantInput = {
   description?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   priority?: Prisma.IntFieldUpdateOperationsInput | number
-  ruleType?: Prisma.StringFieldUpdateOperationsInput | string
+  ruleType?: Prisma.EnumRuleTypeFieldUpdateOperationsInput | $Enums.RuleType
   config?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
@@ -575,7 +579,7 @@ export type ReconciliationRuleUncheckedUpdateManyWithoutTenantInput = {
   description?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   priority?: Prisma.IntFieldUpdateOperationsInput | number
-  ruleType?: Prisma.StringFieldUpdateOperationsInput | string
+  ruleType?: Prisma.EnumRuleTypeFieldUpdateOperationsInput | $Enums.RuleType
   config?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
@@ -651,7 +655,7 @@ export type $ReconciliationRulePayload<ExtArgs extends runtime.Types.Extensions.
     description: string
     isActive: boolean
     priority: number
-    ruleType: string
+    ruleType: $Enums.RuleType
     config: string
   }, ExtArgs["result"]["reconciliationRule"]>
   composites: {}
@@ -1083,7 +1087,7 @@ export interface ReconciliationRuleFieldRefs {
   readonly description: Prisma.FieldRef<"ReconciliationRule", 'String'>
   readonly isActive: Prisma.FieldRef<"ReconciliationRule", 'Boolean'>
   readonly priority: Prisma.FieldRef<"ReconciliationRule", 'Int'>
-  readonly ruleType: Prisma.FieldRef<"ReconciliationRule", 'String'>
+  readonly ruleType: Prisma.FieldRef<"ReconciliationRule", 'RuleType'>
   readonly config: Prisma.FieldRef<"ReconciliationRule", 'String'>
 }
     

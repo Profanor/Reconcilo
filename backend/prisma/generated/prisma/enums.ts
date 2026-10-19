@@ -9,7 +9,74 @@
 * 🟢 You can import this file directly.
 */
 
+export const UserRole = {
+  ADMIN: 'ADMIN',
+  FINANCE_LEAD: 'FINANCE_LEAD',
+  OPERATOR: 'OPERATOR',
+  AUDITOR: 'AUDITOR'
+} as const
+
+export type UserRole = (typeof UserRole)[keyof typeof UserRole]
 
 
-// This file is empty because there are no enums in the schema.
-export {}
+export const ExpectedPaymentStatus = {
+  PENDING: 'PENDING',
+  MATCHED: 'MATCHED',
+  PARTIAL: 'PARTIAL',
+  EXPIRED: 'EXPIRED',
+  DUPLICATE: 'DUPLICATE'
+} as const
+
+export type ExpectedPaymentStatus = (typeof ExpectedPaymentStatus)[keyof typeof ExpectedPaymentStatus]
+
+
+export const ReceivedPaymentStatus = {
+  UNMATCHED: 'UNMATCHED',
+  MATCHED: 'MATCHED',
+  IGNORED: 'IGNORED',
+  DUPLICATE: 'DUPLICATE'
+} as const
+
+export type ReceivedPaymentStatus = (typeof ReceivedPaymentStatus)[keyof typeof ReceivedPaymentStatus]
+
+
+export const PaymentChannel = {
+  BANK_TRANSFER: 'BANK_TRANSFER',
+  POS: 'POS',
+  WALLET: 'WALLET',
+  CASH: 'CASH'
+} as const
+
+export type PaymentChannel = (typeof PaymentChannel)[keyof typeof PaymentChannel]
+
+
+export const MatchMethod = {
+  AUTOMATIC_EXACT: 'AUTOMATIC_EXACT',
+  CONFIRMED_SUGGESTION: 'CONFIRMED_SUGGESTION',
+  AUTOMATIC_FUZZY: 'AUTOMATIC_FUZZY',
+  MANUAL: 'MANUAL'
+} as const
+
+export type MatchMethod = (typeof MatchMethod)[keyof typeof MatchMethod]
+
+
+export const RuleType = {
+  EXACT_AMOUNT_AND_REF: 'EXACT_AMOUNT_AND_REF',
+  EXACT_AMOUNT_AND_NARRATIVE_REF: 'EXACT_AMOUNT_AND_NARRATIVE_REF',
+  EXACT_AMOUNT_AND_CUSTOMER_DETAILS: 'EXACT_AMOUNT_AND_CUSTOMER_DETAILS',
+  EXACT_AMOUNT_AND_FUZZY_NAME: 'EXACT_AMOUNT_AND_FUZZY_NAME'
+} as const
+
+export type RuleType = (typeof RuleType)[keyof typeof RuleType]
+
+
+export const AuditAction = {
+  MANUAL_MATCH: 'MANUAL_MATCH',
+  CONFIRM_SUGGESTION: 'CONFIRM_SUGGESTION',
+  REJECT_SUGGESTION: 'REJECT_SUGGESTION',
+  UNMATCH: 'UNMATCH',
+  DUPLICATE_FLAGGED: 'DUPLICATE_FLAGGED',
+  WORKSPACE_PROVISIONED: 'WORKSPACE_PROVISIONED'
+} as const
+
+export type AuditAction = (typeof AuditAction)[keyof typeof AuditAction]

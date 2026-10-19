@@ -7,6 +7,58 @@ generator client {
   output   = "./generated/prisma"
 }
 
+enum UserRole {
+  ADMIN
+  FINANCE_LEAD
+  OPERATOR
+  AUDITOR
+}
+
+enum ExpectedPaymentStatus {
+  PENDING
+  MATCHED
+  PARTIAL
+  EXPIRED
+  DUPLICATE
+}
+
+enum ReceivedPaymentStatus {
+  UNMATCHED
+  MATCHED
+  IGNORED
+  DUPLICATE
+}
+
+enum PaymentChannel {
+  BANK_TRANSFER
+  POS
+  WALLET
+  CASH
+}
+
+enum MatchMethod {
+  AUTOMATIC_EXACT
+  CONFIRMED_SUGGESTION
+  AUTOMATIC_FUZZY
+  MANUAL
+}
+
+enum RuleType {
+  EXACT_AMOUNT_AND_REF
+  EXACT_AMOUNT_AND_NARRATIVE_REF
+  EXACT_AMOUNT_AND_CUSTOMER_DETAILS
+  EXACT_AMOUNT_AND_FUZZY_NAME
+}
+
+enum AuditAction {
+  MANUAL_MATCH
+  CONFIRM_SUGGESTION
+  REJECT_SUGGESTION
+  UNMATCH
+  DUPLICATE_FLAGGED
+  WORKSPACE_PROVISIONED
+}
+
 model Tenant {
   id          String   @id @default(uuid())
   name        String   // e.g. "Apex Superstores & Logistics Nigeria Ltd"
@@ -30,7 +82,7 @@ model User {
   tenantId  String
   email     String   @unique
   name      String
-  role      String   @default("FINANCE_LEAD") // ADMIN, FINANCE_LEAD, AUDITOR
+  role      UserRole @default(FINANCE_LEAD)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -40,19 +92,19 @@ model User {
 }
 
 model ExpectedPayment {
-  id            String   @id @default(uuid())
+  id            String                @id @default(uuid())
   tenantId      String
   amount        Float
-  reference     String   // Order ID or invoice reference
+  reference     String                // Order ID or invoice reference
   customerName  String
   customerPhone String?
   customerEmail String?
-  status        String   @default("PENDING") // PENDING, MATCHED, PARTIAL, EXPIRED
-  createdAt     DateTime @default(now())
+  status        ExpectedPaymentStatus @default(PENDING)
+  createdAt     DateTime              @default(now())
   dueDate       DateTime?
   description   String?
 
-  tenant        Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  tenant        Tenant                @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   matches       ReconciliationMatch[]
 
   @@unique([tenantId, reference]) // Scope reference uniqueness to tenant
@@ -61,20 +113,20 @@ model ExpectedPayment {
 }
 
 model ReceivedPayment {
-  id            String   @id // e.g. transaction session ID or unique reference
+  id            String                @id // e.g. transaction session ID or unique reference
   tenantId      String
   amount        Float
-  channel       String   // BANK_TRANSFER, POS, WALLET, CASH
-  provider      String   // OPay, Moniepoint, GTBank, etc.
-  reference     String   // Session ID, RRN, or provider transaction reference
-  narrative     String?  // Full narration string
-  senderName    String?  // Payer bank name
-  senderAccount String?  // Payer account number or card PAN masked
-  status        String   @default("UNMATCHED") // UNMATCHED, MATCHED, IGNORED
-  createdAt     DateTime // Transaction timestamp from provider
-  ingestedAt    DateTime @default(now())
+  channel       PaymentChannel
+  provider      String                // OPay, Moniepoint, GTBank, etc.
+  reference     String                // Session ID, RRN, or provider transaction reference
+  narrative     String?               // Full narration string
+  senderName    String?               // Payer bank name
+  senderAccount String?               // Payer account number or card PAN masked
+  status        ReceivedPaymentStatus @default(UNMATCHED)
+  createdAt     DateTime              // Transaction timestamp from provider
+  ingestedAt    DateTime              @default(now())
 
-  tenant        Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  tenant        Tenant                @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   matches       ReconciliationMatch[]
 
   @@unique([tenantId, reference]) // Scope reference uniqueness to tenant
@@ -87,7 +139,7 @@ model ReconciliationMatch {
   tenantId          String
   expectedPaymentId String
   receivedPaymentId String
-  matchMethod       String          // AUTOMATIC_EXACT, AUTOMATIC_FUZZY, MANUAL
+  matchMethod       MatchMethod
   confidenceScore   Float           // 0.0 to 1.0
   matchedRules      String          // JSON array of matched rules, e.g. '["amount", "narrative_ref"]'
   matchedAt         DateTime        @default(now())
@@ -123,7 +175,7 @@ model ReconciliationRule {
   description String
   isActive    Boolean  @default(true)
   priority    Int      // Higher value = higher priority
-  ruleType    String   // EXACT_AMOUNT_AND_REF, EXACT_AMOUNT_AND_NARRATIVE_REF, EXACT_AMOUNT_AND_FUZZY_NAME, etc.
+  ruleType    RuleType
   config      String   @default("{}") // JSON string of parameters
 
   tenant      Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
@@ -133,17 +185,16 @@ model ReconciliationRule {
 }
 
 model AuditLog {
-  id        String   @id @default(uuid())
+  id        String      @id @default(uuid())
   tenantId  String
-  action    String   // MANUAL_MATCH, CONFIRM_SUGGESTION, REJECT_SUGGESTION, UNMATCH, DUPLICATE_FLAGGED
-  targetId  String?  // Reference or ID
-  user      String   // Email or name of authorized actor
-  reason    String?  // Explanation/notes
-  details   String?  // JSON metadata string
-  createdAt DateTime @default(now())
+  action    AuditAction
+  targetId  String?     // Reference or ID
+  user      String      // Email or name of authorized actor
+  reason    String?     // Explanation/notes
+  details   String?     // JSON metadata string
+  createdAt DateTime    @default(now())
 
-  tenant    Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  tenant    Tenant      @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 
   @@index([tenantId])
 }
-

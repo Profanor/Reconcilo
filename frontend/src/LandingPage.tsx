@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { PRODUCT_NAME } from "./api";
-import type { DashboardStats } from "./api";
+import { PRODUCT_NAME, requestPilotWorkspace } from "./api";
+import type { DashboardStats, PilotWorkspaceResponse } from "./api";
 import {
   ArrowRight,
   ChevronRight,
@@ -10,6 +10,7 @@ import {
   Phone,
   Mail,
   User,
+  Loader2,
 } from "lucide-react";
 
 const formatNGN = (amt: number) => {
@@ -28,6 +29,9 @@ interface LandingPageProps {
 export default function LandingPage({ onLaunchApp, stats }: LandingPageProps) {
   const [isDemoModalOpen, setIsDemoModalOpen] = useState(false);
   const [demoSubmitted, setDemoSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [provisionedData, setProvisionedData] = useState<PilotWorkspaceResponse | null>(null);
 
   // Form states
   const [fullName, setFullName] = useState("");
@@ -36,12 +40,39 @@ export default function LandingPage({ onLaunchApp, stats }: LandingPageProps) {
   const [phone, setPhone] = useState("");
   const [volume, setVolume] = useState("₦5M – ₦50M / month");
 
-  const handleDemoSubmit = (e: React.FormEvent) => {
+  const handleDemoSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setDemoSubmitted(true);
-    setTimeout(() => {
-      // Auto close after 3s or allow closing
-    }, 3000);
+    setSubmitting(true);
+    setSubmitError(null);
+
+    try {
+      const res = await requestPilotWorkspace({
+        fullName,
+        businessName,
+        email,
+        phone,
+        volume,
+      });
+
+      // Persist workspace credentials immediately in localStorage
+      localStorage.setItem("lissafi_tenant_id", res.tenant.id);
+      localStorage.setItem("lissafi_company_name", res.tenant.name);
+      localStorage.setItem("lissafi_operator_name", res.user.name);
+      localStorage.setItem(
+        "lissafi_operator_role",
+        res.user.role === "FINANCE_LEAD" ? "Finance Lead" : res.user.role
+      );
+      if (res.token) {
+        localStorage.setItem("reconcilo_token", res.token);
+      }
+
+      setProvisionedData(res);
+      setDemoSubmitted(true);
+    } catch (err: any) {
+      setSubmitError(err.message || "Failed to provision workspace. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -535,15 +566,42 @@ export default function LandingPage({ onLaunchApp, stats }: LandingPageProps) {
 
             {demoSubmitted ? (
               <div className="p-8 text-center space-y-4">
-                <div className="w-12 h-12 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-200 flex items-center justify-center mx-auto text-xl font-bold">
+                <div className="w-12 h-12 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-200 flex items-center justify-center mx-auto text-xl font-bold shadow-xs">
                   ✓
                 </div>
-                <h4 className="text-base font-bold text-slate-900">
-                  Pilot Request Received!
-                </h4>
-                <p className="text-xs text-slate-600 max-w-sm mx-auto leading-relaxed">
-                  Thank you, <strong>{fullName || "Partner"}</strong>. Our team will reach out via WhatsApp or email within 24 hours to set up your customized pilot.
-                </p>
+                <div className="space-y-1">
+                  <h4 className="text-base font-bold text-slate-900">
+                    Workspace Ready for {provisionedData?.tenant.name || businessName}!
+                  </h4>
+                  <p className="text-xs text-slate-500 max-w-sm mx-auto leading-relaxed">
+                    {provisionedData?.isExisting
+                      ? "Welcome back! Your business workspace has been loaded."
+                      : "A dedicated multi-tenant workspace has been created with all 4 reconciliation rules initialized."}
+                  </p>
+                </div>
+
+                <div className="bg-slate-50 border border-slate-200/80 rounded-lg p-3.5 text-left space-y-2 text-[11px]">
+                  <div className="flex justify-between items-center text-slate-600">
+                    <span>Assigned Operator:</span>
+                    <span className="font-semibold text-slate-900">
+                      {provisionedData?.user.name || fullName} ({provisionedData?.user.role || "Finance Lead"})
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center text-slate-600">
+                    <span>Workspace Slug:</span>
+                    <span className="font-mono text-[10px] text-slate-700 font-semibold">
+                      {provisionedData?.tenant.slug}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center text-slate-600">
+                    <span>Access Mode:</span>
+                    <span className="inline-flex items-center gap-1.5 font-semibold text-emerald-700">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                      Isolated Production Sandbox
+                    </span>
+                  </div>
+                </div>
+
                 <div className="pt-2">
                   <button
                     onClick={() => {
@@ -551,15 +609,21 @@ export default function LandingPage({ onLaunchApp, stats }: LandingPageProps) {
                       setDemoSubmitted(false);
                       onLaunchApp();
                     }}
-                    className="inline-flex items-center gap-2 px-4 py-2 bg-slate-900 text-white rounded text-xs font-semibold"
+                    className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded text-xs font-semibold shadow-xs transition-colors"
                   >
-                    <span>Explore Live Interactive App Now</span>
+                    <span>Enter {provisionedData?.tenant.name || businessName} Workspace →</span>
                     <ArrowRight size={13} />
                   </button>
                 </div>
               </div>
             ) : (
               <form onSubmit={handleDemoSubmit} className="p-6 space-y-3.5 text-xs">
+                {submitError && (
+                  <div className="p-3 bg-red-50 border border-red-200 text-red-700 rounded text-xs">
+                    {submitError}
+                  </div>
+                )}
+
                 <div>
                   <label className="block text-[11px] font-semibold text-slate-700 mb-1">
                     Your Full Name
@@ -620,7 +684,6 @@ export default function LandingPage({ onLaunchApp, stats }: LandingPageProps) {
                       <Phone size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                       <input
                         type="tel"
-                        required
                         placeholder="080 1234 5678"
                         value={phone}
                         onChange={(e) => setPhone(e.target.value)}
@@ -649,16 +712,22 @@ export default function LandingPage({ onLaunchApp, stats }: LandingPageProps) {
                 <div className="pt-2 flex items-center justify-end gap-2.5">
                   <button
                     type="button"
-                    onClick={() => setIsDemoModalOpen(false)}
-                    className="px-3.5 py-1.5 text-slate-600 hover:text-slate-800 text-xs font-medium"
+                    onClick={() => {
+                      setIsDemoModalOpen(false);
+                      setSubmitError(null);
+                    }}
+                    disabled={submitting}
+                    className="px-3.5 py-1.5 text-slate-600 hover:text-slate-800 text-xs font-medium disabled:opacity-50"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded text-xs font-semibold shadow-xs"
+                    disabled={submitting}
+                    className="inline-flex items-center gap-1.5 px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded text-xs font-semibold shadow-xs disabled:opacity-50"
                   >
-                    Submit Pilot Request →
+                    {submitting && <Loader2 size={13} className="animate-spin" />}
+                    <span>{submitting ? "Provisioning Workspace..." : "Create Business Workspace →"}</span>
                   </button>
                 </div>
               </form>

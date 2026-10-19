@@ -38,13 +38,13 @@ export type ReceivedPaymentMinAggregateOutputType = {
   id: string | null
   tenantId: string | null
   amount: number | null
-  channel: string | null
+  channel: $Enums.PaymentChannel | null
   provider: string | null
   reference: string | null
   narrative: string | null
   senderName: string | null
   senderAccount: string | null
-  status: string | null
+  status: $Enums.ReceivedPaymentStatus | null
   createdAt: Date | null
   ingestedAt: Date | null
 }
@@ -53,13 +53,13 @@ export type ReceivedPaymentMaxAggregateOutputType = {
   id: string | null
   tenantId: string | null
   amount: number | null
-  channel: string | null
+  channel: $Enums.PaymentChannel | null
   provider: string | null
   reference: string | null
   narrative: string | null
   senderName: string | null
   senderAccount: string | null
-  status: string | null
+  status: $Enums.ReceivedPaymentStatus | null
   createdAt: Date | null
   ingestedAt: Date | null
 }
@@ -225,13 +225,13 @@ export type ReceivedPaymentGroupByOutputType = {
   id: string
   tenantId: string
   amount: number
-  channel: string
+  channel: $Enums.PaymentChannel
   provider: string
   reference: string
   narrative: string | null
   senderName: string | null
   senderAccount: string | null
-  status: string
+  status: $Enums.ReceivedPaymentStatus
   createdAt: Date
   ingestedAt: Date
   _count: ReceivedPaymentCountAggregateOutputType | null
@@ -263,13 +263,13 @@ export type ReceivedPaymentWhereInput = {
   id?: Prisma.StringFilter<"ReceivedPayment"> | string
   tenantId?: Prisma.StringFilter<"ReceivedPayment"> | string
   amount?: Prisma.FloatFilter<"ReceivedPayment"> | number
-  channel?: Prisma.StringFilter<"ReceivedPayment"> | string
+  channel?: Prisma.EnumPaymentChannelFilter<"ReceivedPayment"> | $Enums.PaymentChannel
   provider?: Prisma.StringFilter<"ReceivedPayment"> | string
   reference?: Prisma.StringFilter<"ReceivedPayment"> | string
   narrative?: Prisma.StringNullableFilter<"ReceivedPayment"> | string | null
   senderName?: Prisma.StringNullableFilter<"ReceivedPayment"> | string | null
   senderAccount?: Prisma.StringNullableFilter<"ReceivedPayment"> | string | null
-  status?: Prisma.StringFilter<"ReceivedPayment"> | string
+  status?: Prisma.EnumReceivedPaymentStatusFilter<"ReceivedPayment"> | $Enums.ReceivedPaymentStatus
   createdAt?: Prisma.DateTimeFilter<"ReceivedPayment"> | Date | string
   ingestedAt?: Prisma.DateTimeFilter<"ReceivedPayment"> | Date | string
   tenant?: Prisma.XOR<Prisma.TenantScalarRelationFilter, Prisma.TenantWhereInput>
@@ -301,13 +301,13 @@ export type ReceivedPaymentWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.ReceivedPaymentWhereInput | Prisma.ReceivedPaymentWhereInput[]
   tenantId?: Prisma.StringFilter<"ReceivedPayment"> | string
   amount?: Prisma.FloatFilter<"ReceivedPayment"> | number
-  channel?: Prisma.StringFilter<"ReceivedPayment"> | string
+  channel?: Prisma.EnumPaymentChannelFilter<"ReceivedPayment"> | $Enums.PaymentChannel
   provider?: Prisma.StringFilter<"ReceivedPayment"> | string
   reference?: Prisma.StringFilter<"ReceivedPayment"> | string
   narrative?: Prisma.StringNullableFilter<"ReceivedPayment"> | string | null
   senderName?: Prisma.StringNullableFilter<"ReceivedPayment"> | string | null
   senderAccount?: Prisma.StringNullableFilter<"ReceivedPayment"> | string | null
-  status?: Prisma.StringFilter<"ReceivedPayment"> | string
+  status?: Prisma.EnumReceivedPaymentStatusFilter<"ReceivedPayment"> | $Enums.ReceivedPaymentStatus
   createdAt?: Prisma.DateTimeFilter<"ReceivedPayment"> | Date | string
   ingestedAt?: Prisma.DateTimeFilter<"ReceivedPayment"> | Date | string
   tenant?: Prisma.XOR<Prisma.TenantScalarRelationFilter, Prisma.TenantWhereInput>
@@ -341,13 +341,13 @@ export type ReceivedPaymentScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"ReceivedPayment"> | string
   tenantId?: Prisma.StringWithAggregatesFilter<"ReceivedPayment"> | string
   amount?: Prisma.FloatWithAggregatesFilter<"ReceivedPayment"> | number
-  channel?: Prisma.StringWithAggregatesFilter<"ReceivedPayment"> | string
+  channel?: Prisma.EnumPaymentChannelWithAggregatesFilter<"ReceivedPayment"> | $Enums.PaymentChannel
   provider?: Prisma.StringWithAggregatesFilter<"ReceivedPayment"> | string
   reference?: Prisma.StringWithAggregatesFilter<"ReceivedPayment"> | string
   narrative?: Prisma.StringNullableWithAggregatesFilter<"ReceivedPayment"> | string | null
   senderName?: Prisma.StringNullableWithAggregatesFilter<"ReceivedPayment"> | string | null
   senderAccount?: Prisma.StringNullableWithAggregatesFilter<"ReceivedPayment"> | string | null
-  status?: Prisma.StringWithAggregatesFilter<"ReceivedPayment"> | string
+  status?: Prisma.EnumReceivedPaymentStatusWithAggregatesFilter<"ReceivedPayment"> | $Enums.ReceivedPaymentStatus
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"ReceivedPayment"> | Date | string
   ingestedAt?: Prisma.DateTimeWithAggregatesFilter<"ReceivedPayment"> | Date | string
 }
@@ -355,13 +355,13 @@ export type ReceivedPaymentScalarWhereWithAggregatesInput = {
 export type ReceivedPaymentCreateInput = {
   id: string
   amount: number
-  channel: string
+  channel: $Enums.PaymentChannel
   provider: string
   reference: string
   narrative?: string | null
   senderName?: string | null
   senderAccount?: string | null
-  status?: string
+  status?: $Enums.ReceivedPaymentStatus
   createdAt: Date | string
   ingestedAt?: Date | string
   tenant: Prisma.TenantCreateNestedOneWithoutReceivedPaymentsInput
@@ -372,13 +372,13 @@ export type ReceivedPaymentUncheckedCreateInput = {
   id: string
   tenantId: string
   amount: number
-  channel: string
+  channel: $Enums.PaymentChannel
   provider: string
   reference: string
   narrative?: string | null
   senderName?: string | null
   senderAccount?: string | null
-  status?: string
+  status?: $Enums.ReceivedPaymentStatus
   createdAt: Date | string
   ingestedAt?: Date | string
   matches?: Prisma.ReconciliationMatchUncheckedCreateNestedManyWithoutReceivedPaymentInput
@@ -387,13 +387,13 @@ export type ReceivedPaymentUncheckedCreateInput = {
 export type ReceivedPaymentUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   amount?: Prisma.FloatFieldUpdateOperationsInput | number
-  channel?: Prisma.StringFieldUpdateOperationsInput | string
+  channel?: Prisma.EnumPaymentChannelFieldUpdateOperationsInput | $Enums.PaymentChannel
   provider?: Prisma.StringFieldUpdateOperationsInput | string
   reference?: Prisma.StringFieldUpdateOperationsInput | string
   narrative?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   senderName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   senderAccount?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  status?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumReceivedPaymentStatusFieldUpdateOperationsInput | $Enums.ReceivedPaymentStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ingestedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tenant?: Prisma.TenantUpdateOneRequiredWithoutReceivedPaymentsNestedInput
@@ -404,13 +404,13 @@ export type ReceivedPaymentUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   tenantId?: Prisma.StringFieldUpdateOperationsInput | string
   amount?: Prisma.FloatFieldUpdateOperationsInput | number
-  channel?: Prisma.StringFieldUpdateOperationsInput | string
+  channel?: Prisma.EnumPaymentChannelFieldUpdateOperationsInput | $Enums.PaymentChannel
   provider?: Prisma.StringFieldUpdateOperationsInput | string
   reference?: Prisma.StringFieldUpdateOperationsInput | string
   narrative?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   senderName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   senderAccount?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  status?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumReceivedPaymentStatusFieldUpdateOperationsInput | $Enums.ReceivedPaymentStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ingestedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   matches?: Prisma.ReconciliationMatchUncheckedUpdateManyWithoutReceivedPaymentNestedInput
@@ -420,13 +420,13 @@ export type ReceivedPaymentCreateManyInput = {
   id: string
   tenantId: string
   amount: number
-  channel: string
+  channel: $Enums.PaymentChannel
   provider: string
   reference: string
   narrative?: string | null
   senderName?: string | null
   senderAccount?: string | null
-  status?: string
+  status?: $Enums.ReceivedPaymentStatus
   createdAt: Date | string
   ingestedAt?: Date | string
 }
@@ -434,13 +434,13 @@ export type ReceivedPaymentCreateManyInput = {
 export type ReceivedPaymentUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   amount?: Prisma.FloatFieldUpdateOperationsInput | number
-  channel?: Prisma.StringFieldUpdateOperationsInput | string
+  channel?: Prisma.EnumPaymentChannelFieldUpdateOperationsInput | $Enums.PaymentChannel
   provider?: Prisma.StringFieldUpdateOperationsInput | string
   reference?: Prisma.StringFieldUpdateOperationsInput | string
   narrative?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   senderName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   senderAccount?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  status?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumReceivedPaymentStatusFieldUpdateOperationsInput | $Enums.ReceivedPaymentStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ingestedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -449,13 +449,13 @@ export type ReceivedPaymentUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   tenantId?: Prisma.StringFieldUpdateOperationsInput | string
   amount?: Prisma.FloatFieldUpdateOperationsInput | number
-  channel?: Prisma.StringFieldUpdateOperationsInput | string
+  channel?: Prisma.EnumPaymentChannelFieldUpdateOperationsInput | $Enums.PaymentChannel
   provider?: Prisma.StringFieldUpdateOperationsInput | string
   reference?: Prisma.StringFieldUpdateOperationsInput | string
   narrative?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   senderName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   senderAccount?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  status?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumReceivedPaymentStatusFieldUpdateOperationsInput | $Enums.ReceivedPaymentStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ingestedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -575,6 +575,14 @@ export type ReceivedPaymentUncheckedUpdateManyWithoutTenantNestedInput = {
   deleteMany?: Prisma.ReceivedPaymentScalarWhereInput | Prisma.ReceivedPaymentScalarWhereInput[]
 }
 
+export type EnumPaymentChannelFieldUpdateOperationsInput = {
+  set?: $Enums.PaymentChannel
+}
+
+export type EnumReceivedPaymentStatusFieldUpdateOperationsInput = {
+  set?: $Enums.ReceivedPaymentStatus
+}
+
 export type ReceivedPaymentCreateNestedOneWithoutMatchesInput = {
   create?: Prisma.XOR<Prisma.ReceivedPaymentCreateWithoutMatchesInput, Prisma.ReceivedPaymentUncheckedCreateWithoutMatchesInput>
   connectOrCreate?: Prisma.ReceivedPaymentCreateOrConnectWithoutMatchesInput
@@ -592,13 +600,13 @@ export type ReceivedPaymentUpdateOneRequiredWithoutMatchesNestedInput = {
 export type ReceivedPaymentCreateWithoutTenantInput = {
   id: string
   amount: number
-  channel: string
+  channel: $Enums.PaymentChannel
   provider: string
   reference: string
   narrative?: string | null
   senderName?: string | null
   senderAccount?: string | null
-  status?: string
+  status?: $Enums.ReceivedPaymentStatus
   createdAt: Date | string
   ingestedAt?: Date | string
   matches?: Prisma.ReconciliationMatchCreateNestedManyWithoutReceivedPaymentInput
@@ -607,13 +615,13 @@ export type ReceivedPaymentCreateWithoutTenantInput = {
 export type ReceivedPaymentUncheckedCreateWithoutTenantInput = {
   id: string
   amount: number
-  channel: string
+  channel: $Enums.PaymentChannel
   provider: string
   reference: string
   narrative?: string | null
   senderName?: string | null
   senderAccount?: string | null
-  status?: string
+  status?: $Enums.ReceivedPaymentStatus
   createdAt: Date | string
   ingestedAt?: Date | string
   matches?: Prisma.ReconciliationMatchUncheckedCreateNestedManyWithoutReceivedPaymentInput
@@ -652,13 +660,13 @@ export type ReceivedPaymentScalarWhereInput = {
   id?: Prisma.StringFilter<"ReceivedPayment"> | string
   tenantId?: Prisma.StringFilter<"ReceivedPayment"> | string
   amount?: Prisma.FloatFilter<"ReceivedPayment"> | number
-  channel?: Prisma.StringFilter<"ReceivedPayment"> | string
+  channel?: Prisma.EnumPaymentChannelFilter<"ReceivedPayment"> | $Enums.PaymentChannel
   provider?: Prisma.StringFilter<"ReceivedPayment"> | string
   reference?: Prisma.StringFilter<"ReceivedPayment"> | string
   narrative?: Prisma.StringNullableFilter<"ReceivedPayment"> | string | null
   senderName?: Prisma.StringNullableFilter<"ReceivedPayment"> | string | null
   senderAccount?: Prisma.StringNullableFilter<"ReceivedPayment"> | string | null
-  status?: Prisma.StringFilter<"ReceivedPayment"> | string
+  status?: Prisma.EnumReceivedPaymentStatusFilter<"ReceivedPayment"> | $Enums.ReceivedPaymentStatus
   createdAt?: Prisma.DateTimeFilter<"ReceivedPayment"> | Date | string
   ingestedAt?: Prisma.DateTimeFilter<"ReceivedPayment"> | Date | string
 }
@@ -666,13 +674,13 @@ export type ReceivedPaymentScalarWhereInput = {
 export type ReceivedPaymentCreateWithoutMatchesInput = {
   id: string
   amount: number
-  channel: string
+  channel: $Enums.PaymentChannel
   provider: string
   reference: string
   narrative?: string | null
   senderName?: string | null
   senderAccount?: string | null
-  status?: string
+  status?: $Enums.ReceivedPaymentStatus
   createdAt: Date | string
   ingestedAt?: Date | string
   tenant: Prisma.TenantCreateNestedOneWithoutReceivedPaymentsInput
@@ -682,13 +690,13 @@ export type ReceivedPaymentUncheckedCreateWithoutMatchesInput = {
   id: string
   tenantId: string
   amount: number
-  channel: string
+  channel: $Enums.PaymentChannel
   provider: string
   reference: string
   narrative?: string | null
   senderName?: string | null
   senderAccount?: string | null
-  status?: string
+  status?: $Enums.ReceivedPaymentStatus
   createdAt: Date | string
   ingestedAt?: Date | string
 }
@@ -712,13 +720,13 @@ export type ReceivedPaymentUpdateToOneWithWhereWithoutMatchesInput = {
 export type ReceivedPaymentUpdateWithoutMatchesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   amount?: Prisma.FloatFieldUpdateOperationsInput | number
-  channel?: Prisma.StringFieldUpdateOperationsInput | string
+  channel?: Prisma.EnumPaymentChannelFieldUpdateOperationsInput | $Enums.PaymentChannel
   provider?: Prisma.StringFieldUpdateOperationsInput | string
   reference?: Prisma.StringFieldUpdateOperationsInput | string
   narrative?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   senderName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   senderAccount?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  status?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumReceivedPaymentStatusFieldUpdateOperationsInput | $Enums.ReceivedPaymentStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ingestedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tenant?: Prisma.TenantUpdateOneRequiredWithoutReceivedPaymentsNestedInput
@@ -728,13 +736,13 @@ export type ReceivedPaymentUncheckedUpdateWithoutMatchesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   tenantId?: Prisma.StringFieldUpdateOperationsInput | string
   amount?: Prisma.FloatFieldUpdateOperationsInput | number
-  channel?: Prisma.StringFieldUpdateOperationsInput | string
+  channel?: Prisma.EnumPaymentChannelFieldUpdateOperationsInput | $Enums.PaymentChannel
   provider?: Prisma.StringFieldUpdateOperationsInput | string
   reference?: Prisma.StringFieldUpdateOperationsInput | string
   narrative?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   senderName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   senderAccount?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  status?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumReceivedPaymentStatusFieldUpdateOperationsInput | $Enums.ReceivedPaymentStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ingestedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -742,13 +750,13 @@ export type ReceivedPaymentUncheckedUpdateWithoutMatchesInput = {
 export type ReceivedPaymentCreateManyTenantInput = {
   id: string
   amount: number
-  channel: string
+  channel: $Enums.PaymentChannel
   provider: string
   reference: string
   narrative?: string | null
   senderName?: string | null
   senderAccount?: string | null
-  status?: string
+  status?: $Enums.ReceivedPaymentStatus
   createdAt: Date | string
   ingestedAt?: Date | string
 }
@@ -756,13 +764,13 @@ export type ReceivedPaymentCreateManyTenantInput = {
 export type ReceivedPaymentUpdateWithoutTenantInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   amount?: Prisma.FloatFieldUpdateOperationsInput | number
-  channel?: Prisma.StringFieldUpdateOperationsInput | string
+  channel?: Prisma.EnumPaymentChannelFieldUpdateOperationsInput | $Enums.PaymentChannel
   provider?: Prisma.StringFieldUpdateOperationsInput | string
   reference?: Prisma.StringFieldUpdateOperationsInput | string
   narrative?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   senderName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   senderAccount?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  status?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumReceivedPaymentStatusFieldUpdateOperationsInput | $Enums.ReceivedPaymentStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ingestedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   matches?: Prisma.ReconciliationMatchUpdateManyWithoutReceivedPaymentNestedInput
@@ -771,13 +779,13 @@ export type ReceivedPaymentUpdateWithoutTenantInput = {
 export type ReceivedPaymentUncheckedUpdateWithoutTenantInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   amount?: Prisma.FloatFieldUpdateOperationsInput | number
-  channel?: Prisma.StringFieldUpdateOperationsInput | string
+  channel?: Prisma.EnumPaymentChannelFieldUpdateOperationsInput | $Enums.PaymentChannel
   provider?: Prisma.StringFieldUpdateOperationsInput | string
   reference?: Prisma.StringFieldUpdateOperationsInput | string
   narrative?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   senderName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   senderAccount?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  status?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumReceivedPaymentStatusFieldUpdateOperationsInput | $Enums.ReceivedPaymentStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ingestedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   matches?: Prisma.ReconciliationMatchUncheckedUpdateManyWithoutReceivedPaymentNestedInput
@@ -786,13 +794,13 @@ export type ReceivedPaymentUncheckedUpdateWithoutTenantInput = {
 export type ReceivedPaymentUncheckedUpdateManyWithoutTenantInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   amount?: Prisma.FloatFieldUpdateOperationsInput | number
-  channel?: Prisma.StringFieldUpdateOperationsInput | string
+  channel?: Prisma.EnumPaymentChannelFieldUpdateOperationsInput | $Enums.PaymentChannel
   provider?: Prisma.StringFieldUpdateOperationsInput | string
   reference?: Prisma.StringFieldUpdateOperationsInput | string
   narrative?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   senderName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   senderAccount?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  status?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumReceivedPaymentStatusFieldUpdateOperationsInput | $Enums.ReceivedPaymentStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ingestedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -916,13 +924,13 @@ export type $ReceivedPaymentPayload<ExtArgs extends runtime.Types.Extensions.Int
     id: string
     tenantId: string
     amount: number
-    channel: string
+    channel: $Enums.PaymentChannel
     provider: string
     reference: string
     narrative: string | null
     senderName: string | null
     senderAccount: string | null
-    status: string
+    status: $Enums.ReceivedPaymentStatus
     createdAt: Date
     ingestedAt: Date
   }, ExtArgs["result"]["receivedPayment"]>
@@ -1353,13 +1361,13 @@ export interface ReceivedPaymentFieldRefs {
   readonly id: Prisma.FieldRef<"ReceivedPayment", 'String'>
   readonly tenantId: Prisma.FieldRef<"ReceivedPayment", 'String'>
   readonly amount: Prisma.FieldRef<"ReceivedPayment", 'Float'>
-  readonly channel: Prisma.FieldRef<"ReceivedPayment", 'String'>
+  readonly channel: Prisma.FieldRef<"ReceivedPayment", 'PaymentChannel'>
   readonly provider: Prisma.FieldRef<"ReceivedPayment", 'String'>
   readonly reference: Prisma.FieldRef<"ReceivedPayment", 'String'>
   readonly narrative: Prisma.FieldRef<"ReceivedPayment", 'String'>
   readonly senderName: Prisma.FieldRef<"ReceivedPayment", 'String'>
   readonly senderAccount: Prisma.FieldRef<"ReceivedPayment", 'String'>
-  readonly status: Prisma.FieldRef<"ReceivedPayment", 'String'>
+  readonly status: Prisma.FieldRef<"ReceivedPayment", 'ReceivedPaymentStatus'>
   readonly createdAt: Prisma.FieldRef<"ReceivedPayment", 'DateTime'>
   readonly ingestedAt: Prisma.FieldRef<"ReceivedPayment", 'DateTime'>
 }

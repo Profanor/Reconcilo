@@ -1219,6 +1219,20 @@ export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaM
 
 
 /**
+ * Reference to a field of type 'UserRole'
+ */
+export type EnumUserRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'UserRole'>
+    
+
+
+/**
+ * Reference to a field of type 'UserRole[]'
+ */
+export type ListEnumUserRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'UserRole[]'>
+    
+
+
+/**
  * Reference to a field of type 'Float'
  */
 export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -1229,6 +1243,62 @@ export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, '
  * Reference to a field of type 'Float[]'
  */
 export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
+    
+
+
+/**
+ * Reference to a field of type 'ExpectedPaymentStatus'
+ */
+export type EnumExpectedPaymentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ExpectedPaymentStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'ExpectedPaymentStatus[]'
+ */
+export type ListEnumExpectedPaymentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ExpectedPaymentStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'PaymentChannel'
+ */
+export type EnumPaymentChannelFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PaymentChannel'>
+    
+
+
+/**
+ * Reference to a field of type 'PaymentChannel[]'
+ */
+export type ListEnumPaymentChannelFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PaymentChannel[]'>
+    
+
+
+/**
+ * Reference to a field of type 'ReceivedPaymentStatus'
+ */
+export type EnumReceivedPaymentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ReceivedPaymentStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'ReceivedPaymentStatus[]'
+ */
+export type ListEnumReceivedPaymentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ReceivedPaymentStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'MatchMethod'
+ */
+export type EnumMatchMethodFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MatchMethod'>
+    
+
+
+/**
+ * Reference to a field of type 'MatchMethod[]'
+ */
+export type ListEnumMatchMethodFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MatchMethod[]'>
     
 
 
@@ -1250,6 +1320,34 @@ export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel,
  * Reference to a field of type 'Boolean'
  */
 export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+    
+
+
+/**
+ * Reference to a field of type 'RuleType'
+ */
+export type EnumRuleTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RuleType'>
+    
+
+
+/**
+ * Reference to a field of type 'RuleType[]'
+ */
+export type ListEnumRuleTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RuleType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'AuditAction'
+ */
+export type EnumAuditActionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AuditAction'>
+    
+
+
+/**
+ * Reference to a field of type 'AuditAction[]'
+ */
+export type ListEnumAuditActionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AuditAction[]'>
     
 
 /**

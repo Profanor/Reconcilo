@@ -10,6 +10,7 @@ import {
 import { ExpectedPaymentsService } from './expected-payments.service';
 import { ApiQuery, ApiTags } from '@nestjs/swagger';
 import { CurrentTenant } from '../auth/tenant.decorator';
+import { ExpectedPaymentStatus } from '../../prisma/generated/prisma/client';
 
 @ApiTags('Expected Payments')
 @Controller('expected')
@@ -19,6 +20,7 @@ export class ExpectedPaymentsController {
   @Get()
   @ApiQuery({
     name: 'status',
+    enum: ExpectedPaymentStatus,
     required: false,
     description: 'Filter payments by matching status (e.g. PENDING, MATCHED)',
   })

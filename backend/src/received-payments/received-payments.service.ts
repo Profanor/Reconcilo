@@ -1,6 +1,23 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { ReceivedPayment } from '../../prisma/generated/prisma/client';
+import { ReceivedPayment, PaymentChannel } from '../../prisma/generated/prisma/client';
+
+export function parsePaymentChannel(channel: string): PaymentChannel {
+  const normalized = (channel || '').trim().toUpperCase().replace(/[\s-]+/g, '_');
+  if (normalized === 'TRANSFER' || normalized === 'BANK' || normalized === 'BANK_TRANSFER') {
+    return PaymentChannel.BANK_TRANSFER;
+  }
+  if (normalized === 'POS' || normalized === 'TERMINAL') {
+    return PaymentChannel.POS;
+  }
+  if (normalized === 'WALLET' || normalized === 'FINTECH') {
+    return PaymentChannel.WALLET;
+  }
+  if (normalized === 'CASH') {
+    return PaymentChannel.CASH;
+  }
+  return PaymentChannel.BANK_TRANSFER;
+}
 
 @Injectable()
 export class ReceivedPaymentsService {
@@ -85,7 +102,7 @@ export class ReceivedPaymentsService {
         id: paymentId,
         tenantId,
         amount,
-        channel,
+        channel: parsePaymentChannel(channel),
         provider,
         reference: reference.trim(),
         narrative: narrative?.trim() || null,
@@ -171,7 +188,7 @@ export class ReceivedPaymentsService {
             id,
             tenantId,
             amount,
-            channel,
+            channel: parsePaymentChannel(channel),
             provider,
             reference: trimmedRef,
             narrative: narrative || null,

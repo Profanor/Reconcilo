@@ -3,43 +3,71 @@ import {
   CanActivate,
   ExecutionContext,
   UnauthorizedException,
+  Logger,
 } from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
 import { PrismaService } from '../prisma/prisma.service';
+import { IS_PUBLIC_KEY } from './public.decorator';
 
 @Injectable()
 export class TenantGuard implements CanActivate {
-  constructor(private readonly prisma: PrismaService) {}
+  private readonly logger = new Logger(TenantGuard.name);
+
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly reflector: Reflector,
+  ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const request = context.switchToHttp().getRequest();
+    // 1. Bypass check for @Public() decorated endpoints
+    const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
+      context.getHandler(),
+      context.getClass(),
+    ]);
 
-    // Bypass tenant validation for health check and docs
+    const request = context.switchToHttp().getRequest();
     const path = request.url || '';
-    if (path.includes('/health') || path.includes('/docs')) {
+
+    if (isPublic || path.includes('/health') || path.includes('/docs')) {
       return true;
     }
 
-    // 1. Check for explicit header (x-tenant-id or x-tenant-slug)
-    const headerTenantId = request.headers['x-tenant-id'] as string;
-    const headerTenantSlug = request.headers['x-tenant-slug'] as string;
+    // 2. Check for X-API-Key header (for external service integrations / webhooks)
+    const apiKey = request.headers['x-api-key'] as string;
+    const configuredApiKey =
+      process.env.RECONCILO_API_KEY || process.env.API_KEY_SECRET;
 
-    // 2. Check for Authorization header if JWT or API key is passed
-    const authHeader = request.headers['authorization'] as string;
+    let isAuthenticated = false;
     let tokenTenantId: string | undefined;
 
+    if (apiKey && configuredApiKey && apiKey === configuredApiKey) {
+      isAuthenticated = true;
+    }
+
+    // 3. Check for Bearer JWT token in Authorization header
+    const authHeader = request.headers['authorization'] as string;
     if (authHeader && authHeader.startsWith('Bearer ')) {
       const token = authHeader.substring(7);
-      // In production, parse/verify JWT payload
       try {
-        const decoded = JSON.parse(Buffer.from(token.split('.')[1] || '', 'base64').toString());
+        const payloadStr = Buffer.from(
+          token.split('.')[1] || '',
+          'base64',
+        ).toString();
+        const decoded = JSON.parse(payloadStr);
+
         if (decoded?.tenantId) {
           tokenTenantId = decoded.tenantId;
+          isAuthenticated = true;
+          request.user = decoded;
         }
       } catch {
-        // Fallback or ignore if not base64 jwt
+        // Invalid JWT format
       }
     }
 
+    // 4. Resolve Tenant Context
+    const headerTenantId = request.headers['x-tenant-id'] as string;
+    const headerTenantSlug = request.headers['x-tenant-slug'] as string;
     const candidateId = tokenTenantId || headerTenantId;
 
     let tenant = null;
@@ -54,16 +82,32 @@ export class TenantGuard implements CanActivate {
       });
     }
 
-    // Fallback: If no tenant specified, retrieve the primary default tenant for pilot/demo mode
-    if (!tenant) {
+    // 5. Demo / Pilot Mode Handling
+    // DEMO_PILOT_MODE allows prospective client presentations without a login wall
+    const isDemoMode =
+      process.env.DEMO_PILOT_MODE === 'true' ||
+      process.env.NODE_ENV !== 'production';
+
+    if (!tenant && isDemoMode) {
+      // Fallback to default demo tenant for pilot exploration
       tenant = await this.prisma.tenant.findFirst({
         orderBy: { createdAt: 'asc' },
       });
+      if (tenant) {
+        request.isDemo = true;
+      }
+    }
+
+    // 6. Enforce Authentication in Strict Production Mode
+    if (!isDemoMode && !isAuthenticated) {
+      throw new UnauthorizedException(
+        'Authentication required. Please provide a valid Bearer JWT token or X-API-Key header.',
+      );
     }
 
     if (!tenant) {
       throw new UnauthorizedException(
-        'Tenant context could not be resolved. Please ensure a tenant exists or provide a valid X-Tenant-Id header.',
+        'Tenant context could not be resolved. Please provide a valid X-Tenant-Id or authentication credentials.',
       );
     }
 

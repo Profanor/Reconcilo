@@ -39,7 +39,7 @@ export type ReconciliationMatchMinAggregateOutputType = {
   tenantId: string | null
   expectedPaymentId: string | null
   receivedPaymentId: string | null
-  matchMethod: string | null
+  matchMethod: $Enums.MatchMethod | null
   confidenceScore: number | null
   matchedRules: string | null
   matchedAt: Date | null
@@ -52,7 +52,7 @@ export type ReconciliationMatchMaxAggregateOutputType = {
   tenantId: string | null
   expectedPaymentId: string | null
   receivedPaymentId: string | null
-  matchMethod: string | null
+  matchMethod: $Enums.MatchMethod | null
   confidenceScore: number | null
   matchedRules: string | null
   matchedAt: Date | null
@@ -214,7 +214,7 @@ export type ReconciliationMatchGroupByOutputType = {
   tenantId: string
   expectedPaymentId: string
   receivedPaymentId: string
-  matchMethod: string
+  matchMethod: $Enums.MatchMethod
   confidenceScore: number
   matchedRules: string
   matchedAt: Date
@@ -250,7 +250,7 @@ export type ReconciliationMatchWhereInput = {
   tenantId?: Prisma.StringFilter<"ReconciliationMatch"> | string
   expectedPaymentId?: Prisma.StringFilter<"ReconciliationMatch"> | string
   receivedPaymentId?: Prisma.StringFilter<"ReconciliationMatch"> | string
-  matchMethod?: Prisma.StringFilter<"ReconciliationMatch"> | string
+  matchMethod?: Prisma.EnumMatchMethodFilter<"ReconciliationMatch"> | $Enums.MatchMethod
   confidenceScore?: Prisma.FloatFilter<"ReconciliationMatch"> | number
   matchedRules?: Prisma.StringFilter<"ReconciliationMatch"> | string
   matchedAt?: Prisma.DateTimeFilter<"ReconciliationMatch"> | Date | string
@@ -286,7 +286,7 @@ export type ReconciliationMatchWhereUniqueInput = Prisma.AtLeast<{
   tenantId?: Prisma.StringFilter<"ReconciliationMatch"> | string
   expectedPaymentId?: Prisma.StringFilter<"ReconciliationMatch"> | string
   receivedPaymentId?: Prisma.StringFilter<"ReconciliationMatch"> | string
-  matchMethod?: Prisma.StringFilter<"ReconciliationMatch"> | string
+  matchMethod?: Prisma.EnumMatchMethodFilter<"ReconciliationMatch"> | $Enums.MatchMethod
   confidenceScore?: Prisma.FloatFilter<"ReconciliationMatch"> | number
   matchedRules?: Prisma.StringFilter<"ReconciliationMatch"> | string
   matchedAt?: Prisma.DateTimeFilter<"ReconciliationMatch"> | Date | string
@@ -323,7 +323,7 @@ export type ReconciliationMatchScalarWhereWithAggregatesInput = {
   tenantId?: Prisma.StringWithAggregatesFilter<"ReconciliationMatch"> | string
   expectedPaymentId?: Prisma.StringWithAggregatesFilter<"ReconciliationMatch"> | string
   receivedPaymentId?: Prisma.StringWithAggregatesFilter<"ReconciliationMatch"> | string
-  matchMethod?: Prisma.StringWithAggregatesFilter<"ReconciliationMatch"> | string
+  matchMethod?: Prisma.EnumMatchMethodWithAggregatesFilter<"ReconciliationMatch"> | $Enums.MatchMethod
   confidenceScore?: Prisma.FloatWithAggregatesFilter<"ReconciliationMatch"> | number
   matchedRules?: Prisma.StringWithAggregatesFilter<"ReconciliationMatch"> | string
   matchedAt?: Prisma.DateTimeWithAggregatesFilter<"ReconciliationMatch"> | Date | string
@@ -333,7 +333,7 @@ export type ReconciliationMatchScalarWhereWithAggregatesInput = {
 
 export type ReconciliationMatchCreateInput = {
   id?: string
-  matchMethod: string
+  matchMethod: $Enums.MatchMethod
   confidenceScore: number
   matchedRules: string
   matchedAt?: Date | string
@@ -349,7 +349,7 @@ export type ReconciliationMatchUncheckedCreateInput = {
   tenantId: string
   expectedPaymentId: string
   receivedPaymentId: string
-  matchMethod: string
+  matchMethod: $Enums.MatchMethod
   confidenceScore: number
   matchedRules: string
   matchedAt?: Date | string
@@ -359,7 +359,7 @@ export type ReconciliationMatchUncheckedCreateInput = {
 
 export type ReconciliationMatchUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  matchMethod?: Prisma.StringFieldUpdateOperationsInput | string
+  matchMethod?: Prisma.EnumMatchMethodFieldUpdateOperationsInput | $Enums.MatchMethod
   confidenceScore?: Prisma.FloatFieldUpdateOperationsInput | number
   matchedRules?: Prisma.StringFieldUpdateOperationsInput | string
   matchedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -375,7 +375,7 @@ export type ReconciliationMatchUncheckedUpdateInput = {
   tenantId?: Prisma.StringFieldUpdateOperationsInput | string
   expectedPaymentId?: Prisma.StringFieldUpdateOperationsInput | string
   receivedPaymentId?: Prisma.StringFieldUpdateOperationsInput | string
-  matchMethod?: Prisma.StringFieldUpdateOperationsInput | string
+  matchMethod?: Prisma.EnumMatchMethodFieldUpdateOperationsInput | $Enums.MatchMethod
   confidenceScore?: Prisma.FloatFieldUpdateOperationsInput | number
   matchedRules?: Prisma.StringFieldUpdateOperationsInput | string
   matchedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -388,7 +388,7 @@ export type ReconciliationMatchCreateManyInput = {
   tenantId: string
   expectedPaymentId: string
   receivedPaymentId: string
-  matchMethod: string
+  matchMethod: $Enums.MatchMethod
   confidenceScore: number
   matchedRules: string
   matchedAt?: Date | string
@@ -398,7 +398,7 @@ export type ReconciliationMatchCreateManyInput = {
 
 export type ReconciliationMatchUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  matchMethod?: Prisma.StringFieldUpdateOperationsInput | string
+  matchMethod?: Prisma.EnumMatchMethodFieldUpdateOperationsInput | $Enums.MatchMethod
   confidenceScore?: Prisma.FloatFieldUpdateOperationsInput | number
   matchedRules?: Prisma.StringFieldUpdateOperationsInput | string
   matchedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -411,7 +411,7 @@ export type ReconciliationMatchUncheckedUpdateManyInput = {
   tenantId?: Prisma.StringFieldUpdateOperationsInput | string
   expectedPaymentId?: Prisma.StringFieldUpdateOperationsInput | string
   receivedPaymentId?: Prisma.StringFieldUpdateOperationsInput | string
-  matchMethod?: Prisma.StringFieldUpdateOperationsInput | string
+  matchMethod?: Prisma.EnumMatchMethodFieldUpdateOperationsInput | $Enums.MatchMethod
   confidenceScore?: Prisma.FloatFieldUpdateOperationsInput | number
   matchedRules?: Prisma.StringFieldUpdateOperationsInput | string
   matchedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -608,9 +608,13 @@ export type ReconciliationMatchUncheckedUpdateManyWithoutReceivedPaymentNestedIn
   deleteMany?: Prisma.ReconciliationMatchScalarWhereInput | Prisma.ReconciliationMatchScalarWhereInput[]
 }
 
+export type EnumMatchMethodFieldUpdateOperationsInput = {
+  set?: $Enums.MatchMethod
+}
+
 export type ReconciliationMatchCreateWithoutTenantInput = {
   id?: string
-  matchMethod: string
+  matchMethod: $Enums.MatchMethod
   confidenceScore: number
   matchedRules: string
   matchedAt?: Date | string
@@ -624,7 +628,7 @@ export type ReconciliationMatchUncheckedCreateWithoutTenantInput = {
   id?: string
   expectedPaymentId: string
   receivedPaymentId: string
-  matchMethod: string
+  matchMethod: $Enums.MatchMethod
   confidenceScore: number
   matchedRules: string
   matchedAt?: Date | string
@@ -666,7 +670,7 @@ export type ReconciliationMatchScalarWhereInput = {
   tenantId?: Prisma.StringFilter<"ReconciliationMatch"> | string
   expectedPaymentId?: Prisma.StringFilter<"ReconciliationMatch"> | string
   receivedPaymentId?: Prisma.StringFilter<"ReconciliationMatch"> | string
-  matchMethod?: Prisma.StringFilter<"ReconciliationMatch"> | string
+  matchMethod?: Prisma.EnumMatchMethodFilter<"ReconciliationMatch"> | $Enums.MatchMethod
   confidenceScore?: Prisma.FloatFilter<"ReconciliationMatch"> | number
   matchedRules?: Prisma.StringFilter<"ReconciliationMatch"> | string
   matchedAt?: Prisma.DateTimeFilter<"ReconciliationMatch"> | Date | string
@@ -676,7 +680,7 @@ export type ReconciliationMatchScalarWhereInput = {
 
 export type ReconciliationMatchCreateWithoutExpectedPaymentInput = {
   id?: string
-  matchMethod: string
+  matchMethod: $Enums.MatchMethod
   confidenceScore: number
   matchedRules: string
   matchedAt?: Date | string
@@ -690,7 +694,7 @@ export type ReconciliationMatchUncheckedCreateWithoutExpectedPaymentInput = {
   id?: string
   tenantId: string
   receivedPaymentId: string
-  matchMethod: string
+  matchMethod: $Enums.MatchMethod
   confidenceScore: number
   matchedRules: string
   matchedAt?: Date | string
@@ -726,7 +730,7 @@ export type ReconciliationMatchUpdateManyWithWhereWithoutExpectedPaymentInput = 
 
 export type ReconciliationMatchCreateWithoutReceivedPaymentInput = {
   id?: string
-  matchMethod: string
+  matchMethod: $Enums.MatchMethod
   confidenceScore: number
   matchedRules: string
   matchedAt?: Date | string
@@ -740,7 +744,7 @@ export type ReconciliationMatchUncheckedCreateWithoutReceivedPaymentInput = {
   id?: string
   tenantId: string
   expectedPaymentId: string
-  matchMethod: string
+  matchMethod: $Enums.MatchMethod
   confidenceScore: number
   matchedRules: string
   matchedAt?: Date | string
@@ -778,7 +782,7 @@ export type ReconciliationMatchCreateManyTenantInput = {
   id?: string
   expectedPaymentId: string
   receivedPaymentId: string
-  matchMethod: string
+  matchMethod: $Enums.MatchMethod
   confidenceScore: number
   matchedRules: string
   matchedAt?: Date | string
@@ -788,7 +792,7 @@ export type ReconciliationMatchCreateManyTenantInput = {
 
 export type ReconciliationMatchUpdateWithoutTenantInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  matchMethod?: Prisma.StringFieldUpdateOperationsInput | string
+  matchMethod?: Prisma.EnumMatchMethodFieldUpdateOperationsInput | $Enums.MatchMethod
   confidenceScore?: Prisma.FloatFieldUpdateOperationsInput | number
   matchedRules?: Prisma.StringFieldUpdateOperationsInput | string
   matchedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -802,7 +806,7 @@ export type ReconciliationMatchUncheckedUpdateWithoutTenantInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   expectedPaymentId?: Prisma.StringFieldUpdateOperationsInput | string
   receivedPaymentId?: Prisma.StringFieldUpdateOperationsInput | string
-  matchMethod?: Prisma.StringFieldUpdateOperationsInput | string
+  matchMethod?: Prisma.EnumMatchMethodFieldUpdateOperationsInput | $Enums.MatchMethod
   confidenceScore?: Prisma.FloatFieldUpdateOperationsInput | number
   matchedRules?: Prisma.StringFieldUpdateOperationsInput | string
   matchedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -814,7 +818,7 @@ export type ReconciliationMatchUncheckedUpdateManyWithoutTenantInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   expectedPaymentId?: Prisma.StringFieldUpdateOperationsInput | string
   receivedPaymentId?: Prisma.StringFieldUpdateOperationsInput | string
-  matchMethod?: Prisma.StringFieldUpdateOperationsInput | string
+  matchMethod?: Prisma.EnumMatchMethodFieldUpdateOperationsInput | $Enums.MatchMethod
   confidenceScore?: Prisma.FloatFieldUpdateOperationsInput | number
   matchedRules?: Prisma.StringFieldUpdateOperationsInput | string
   matchedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -826,7 +830,7 @@ export type ReconciliationMatchCreateManyExpectedPaymentInput = {
   id?: string
   tenantId: string
   receivedPaymentId: string
-  matchMethod: string
+  matchMethod: $Enums.MatchMethod
   confidenceScore: number
   matchedRules: string
   matchedAt?: Date | string
@@ -836,7 +840,7 @@ export type ReconciliationMatchCreateManyExpectedPaymentInput = {
 
 export type ReconciliationMatchUpdateWithoutExpectedPaymentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  matchMethod?: Prisma.StringFieldUpdateOperationsInput | string
+  matchMethod?: Prisma.EnumMatchMethodFieldUpdateOperationsInput | $Enums.MatchMethod
   confidenceScore?: Prisma.FloatFieldUpdateOperationsInput | number
   matchedRules?: Prisma.StringFieldUpdateOperationsInput | string
   matchedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -850,7 +854,7 @@ export type ReconciliationMatchUncheckedUpdateWithoutExpectedPaymentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   tenantId?: Prisma.StringFieldUpdateOperationsInput | string
   receivedPaymentId?: Prisma.StringFieldUpdateOperationsInput | string
-  matchMethod?: Prisma.StringFieldUpdateOperationsInput | string
+  matchMethod?: Prisma.EnumMatchMethodFieldUpdateOperationsInput | $Enums.MatchMethod
   confidenceScore?: Prisma.FloatFieldUpdateOperationsInput | number
   matchedRules?: Prisma.StringFieldUpdateOperationsInput | string
   matchedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -862,7 +866,7 @@ export type ReconciliationMatchUncheckedUpdateManyWithoutExpectedPaymentInput = 
   id?: Prisma.StringFieldUpdateOperationsInput | string
   tenantId?: Prisma.StringFieldUpdateOperationsInput | string
   receivedPaymentId?: Prisma.StringFieldUpdateOperationsInput | string
-  matchMethod?: Prisma.StringFieldUpdateOperationsInput | string
+  matchMethod?: Prisma.EnumMatchMethodFieldUpdateOperationsInput | $Enums.MatchMethod
   confidenceScore?: Prisma.FloatFieldUpdateOperationsInput | number
   matchedRules?: Prisma.StringFieldUpdateOperationsInput | string
   matchedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -874,7 +878,7 @@ export type ReconciliationMatchCreateManyReceivedPaymentInput = {
   id?: string
   tenantId: string
   expectedPaymentId: string
-  matchMethod: string
+  matchMethod: $Enums.MatchMethod
   confidenceScore: number
   matchedRules: string
   matchedAt?: Date | string
@@ -884,7 +888,7 @@ export type ReconciliationMatchCreateManyReceivedPaymentInput = {
 
 export type ReconciliationMatchUpdateWithoutReceivedPaymentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  matchMethod?: Prisma.StringFieldUpdateOperationsInput | string
+  matchMethod?: Prisma.EnumMatchMethodFieldUpdateOperationsInput | $Enums.MatchMethod
   confidenceScore?: Prisma.FloatFieldUpdateOperationsInput | number
   matchedRules?: Prisma.StringFieldUpdateOperationsInput | string
   matchedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -898,7 +902,7 @@ export type ReconciliationMatchUncheckedUpdateWithoutReceivedPaymentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   tenantId?: Prisma.StringFieldUpdateOperationsInput | string
   expectedPaymentId?: Prisma.StringFieldUpdateOperationsInput | string
-  matchMethod?: Prisma.StringFieldUpdateOperationsInput | string
+  matchMethod?: Prisma.EnumMatchMethodFieldUpdateOperationsInput | $Enums.MatchMethod
   confidenceScore?: Prisma.FloatFieldUpdateOperationsInput | number
   matchedRules?: Prisma.StringFieldUpdateOperationsInput | string
   matchedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -910,7 +914,7 @@ export type ReconciliationMatchUncheckedUpdateManyWithoutReceivedPaymentInput = 
   id?: Prisma.StringFieldUpdateOperationsInput | string
   tenantId?: Prisma.StringFieldUpdateOperationsInput | string
   expectedPaymentId?: Prisma.StringFieldUpdateOperationsInput | string
-  matchMethod?: Prisma.StringFieldUpdateOperationsInput | string
+  matchMethod?: Prisma.EnumMatchMethodFieldUpdateOperationsInput | $Enums.MatchMethod
   confidenceScore?: Prisma.FloatFieldUpdateOperationsInput | number
   matchedRules?: Prisma.StringFieldUpdateOperationsInput | string
   matchedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1010,7 +1014,7 @@ export type $ReconciliationMatchPayload<ExtArgs extends runtime.Types.Extensions
     tenantId: string
     expectedPaymentId: string
     receivedPaymentId: string
-    matchMethod: string
+    matchMethod: $Enums.MatchMethod
     confidenceScore: number
     matchedRules: string
     matchedAt: Date
@@ -1446,7 +1450,7 @@ export interface ReconciliationMatchFieldRefs {
   readonly tenantId: Prisma.FieldRef<"ReconciliationMatch", 'String'>
   readonly expectedPaymentId: Prisma.FieldRef<"ReconciliationMatch", 'String'>
   readonly receivedPaymentId: Prisma.FieldRef<"ReconciliationMatch", 'String'>
-  readonly matchMethod: Prisma.FieldRef<"ReconciliationMatch", 'String'>
+  readonly matchMethod: Prisma.FieldRef<"ReconciliationMatch", 'MatchMethod'>
   readonly confidenceScore: Prisma.FieldRef<"ReconciliationMatch", 'Float'>
   readonly matchedRules: Prisma.FieldRef<"ReconciliationMatch", 'String'>
   readonly matchedAt: Prisma.FieldRef<"ReconciliationMatch", 'DateTime'>

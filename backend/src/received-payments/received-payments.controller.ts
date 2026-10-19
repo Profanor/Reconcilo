@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Query } from '@nestjs/common';
 import { ReceivedPaymentsService } from './received-payments.service';
 import { ApiQuery, ApiTags } from '@nestjs/swagger';
 import { CurrentTenant } from '../auth/tenant.decorator';
+import { ReceivedPaymentStatus } from '../../prisma/generated/prisma/client';
 
 @ApiTags('Received Payments')
 @Controller('received')
@@ -11,6 +12,7 @@ export class ReceivedPaymentsController {
   @Get()
   @ApiQuery({
     name: 'status',
+    enum: ReceivedPaymentStatus,
     required: false,
     description: 'Filter payments by matching status (e.g. UNMATCHED, MATCHED)',
   })

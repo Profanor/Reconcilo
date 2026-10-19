@@ -42,7 +42,7 @@ export type ExpectedPaymentMinAggregateOutputType = {
   customerName: string | null
   customerPhone: string | null
   customerEmail: string | null
-  status: string | null
+  status: $Enums.ExpectedPaymentStatus | null
   createdAt: Date | null
   dueDate: Date | null
   description: string | null
@@ -56,7 +56,7 @@ export type ExpectedPaymentMaxAggregateOutputType = {
   customerName: string | null
   customerPhone: string | null
   customerEmail: string | null
-  status: string | null
+  status: $Enums.ExpectedPaymentStatus | null
   createdAt: Date | null
   dueDate: Date | null
   description: string | null
@@ -223,7 +223,7 @@ export type ExpectedPaymentGroupByOutputType = {
   customerName: string
   customerPhone: string | null
   customerEmail: string | null
-  status: string
+  status: $Enums.ExpectedPaymentStatus
   createdAt: Date
   dueDate: Date | null
   description: string | null
@@ -260,7 +260,7 @@ export type ExpectedPaymentWhereInput = {
   customerName?: Prisma.StringFilter<"ExpectedPayment"> | string
   customerPhone?: Prisma.StringNullableFilter<"ExpectedPayment"> | string | null
   customerEmail?: Prisma.StringNullableFilter<"ExpectedPayment"> | string | null
-  status?: Prisma.StringFilter<"ExpectedPayment"> | string
+  status?: Prisma.EnumExpectedPaymentStatusFilter<"ExpectedPayment"> | $Enums.ExpectedPaymentStatus
   createdAt?: Prisma.DateTimeFilter<"ExpectedPayment"> | Date | string
   dueDate?: Prisma.DateTimeNullableFilter<"ExpectedPayment"> | Date | string | null
   description?: Prisma.StringNullableFilter<"ExpectedPayment"> | string | null
@@ -296,7 +296,7 @@ export type ExpectedPaymentWhereUniqueInput = Prisma.AtLeast<{
   customerName?: Prisma.StringFilter<"ExpectedPayment"> | string
   customerPhone?: Prisma.StringNullableFilter<"ExpectedPayment"> | string | null
   customerEmail?: Prisma.StringNullableFilter<"ExpectedPayment"> | string | null
-  status?: Prisma.StringFilter<"ExpectedPayment"> | string
+  status?: Prisma.EnumExpectedPaymentStatusFilter<"ExpectedPayment"> | $Enums.ExpectedPaymentStatus
   createdAt?: Prisma.DateTimeFilter<"ExpectedPayment"> | Date | string
   dueDate?: Prisma.DateTimeNullableFilter<"ExpectedPayment"> | Date | string | null
   description?: Prisma.StringNullableFilter<"ExpectedPayment"> | string | null
@@ -334,7 +334,7 @@ export type ExpectedPaymentScalarWhereWithAggregatesInput = {
   customerName?: Prisma.StringWithAggregatesFilter<"ExpectedPayment"> | string
   customerPhone?: Prisma.StringNullableWithAggregatesFilter<"ExpectedPayment"> | string | null
   customerEmail?: Prisma.StringNullableWithAggregatesFilter<"ExpectedPayment"> | string | null
-  status?: Prisma.StringWithAggregatesFilter<"ExpectedPayment"> | string
+  status?: Prisma.EnumExpectedPaymentStatusWithAggregatesFilter<"ExpectedPayment"> | $Enums.ExpectedPaymentStatus
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"ExpectedPayment"> | Date | string
   dueDate?: Prisma.DateTimeNullableWithAggregatesFilter<"ExpectedPayment"> | Date | string | null
   description?: Prisma.StringNullableWithAggregatesFilter<"ExpectedPayment"> | string | null
@@ -347,7 +347,7 @@ export type ExpectedPaymentCreateInput = {
   customerName: string
   customerPhone?: string | null
   customerEmail?: string | null
-  status?: string
+  status?: $Enums.ExpectedPaymentStatus
   createdAt?: Date | string
   dueDate?: Date | string | null
   description?: string | null
@@ -363,7 +363,7 @@ export type ExpectedPaymentUncheckedCreateInput = {
   customerName: string
   customerPhone?: string | null
   customerEmail?: string | null
-  status?: string
+  status?: $Enums.ExpectedPaymentStatus
   createdAt?: Date | string
   dueDate?: Date | string | null
   description?: string | null
@@ -377,7 +377,7 @@ export type ExpectedPaymentUpdateInput = {
   customerName?: Prisma.StringFieldUpdateOperationsInput | string
   customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  status?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumExpectedPaymentStatusFieldUpdateOperationsInput | $Enums.ExpectedPaymentStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -393,7 +393,7 @@ export type ExpectedPaymentUncheckedUpdateInput = {
   customerName?: Prisma.StringFieldUpdateOperationsInput | string
   customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  status?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumExpectedPaymentStatusFieldUpdateOperationsInput | $Enums.ExpectedPaymentStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -408,7 +408,7 @@ export type ExpectedPaymentCreateManyInput = {
   customerName: string
   customerPhone?: string | null
   customerEmail?: string | null
-  status?: string
+  status?: $Enums.ExpectedPaymentStatus
   createdAt?: Date | string
   dueDate?: Date | string | null
   description?: string | null
@@ -421,7 +421,7 @@ export type ExpectedPaymentUpdateManyMutationInput = {
   customerName?: Prisma.StringFieldUpdateOperationsInput | string
   customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  status?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumExpectedPaymentStatusFieldUpdateOperationsInput | $Enums.ExpectedPaymentStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -435,7 +435,7 @@ export type ExpectedPaymentUncheckedUpdateManyInput = {
   customerName?: Prisma.StringFieldUpdateOperationsInput | string
   customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  status?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumExpectedPaymentStatusFieldUpdateOperationsInput | $Enums.ExpectedPaymentStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -561,6 +561,10 @@ export type FloatFieldUpdateOperationsInput = {
   divide?: number
 }
 
+export type EnumExpectedPaymentStatusFieldUpdateOperationsInput = {
+  set?: $Enums.ExpectedPaymentStatus
+}
+
 export type NullableDateTimeFieldUpdateOperationsInput = {
   set?: Date | string | null
 }
@@ -586,7 +590,7 @@ export type ExpectedPaymentCreateWithoutTenantInput = {
   customerName: string
   customerPhone?: string | null
   customerEmail?: string | null
-  status?: string
+  status?: $Enums.ExpectedPaymentStatus
   createdAt?: Date | string
   dueDate?: Date | string | null
   description?: string | null
@@ -600,7 +604,7 @@ export type ExpectedPaymentUncheckedCreateWithoutTenantInput = {
   customerName: string
   customerPhone?: string | null
   customerEmail?: string | null
-  status?: string
+  status?: $Enums.ExpectedPaymentStatus
   createdAt?: Date | string
   dueDate?: Date | string | null
   description?: string | null
@@ -644,7 +648,7 @@ export type ExpectedPaymentScalarWhereInput = {
   customerName?: Prisma.StringFilter<"ExpectedPayment"> | string
   customerPhone?: Prisma.StringNullableFilter<"ExpectedPayment"> | string | null
   customerEmail?: Prisma.StringNullableFilter<"ExpectedPayment"> | string | null
-  status?: Prisma.StringFilter<"ExpectedPayment"> | string
+  status?: Prisma.EnumExpectedPaymentStatusFilter<"ExpectedPayment"> | $Enums.ExpectedPaymentStatus
   createdAt?: Prisma.DateTimeFilter<"ExpectedPayment"> | Date | string
   dueDate?: Prisma.DateTimeNullableFilter<"ExpectedPayment"> | Date | string | null
   description?: Prisma.StringNullableFilter<"ExpectedPayment"> | string | null
@@ -657,7 +661,7 @@ export type ExpectedPaymentCreateWithoutMatchesInput = {
   customerName: string
   customerPhone?: string | null
   customerEmail?: string | null
-  status?: string
+  status?: $Enums.ExpectedPaymentStatus
   createdAt?: Date | string
   dueDate?: Date | string | null
   description?: string | null
@@ -672,7 +676,7 @@ export type ExpectedPaymentUncheckedCreateWithoutMatchesInput = {
   customerName: string
   customerPhone?: string | null
   customerEmail?: string | null
-  status?: string
+  status?: $Enums.ExpectedPaymentStatus
   createdAt?: Date | string
   dueDate?: Date | string | null
   description?: string | null
@@ -701,7 +705,7 @@ export type ExpectedPaymentUpdateWithoutMatchesInput = {
   customerName?: Prisma.StringFieldUpdateOperationsInput | string
   customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  status?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumExpectedPaymentStatusFieldUpdateOperationsInput | $Enums.ExpectedPaymentStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -716,7 +720,7 @@ export type ExpectedPaymentUncheckedUpdateWithoutMatchesInput = {
   customerName?: Prisma.StringFieldUpdateOperationsInput | string
   customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  status?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumExpectedPaymentStatusFieldUpdateOperationsInput | $Enums.ExpectedPaymentStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -729,7 +733,7 @@ export type ExpectedPaymentCreateManyTenantInput = {
   customerName: string
   customerPhone?: string | null
   customerEmail?: string | null
-  status?: string
+  status?: $Enums.ExpectedPaymentStatus
   createdAt?: Date | string
   dueDate?: Date | string | null
   description?: string | null
@@ -742,7 +746,7 @@ export type ExpectedPaymentUpdateWithoutTenantInput = {
   customerName?: Prisma.StringFieldUpdateOperationsInput | string
   customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  status?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumExpectedPaymentStatusFieldUpdateOperationsInput | $Enums.ExpectedPaymentStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -756,7 +760,7 @@ export type ExpectedPaymentUncheckedUpdateWithoutTenantInput = {
   customerName?: Prisma.StringFieldUpdateOperationsInput | string
   customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  status?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumExpectedPaymentStatusFieldUpdateOperationsInput | $Enums.ExpectedPaymentStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -770,7 +774,7 @@ export type ExpectedPaymentUncheckedUpdateManyWithoutTenantInput = {
   customerName?: Prisma.StringFieldUpdateOperationsInput | string
   customerPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  status?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumExpectedPaymentStatusFieldUpdateOperationsInput | $Enums.ExpectedPaymentStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -895,7 +899,7 @@ export type $ExpectedPaymentPayload<ExtArgs extends runtime.Types.Extensions.Int
     customerName: string
     customerPhone: string | null
     customerEmail: string | null
-    status: string
+    status: $Enums.ExpectedPaymentStatus
     createdAt: Date
     dueDate: Date | null
     description: string | null
@@ -1331,7 +1335,7 @@ export interface ExpectedPaymentFieldRefs {
   readonly customerName: Prisma.FieldRef<"ExpectedPayment", 'String'>
   readonly customerPhone: Prisma.FieldRef<"ExpectedPayment", 'String'>
   readonly customerEmail: Prisma.FieldRef<"ExpectedPayment", 'String'>
-  readonly status: Prisma.FieldRef<"ExpectedPayment", 'String'>
+  readonly status: Prisma.FieldRef<"ExpectedPayment", 'ExpectedPaymentStatus'>
   readonly createdAt: Prisma.FieldRef<"ExpectedPayment", 'DateTime'>
   readonly dueDate: Prisma.FieldRef<"ExpectedPayment", 'DateTime'>
   readonly description: Prisma.FieldRef<"ExpectedPayment", 'String'>
