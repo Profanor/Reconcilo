@@ -3,7 +3,8 @@
  * Connects to NestJS backend on http://localhost:4000/api
  */
 
-export const API_BASE = "http://localhost:4000/api";
+export const API_BASE =
+  (import.meta as any).env?.VITE_API_BASE || "http://localhost:4000/api";
 export const PRODUCT_NAME = "Lissafi";
 
 export const formatNGN = (amt: number): string => {

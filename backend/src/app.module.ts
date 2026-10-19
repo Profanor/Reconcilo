@@ -8,6 +8,7 @@ import { ReceivedPaymentsModule } from './received-payments/received-payments.mo
 import { ReconciliationModule } from './reconciliation/reconciliation.module';
 import { RulesModule } from './rules/rules.module';
 import { DashboardModule } from './dashboard/dashboard.module';
+import { HealthModule } from './health/health.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { DashboardModule } from './dashboard/dashboard.module';
     ReconciliationModule,
     RulesModule,
     DashboardModule,
+    HealthModule,
   ],
   providers: [
     {

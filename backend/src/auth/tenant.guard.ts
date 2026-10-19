@@ -13,6 +13,12 @@ export class TenantGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
 
+    // Bypass tenant validation for health check and docs
+    const path = request.url || '';
+    if (path.includes('/health') || path.includes('/docs')) {
+      return true;
+    }
+
     // 1. Check for explicit header (x-tenant-id or x-tenant-slug)
     const headerTenantId = request.headers['x-tenant-id'] as string;
     const headerTenantSlug = request.headers['x-tenant-slug'] as string;
