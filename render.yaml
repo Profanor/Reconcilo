@@ -19,6 +19,8 @@ services:
           property: connectionString
       - key: ALLOWED_ORIGINS
         value: https://reconcilo.vercel.app,https://reconcilo.netlify.app
+      - key: DEMO_PILOT_MODE
+        value: "true"
 
   # 2. Vite React Frontend (Static SPA)
   - type: web
