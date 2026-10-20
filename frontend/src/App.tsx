@@ -10,7 +10,7 @@ import type {
   AuditLogItem,
 } from "./api";
 import LandingPage from "./LandingPage";
-import { Sidebar, type NavTab } from "./components/Sidebar";
+import { Sidebar, MobileBottomNav, type NavTab } from "./components/Sidebar";
 import { Header } from "./components/Header";
 import { ToastContainer, type Toast } from "./components/ToastContainer";
 import { OverviewTab } from "./components/tabs/OverviewTab";
@@ -93,6 +93,9 @@ export default function App() {
   // Pilot Modal
   const [showPilotModal, setShowPilotModal] = useState(false);
 
+  // Mobile sidebar drawer
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
   const setOperatorName = (val: string) => {
     setOperatorNameState(val);
     localStorage.setItem("lissafi_operator_name", val);
@@ -113,16 +116,100 @@ export default function App() {
     localStorage.setItem("lissafi_rc_number", val);
   };
 
-  const handleSavePilotProfile = async (profile: PilotProfile) => {
+  const handleSavePilotProfile = async (profile: PilotProfile, isPreset: boolean) => {
+    if (isPreset) {
+      // Snapshot the real workspace only the first time we switch to a preset
+      // (don't overwrite the snapshot with another preset's data).
+      if (!localStorage.getItem("lissafi_real_tenant_id")) {
+        localStorage.setItem("lissafi_real_tenant_id", localStorage.getItem("lissafi_tenant_id") || "");
+        localStorage.setItem("lissafi_real_token", localStorage.getItem("reconcilo_token") || "");
+        localStorage.setItem("lissafi_real_company_name", companyName);
+        localStorage.setItem("lissafi_real_rc_number", rcNumber);
+        localStorage.setItem("lissafi_real_operator_name", operatorName);
+        localStorage.setItem("lissafi_real_operator_role", operatorRole);
+      }
+    }
+
     setCompanyName(profile.companyName);
     setRcNumber(profile.rcNumber);
     setOperatorName(profile.operatorName);
     setOperatorRole(profile.operatorRole);
     if (profile.tenantId) {
       localStorage.setItem("lissafi_tenant_id", profile.tenantId);
+      // Clear any stored JWT so the backend resolves the tenant purely from
+      // the x-tenant-id header. The JWT always encodes the original tenant,
+      // which takes priority over the header in tenant.guard.ts (tokenTenantId || headerTenantId).
+      localStorage.removeItem("reconcilo_token");
     }
     addToast(`Switched workspace to ${profile.companyName}!`, "info");
     await loadAllData();
+  };
+
+  const handleRestoreMyWorkspace = async () => {
+    const realTenantId = localStorage.getItem("lissafi_real_tenant_id");
+    const realToken = localStorage.getItem("lissafi_real_token");
+    const realCompany = localStorage.getItem("lissafi_real_company_name") || "";
+    const realRc = localStorage.getItem("lissafi_real_rc_number") || "";
+    const realOperator = localStorage.getItem("lissafi_real_operator_name") || "";
+    const realRole = localStorage.getItem("lissafi_real_operator_role") || "";
+
+    // Restore all real workspace values
+    if (realTenantId) localStorage.setItem("lissafi_tenant_id", realTenantId);
+    if (realToken) localStorage.setItem("reconcilo_token", realToken);
+    setCompanyName(realCompany);
+    setRcNumber(realRc);
+    setOperatorName(realOperator);
+    setOperatorRole(realRole);
+
+    // Clear the snapshot so a fresh one can be taken next time
+    localStorage.removeItem("lissafi_real_tenant_id");
+    localStorage.removeItem("lissafi_real_token");
+    localStorage.removeItem("lissafi_real_company_name");
+    localStorage.removeItem("lissafi_real_rc_number");
+    localStorage.removeItem("lissafi_real_operator_name");
+    localStorage.removeItem("lissafi_real_operator_role");
+
+    setShowPilotModal(false);
+    addToast(`Restored your workspace: ${realCompany}`, "success");
+    await loadAllData();
+  };
+
+  // Derived: true only when we have a real workspace snapshot stored
+  const hasRealWorkspaceSnapshot = !!localStorage.getItem("lissafi_real_tenant_id");
+
+  const handleSignOut = () => {
+    // Clear all tenant session keys
+    const keysToRemove = [
+      "lissafi_tenant_id",
+      "lissafi_tenant_slug",
+      "lissafi_company_name",
+      "lissafi_rc_number",
+      "lissafi_operator_name",
+      "lissafi_operator_role",
+      "lissafi_real_tenant_id",
+      "lissafi_real_token",
+      "lissafi_real_company_name",
+      "lissafi_real_rc_number",
+      "lissafi_real_operator_name",
+      "lissafi_real_operator_role",
+      "reconcilo_token",
+    ];
+    keysToRemove.forEach((k) => localStorage.removeItem(k));
+
+    // Cleanly reset React state to default demo profile
+    setCompanyNameState("Apex Superstores & Logistics Nigeria Ltd");
+    setRcNumberState("RC-1849201");
+    setOperatorNameState("David Okoye");
+    setOperatorRoleState("Finance Lead");
+    setActiveTab("overview");
+    setStats(initialStats);
+    setExpected([]);
+    setReceived([]);
+    setMatches([]);
+    setExceptions(null);
+    setAuditLogs([]);
+
+    setViewMode("landing");
   };
 
   // Core Data States
@@ -335,12 +422,14 @@ export default function App() {
 
   const handleLaunchApp = () => {
     // Re-sync latest provisioned profile from localStorage
-    const storedCompany = localStorage.getItem("lissafi_company_name");
-    const storedOperator = localStorage.getItem("lissafi_operator_name");
-    const storedRole = localStorage.getItem("lissafi_operator_role");
-    if (storedCompany) setCompanyNameState(storedCompany);
-    if (storedOperator) setOperatorNameState(storedOperator);
-    if (storedRole) setOperatorRoleState(storedRole);
+    const storedCompany = localStorage.getItem("lissafi_company_name") || "Apex Superstores & Logistics Nigeria Ltd";
+    const storedOperator = localStorage.getItem("lissafi_operator_name") || "David Okoye";
+    const storedRole = localStorage.getItem("lissafi_operator_role") || "Finance Lead";
+    const storedRc = localStorage.getItem("lissafi_rc_number") || "RC-1849201";
+    setCompanyNameState(storedCompany);
+    setOperatorNameState(storedOperator);
+    setOperatorRoleState(storedRole);
+    setRcNumberState(storedRc);
 
     setViewMode("app");
     loadAllData();
@@ -357,7 +446,7 @@ export default function App() {
 
   return (
     <div className="flex h-screen bg-slate-50 font-sans text-slate-900 antialiased overflow-hidden">
-      {/* Left Sidebar Shell */}
+      {/* Left Sidebar — desktop always visible, mobile drawer */}
       <Sidebar
         activeTab={activeTab}
         setActiveTab={setActiveTab}
@@ -368,6 +457,9 @@ export default function App() {
         rcNumber={rcNumber}
         onNavigateLanding={() => setViewMode("landing")}
         onOpenPilotSetup={() => setShowPilotModal(true)}
+        onSignOut={handleSignOut}
+        mobileOpen={mobileMenuOpen}
+        onMobileClose={() => setMobileMenuOpen(false)}
       />
 
       {/* Main Workspace Frame */}
@@ -386,10 +478,11 @@ export default function App() {
           }}
           onRunReconciliation={handleRunReconciliation}
           onNavigateLanding={() => setViewMode("landing")}
+          onOpenMobileMenu={() => setMobileMenuOpen(true)}
         />
 
         {/* Dynamic Main Workspace Content */}
-        <main className="flex-1 overflow-y-auto p-8">
+        <main className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8 pb-24 lg:pb-8">
           {activeTab === "overview" && (
             <OverviewTab
               stats={stats}
@@ -480,6 +573,13 @@ export default function App() {
             />
           )}
         </main>
+
+        {/* Mobile Bottom Navigation */}
+        <MobileBottomNav
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+          reviewCount={reviewCount}
+        />
       </div>
 
       {/* Modals */}
@@ -515,7 +615,13 @@ export default function App() {
           operatorRole,
           currency: "NGN (₦)",
         }}
-        onSave={handleSavePilotProfile}
+        onSave={(profile) => {
+          const isPreset =
+            profile.tenantId === "tenant-apex-001" ||
+            profile.tenantId === "tenant-alaba-002";
+          handleSavePilotProfile(profile, isPreset);
+        }}
+        onRestoreMyWorkspace={hasRealWorkspaceSnapshot ? handleRestoreMyWorkspace : undefined}
       />
 
       {/* Floating Notifications */}

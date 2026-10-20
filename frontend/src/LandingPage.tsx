@@ -31,7 +31,65 @@ export default function LandingPage({ onLaunchApp, stats }: LandingPageProps) {
   const [demoSubmitted, setDemoSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
-  const [provisionedData, setProvisionedData] = useState<PilotWorkspaceResponse | null>(null);
+  const [provisionedData, setProvisionedData] =
+    useState<PilotWorkspaceResponse | null>(null);
+
+  // Detect returning user from localStorage when modal opens
+  const openDemoModal = () => {
+    const existingTenantId = localStorage.getItem("lissafi_tenant_id");
+    const existingToken = localStorage.getItem("reconcilo_token");
+    const existingCompany = localStorage.getItem("lissafi_company_name");
+    const existingOperator = localStorage.getItem("lissafi_operator_name");
+    const existingSlug = localStorage.getItem("lissafi_tenant_slug");
+
+    if (existingTenantId && existingToken && existingCompany) {
+      // Returning user — show welcome-back card immediately, no form needed
+      setProvisionedData({
+        success: true,
+        isExisting: true,
+        message: "Welcome back! Your existing workspace was retrieved.",
+        tenant: {
+          id: existingTenantId,
+          name: existingCompany,
+          slug: existingSlug || "",
+        },
+        user: {
+          id: "",
+          name: existingOperator || "",
+          email: "",
+          role: localStorage.getItem("lissafi_operator_role") || "Finance Lead",
+        },
+        token: existingToken,
+      } as PilotWorkspaceResponse);
+      setDemoSubmitted(true);
+    } else {
+      // New user — reset and show form
+      setProvisionedData(null);
+      setDemoSubmitted(false);
+      setSubmitError(null);
+    }
+    setIsDemoModalOpen(true);
+  };
+
+  // Launch demo app: if user has an active custom session, enter their workspace;
+  // otherwise, launch clean interactive demo sandbox (Apex Superstores).
+  const handleLaunchOrAuth = () => {
+    const token = localStorage.getItem("reconcilo_token");
+    const tenantId = localStorage.getItem("lissafi_tenant_id");
+
+    if (token && tenantId && tenantId !== "tenant-apex-001" && tenantId !== "tenant-alaba-002") {
+      onLaunchApp();
+    } else {
+      // Clean interactive demo session
+      localStorage.setItem("lissafi_tenant_id", "tenant-apex-001");
+      localStorage.setItem("lissafi_company_name", "Apex Superstores & Logistics Nigeria Ltd");
+      localStorage.setItem("lissafi_operator_name", "David Okoye");
+      localStorage.setItem("lissafi_operator_role", "Finance Lead");
+      localStorage.setItem("lissafi_rc_number", "RC-1849201");
+      localStorage.removeItem("reconcilo_token");
+      onLaunchApp();
+    }
+  };
 
   // Form states
   const [fullName, setFullName] = useState("");
@@ -58,9 +116,10 @@ export default function LandingPage({ onLaunchApp, stats }: LandingPageProps) {
       localStorage.setItem("lissafi_tenant_id", res.tenant.id);
       localStorage.setItem("lissafi_company_name", res.tenant.name);
       localStorage.setItem("lissafi_operator_name", res.user.name);
+      localStorage.setItem("lissafi_tenant_slug", res.tenant.slug || "");
       localStorage.setItem(
         "lissafi_operator_role",
-        res.user.role === "FINANCE_LEAD" ? "Finance Lead" : res.user.role
+        res.user.role === "FINANCE_LEAD" ? "Finance Lead" : res.user.role,
       );
       if (res.token) {
         localStorage.setItem("reconcilo_token", res.token);
@@ -69,7 +128,9 @@ export default function LandingPage({ onLaunchApp, stats }: LandingPageProps) {
       setProvisionedData(res);
       setDemoSubmitted(true);
     } catch (err: any) {
-      setSubmitError(err.message || "Failed to provision workspace. Please try again.");
+      setSubmitError(
+        err.message || "Failed to provision workspace. Please try again.",
+      );
     } finally {
       setSubmitting(false);
     }
@@ -95,10 +156,16 @@ export default function LandingPage({ onLaunchApp, stats }: LandingPageProps) {
           </div>
 
           <nav className="hidden md:flex items-center gap-8 text-xs font-medium text-slate-600">
-            <a href="#how-it-works" className="hover:text-slate-900 transition-colors">
+            <a
+              href="#how-it-works"
+              className="hover:text-slate-900 transition-colors"
+            >
               How It Works
             </a>
-            <a href="#accuracy" className="hover:text-slate-900 transition-colors">
+            <a
+              href="#accuracy"
+              className="hover:text-slate-900 transition-colors"
+            >
               Controlled Matching
             </a>
             <a href="#rails" className="hover:text-slate-900 transition-colors">
@@ -108,13 +175,13 @@ export default function LandingPage({ onLaunchApp, stats }: LandingPageProps) {
 
           <div className="flex items-center gap-3">
             <button
-              onClick={() => setIsDemoModalOpen(true)}
+              onClick={openDemoModal}
               className="hidden sm:inline-flex px-3.5 py-1.5 text-xs font-semibold text-slate-700 hover:text-slate-950 transition-colors"
             >
               Request Pilot Demo
             </button>
             <button
-              onClick={onLaunchApp}
+              onClick={handleLaunchOrAuth}
               className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-slate-900 hover:bg-slate-800 text-white rounded-md text-xs font-semibold shadow-xs transition-all hover:gap-2"
             >
               <span>Launch Demo App</span>
@@ -134,7 +201,9 @@ export default function LandingPage({ onLaunchApp, stats }: LandingPageProps) {
         <div className="max-w-4xl mx-auto px-6 text-center space-y-6">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-slate-200 shadow-2xs text-[11px] font-medium text-slate-700">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-            <span>Built for Nigerian Commerce & High-Volume Merchant Teams</span>
+            <span>
+              Built for Nigerian Commerce & High-Volume Merchant Teams
+            </span>
           </div>
 
           <h1 className="text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-slate-950 leading-[1.12]">
@@ -143,8 +212,9 @@ export default function LandingPage({ onLaunchApp, stats }: LandingPageProps) {
           </h1>
 
           <p className="text-sm sm:text-base md:text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed font-normal">
-            Stop spending hours comparing payment records, bank statements, and sales reports.
-            Reconcile transactions, identify discrepancies, and see what needs your attention in one place.
+            Stop spending hours comparing payment records, bank statements, and
+            sales reports. Reconcile transactions, identify discrepancies, and
+            see what needs your attention in one place.
           </p>
 
           <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3.5">
@@ -156,7 +226,7 @@ export default function LandingPage({ onLaunchApp, stats }: LandingPageProps) {
               <ArrowRight size={14} />
             </button>
             <button
-              onClick={onLaunchApp}
+              onClick={handleLaunchOrAuth}
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-white hover:bg-slate-50 border border-slate-300 text-slate-800 text-xs sm:text-sm font-semibold rounded-md shadow-2xs transition-colors"
             >
               <span>See how it works</span>
@@ -201,7 +271,7 @@ export default function LandingPage({ onLaunchApp, stats }: LandingPageProps) {
                 </span>
               </div>
               <button
-                onClick={onLaunchApp}
+                onClick={handleLaunchOrAuth}
                 className="text-xs font-semibold text-indigo-600 hover:text-indigo-800 flex items-center gap-1"
               >
                 <span>Open Full Workspace</span>
@@ -217,14 +287,18 @@ export default function LandingPage({ onLaunchApp, stats }: LandingPageProps) {
                   <span>Sales Order (Shopify)</span>
                   <span className="text-indigo-600 font-bold">EXPECTED</span>
                 </div>
-                <div className="font-bold text-sm text-slate-900">ORD-2026-0004</div>
+                <div className="font-bold text-sm text-slate-900">
+                  ORD-2026-0004
+                </div>
                 <div className="text-slate-700">
                   Customer: <strong>Emeka Okafor</strong>
                 </div>
                 <div className="text-base font-extrabold text-slate-950 font-mono">
                   ₦150,000.00
                 </div>
-                <div className="text-[10px] text-slate-400">Due Date: 17 Oct 2026</div>
+                <div className="text-[10px] text-slate-400">
+                  Due Date: 17 Oct 2026
+                </div>
               </div>
 
               {/* Matching Engine Bridge */}
@@ -244,7 +318,9 @@ export default function LandingPage({ onLaunchApp, stats }: LandingPageProps) {
               <div className="md:col-span-3 p-4 bg-slate-50 rounded-lg border border-slate-200 text-xs space-y-2">
                 <div className="flex items-center justify-between text-slate-500 font-mono text-[10px] uppercase">
                   <span>Bank Statement (Access)</span>
-                  <span className="text-emerald-700 font-bold">CREDIT INFLOW</span>
+                  <span className="text-emerald-700 font-bold">
+                    CREDIT INFLOW
+                  </span>
                 </div>
                 <div className="font-mono text-xs text-slate-900 truncate font-semibold">
                   ACC-SESSION-90823192083
@@ -268,7 +344,9 @@ export default function LandingPage({ onLaunchApp, stats }: LandingPageProps) {
                   Total Expected
                 </div>
                 <div className="text-sm font-bold text-slate-900 font-mono">
-                  {stats?.expected?.totalAmount ? formatNGN(stats.expected.totalAmount) : "₦297,700"}
+                  {stats?.expected?.totalAmount
+                    ? formatNGN(stats.expected.totalAmount)
+                    : "₦297,700"}
                 </div>
               </div>
               <div className="p-2">
@@ -276,7 +354,9 @@ export default function LandingPage({ onLaunchApp, stats }: LandingPageProps) {
                   Actual Received
                 </div>
                 <div className="text-sm font-bold text-slate-900 font-mono">
-                  {stats?.received?.totalAmount ? formatNGN(stats.received.totalAmount) : "₦274,700"}
+                  {stats?.received?.totalAmount
+                    ? formatNGN(stats.received.totalAmount)
+                    : "₦274,700"}
                 </div>
               </div>
               <div className="p-2">
@@ -303,22 +383,33 @@ export default function LandingPage({ onLaunchApp, stats }: LandingPageProps) {
       {/* -------------------------------------------------------------
           4. SUPPORTED PAYMENT RAILS
       ------------------------------------------------------------- */}
-      <section id="rails" className="py-12 border-y border-slate-200/80 bg-white">
+      <section
+        id="rails"
+        className="py-12 border-y border-slate-200/80 bg-white"
+      >
         <div className="max-w-6xl mx-auto px-6 text-center">
           <p className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-6">
-            Standardize statements and logs across Nigeria's banking & payment ecosystem
+            Standardize statements and logs across Nigeria's banking & payment
+            ecosystem
           </p>
           <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-6 text-xs font-semibold text-slate-700">
-            {["Access Bank", "GTBank", "Zenith Bank", "OPay", "Moniepoint", "Kuda", "Paystack", "Flutterwave"].map(
-              (rail) => (
-                <div
-                  key={rail}
-                  className="px-4 py-2 rounded-md bg-slate-50 border border-slate-200 text-slate-800 shadow-2xs hover:border-slate-300 transition-colors"
-                >
-                  {rail}
-                </div>
-              )
-            )}
+            {[
+              "Access Bank",
+              "GTBank",
+              "Zenith Bank",
+              "OPay",
+              "Moniepoint",
+              "Kuda",
+              "Paystack",
+              "Flutterwave",
+            ].map((rail) => (
+              <div
+                key={rail}
+                className="px-4 py-2 rounded-md bg-slate-50 border border-slate-200 text-slate-800 shadow-2xs hover:border-slate-300 transition-colors"
+              >
+                {rail}
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -326,7 +417,10 @@ export default function LandingPage({ onLaunchApp, stats }: LandingPageProps) {
       {/* -------------------------------------------------------------
           5. HOW IT WORKS (THE 3 CORE PILLARS)
       ------------------------------------------------------------- */}
-      <section id="how-it-works" className="py-20 md:py-28 max-w-6xl mx-auto px-6">
+      <section
+        id="how-it-works"
+        className="py-20 md:py-28 max-w-6xl mx-auto px-6"
+      >
         <div className="text-center max-w-xl mx-auto mb-16 space-y-3">
           <span className="text-xs font-bold uppercase tracking-wider text-indigo-600 font-mono">
             How It Works
@@ -336,7 +430,8 @@ export default function LandingPage({ onLaunchApp, stats }: LandingPageProps) {
             Zero guesswork.
           </h2>
           <p className="text-xs sm:text-sm text-slate-600">
-            Designed to replace manual spreadsheet lookups with a dependable, audit-trailed engine.
+            Designed to replace manual spreadsheet lookups with a dependable,
+            audit-trailed engine.
           </p>
         </div>
 
@@ -352,7 +447,9 @@ export default function LandingPage({ onLaunchApp, stats }: LandingPageProps) {
                 Bring in your payment records.
               </p>
               <p className="text-xs text-slate-600 leading-relaxed">
-                Upload CSV statements from your bank, POS terminal settlement exports, or sales order registries from Shopify, WooCommerce, or WhatsApp logs.
+                Upload CSV statements from your bank, POS terminal settlement
+                exports, or sales order registries from Shopify, WooCommerce, or
+                WhatsApp logs.
               </p>
               <ul className="text-xs text-slate-500 space-y-1.5 pt-2">
                 <li className="flex items-center gap-1.5">
@@ -385,7 +482,9 @@ export default function LandingPage({ onLaunchApp, stats }: LandingPageProps) {
                 Compare expected and received payments.
               </p>
               <p className="text-xs text-slate-600 leading-relaxed">
-                Our controlled rule engine evaluates records by amount, reference codes, customer phone numbers, and bank narrative tokens in milliseconds.
+                Our controlled rule engine evaluates records by amount,
+                reference codes, customer phone numbers, and bank narrative
+                tokens in milliseconds.
               </p>
               <ul className="text-xs text-slate-500 space-y-1.5 pt-2">
                 <li className="flex items-center gap-1.5">
@@ -418,7 +517,9 @@ export default function LandingPage({ onLaunchApp, stats }: LandingPageProps) {
                 Investigate discrepancies & missing payments.
               </p>
               <p className="text-xs text-slate-600 leading-relaxed">
-                Uncertain transactions, partial payments, and third-party payer transfers land in the Exceptions Queue for quick human confirmation.
+                Uncertain transactions, partial payments, and third-party payer
+                transfers land in the Exceptions Queue for quick human
+                confirmation.
               </p>
               <ul className="text-xs text-slate-500 space-y-1.5 pt-2">
                 <li className="flex items-center gap-1.5">
@@ -455,38 +556,55 @@ export default function LandingPage({ onLaunchApp, stats }: LandingPageProps) {
               Why generic reconciliation software fails in Africa.
             </h2>
             <p className="text-xs sm:text-sm text-slate-400 leading-relaxed">
-              In Nigerian business, customers pay from spouses’ bank accounts, banks truncate order numbers, and multiple people transfer identical amounts like ₦15,000 every single hour.
+              In Nigerian business, customers pay from spouses’ bank accounts,
+              banks truncate order numbers, and multiple people transfer
+              identical amounts like ₦15,000 every single hour.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="p-6 rounded-lg bg-slate-800/80 border border-slate-700/80 space-y-3">
-              <div className="text-xs font-bold text-amber-400">01 / The Third-Party Payer</div>
+              <div className="text-xs font-bold text-amber-400">
+                01 / The Third-Party Payer
+              </div>
               <h4 className="text-sm font-semibold text-white">
                 Paid from a spouse or corporate account
               </h4>
               <p className="text-xs text-slate-300 leading-relaxed">
-                A customer orders under "Chioma Nze" but transfers from "Kelechi Nze (GTBank)" with no memo. Generic tools mark it as lost. Lissafi's fuzzy candidate suggester surfaces the match with side-by-side evidence for fast operator sign-off.
+                A customer orders under "Chioma Nze" but transfers from "Kelechi
+                Nze (GTBank)" with no memo. Generic tools mark it as lost.
+                Lissafi's fuzzy candidate suggester surfaces the match with
+                side-by-side evidence for fast operator sign-off.
               </p>
             </div>
 
             <div className="p-6 rounded-lg bg-slate-800/80 border border-slate-700/80 space-y-3">
-              <div className="text-xs font-bold text-amber-400">02 / The Identical Amount Trap</div>
+              <div className="text-xs font-bold text-amber-400">
+                02 / The Identical Amount Trap
+              </div>
               <h4 className="text-sm font-semibold text-white">
                 Blind amount-matching causes chaos
               </h4>
               <p className="text-xs text-slate-300 leading-relaxed">
-                If 5 customers owe ₦25,000 and one ₦25,000 transfer arrives with "USSD TRANSFER", matching either blindly is a disaster. Lissafi categorizes identical amounts as Ambiguous, safeguarding you from fulfilling the wrong order.
+                If 5 customers owe ₦25,000 and one ₦25,000 transfer arrives with
+                "USSD TRANSFER", matching either blindly is a disaster. Lissafi
+                categorizes identical amounts as Ambiguous, safeguarding you
+                from fulfilling the wrong order.
               </p>
             </div>
 
             <div className="p-6 rounded-lg bg-slate-800/80 border border-slate-700/80 space-y-3">
-              <div className="text-xs font-bold text-amber-400">03 / The Audit Defense</div>
+              <div className="text-xs font-bold text-amber-400">
+                03 / The Audit Defense
+              </div>
               <h4 className="text-sm font-semibold text-white">
                 Accountants demand proof, not black boxes
               </h4>
               <p className="text-xs text-slate-300 leading-relaxed">
-                Every single match, exception rejection, and manual link writes an immutable event to the audit trail. When tax season or annual audits arrive, export the reconciled CSV with full verifier signatures.
+                Every single match, exception rejection, and manual link writes
+                an immutable event to the audit trail. When tax season or annual
+                audits arrive, export the reconciled CSV with full verifier
+                signatures.
               </p>
             </div>
           </div>
@@ -501,18 +619,19 @@ export default function LandingPage({ onLaunchApp, stats }: LandingPageProps) {
           Ready to eliminate payment reconciliation headaches?
         </h2>
         <p className="text-xs sm:text-base text-slate-600 max-w-xl mx-auto">
-          Join high-volume online retailers, supermarkets, and B2B distributors pilot-testing Lissafi.
+          Join high-volume online retailers, supermarkets, and B2B distributors
+          pilot-testing Lissafi.
         </p>
 
         <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
           <button
-            onClick={() => setIsDemoModalOpen(true)}
+            onClick={openDemoModal}
             className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 bg-slate-900 hover:bg-slate-800 text-white text-xs sm:text-sm font-semibold rounded-md shadow-xs transition-all hover:scale-[1.01]"
           >
             <span>Request a pilot demo →</span>
           </button>
           <button
-            onClick={onLaunchApp}
+            onClick={handleLaunchOrAuth}
             className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 bg-white hover:bg-slate-50 border border-slate-300 text-slate-800 text-xs sm:text-sm font-semibold rounded-md shadow-2xs transition-colors"
           >
             <span>Launch Live Interactive Demo</span>
@@ -532,9 +651,7 @@ export default function LandingPage({ onLaunchApp, stats }: LandingPageProps) {
               — Smart Transaction Matching Engine
             </span>
           </div>
-          <div>
-            © 2026 {PRODUCT_NAME}. All rights reserved.
-          </div>
+          <div>© 2026 {PRODUCT_NAME}. All rights reserved.</div>
         </div>
       </footer>
 
@@ -550,13 +667,16 @@ export default function LandingPage({ onLaunchApp, stats }: LandingPageProps) {
                   Request a Pilot Demo
                 </h3>
                 <p className="text-[11px] text-slate-500">
-                  Experience {PRODUCT_NAME} on your actual bank statements and orders.
+                  Experience {PRODUCT_NAME} on your actual bank statements and
+                  orders.
                 </p>
               </div>
               <button
                 onClick={() => {
                   setIsDemoModalOpen(false);
+                  setProvisionedData(null);
                   setDemoSubmitted(false);
+                  setSubmitError(null);
                 }}
                 className="text-slate-400 hover:text-slate-600 p-1 rounded"
               >
@@ -566,16 +686,20 @@ export default function LandingPage({ onLaunchApp, stats }: LandingPageProps) {
 
             {demoSubmitted ? (
               <div className="p-8 text-center space-y-4">
-                <div className="w-12 h-12 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-200 flex items-center justify-center mx-auto text-xl font-bold shadow-xs">
-                  ✓
+                <div
+                  className={`w-12 h-12 rounded-full flex items-center justify-center mx-auto text-xl font-bold shadow-xs border ${provisionedData?.isExisting ? "bg-blue-50 text-blue-600 border-blue-200" : "bg-emerald-50 text-emerald-600 border-emerald-200"}`}
+                >
+                  {provisionedData?.isExisting ? "↩" : "✓"}
                 </div>
                 <div className="space-y-1">
                   <h4 className="text-base font-bold text-slate-900">
-                    Workspace Ready for {provisionedData?.tenant.name || businessName}!
+                    {provisionedData?.isExisting
+                      ? `Welcome back, ${provisionedData?.user.name || fullName}!`
+                      : `Workspace Ready for ${provisionedData?.tenant.name || businessName}!`}
                   </h4>
                   <p className="text-xs text-slate-500 max-w-sm mx-auto leading-relaxed">
                     {provisionedData?.isExisting
-                      ? "Welcome back! Your business workspace has been loaded."
+                      ? "You already have a workspace. We've retrieved your existing credentials and everything is ready to go."
                       : "A dedicated multi-tenant workspace has been created with all 4 reconciliation rules initialized."}
                   </p>
                 </div>
@@ -584,7 +708,8 @@ export default function LandingPage({ onLaunchApp, stats }: LandingPageProps) {
                   <div className="flex justify-between items-center text-slate-600">
                     <span>Assigned Operator:</span>
                     <span className="font-semibold text-slate-900">
-                      {provisionedData?.user.name || fullName} ({provisionedData?.user.role || "Finance Lead"})
+                      {provisionedData?.user.name || fullName} (
+                      {provisionedData?.user.role || "Finance Lead"})
                     </span>
                   </div>
                   <div className="flex justify-between items-center text-slate-600">
@@ -594,10 +719,16 @@ export default function LandingPage({ onLaunchApp, stats }: LandingPageProps) {
                     </span>
                   </div>
                   <div className="flex justify-between items-center text-slate-600">
-                    <span>Access Mode:</span>
-                    <span className="inline-flex items-center gap-1.5 font-semibold text-emerald-700">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                      Isolated Production Sandbox
+                    <span>Status:</span>
+                    <span
+                      className={`inline-flex items-center gap-1.5 font-semibold ${provisionedData?.isExisting ? "text-blue-700" : "text-emerald-700"}`}
+                    >
+                      <span
+                        className={`w-1.5 h-1.5 rounded-full animate-pulse ${provisionedData?.isExisting ? "bg-blue-500" : "bg-emerald-500"}`}
+                      ></span>
+                      {provisionedData?.isExisting
+                        ? "Existing Workspace Retrieved"
+                        : "Isolated Production Sandbox"}
                     </span>
                   </div>
                 </div>
@@ -611,13 +742,19 @@ export default function LandingPage({ onLaunchApp, stats }: LandingPageProps) {
                     }}
                     className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded text-xs font-semibold shadow-xs transition-colors"
                   >
-                    <span>Enter {provisionedData?.tenant.name || businessName} Workspace →</span>
+                    <span>
+                      Enter {provisionedData?.tenant.name || businessName}{" "}
+                      Workspace
+                    </span>
                     <ArrowRight size={13} />
                   </button>
                 </div>
               </div>
             ) : (
-              <form onSubmit={handleDemoSubmit} className="p-6 space-y-3.5 text-xs">
+              <form
+                onSubmit={handleDemoSubmit}
+                className="p-6 space-y-3.5 text-xs"
+              >
                 {submitError && (
                   <div className="p-3 bg-red-50 border border-red-200 text-red-700 rounded text-xs">
                     {submitError}
@@ -629,7 +766,10 @@ export default function LandingPage({ onLaunchApp, stats }: LandingPageProps) {
                     Your Full Name
                   </label>
                   <div className="relative">
-                    <User size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                    <User
+                      size={13}
+                      className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+                    />
                     <input
                       type="text"
                       required
@@ -646,7 +786,10 @@ export default function LandingPage({ onLaunchApp, stats }: LandingPageProps) {
                     Business / Store Name
                   </label>
                   <div className="relative">
-                    <Building2 size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                    <Building2
+                      size={13}
+                      className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+                    />
                     <input
                       type="text"
                       required
@@ -664,7 +807,10 @@ export default function LandingPage({ onLaunchApp, stats }: LandingPageProps) {
                       Work Email
                     </label>
                     <div className="relative">
-                      <Mail size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                      <Mail
+                        size={13}
+                        className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+                      />
                       <input
                         type="email"
                         required
@@ -681,7 +827,10 @@ export default function LandingPage({ onLaunchApp, stats }: LandingPageProps) {
                       WhatsApp / Phone
                     </label>
                     <div className="relative">
-                      <Phone size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                      <Phone
+                        size={13}
+                        className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+                      />
                       <input
                         type="tel"
                         placeholder="080 1234 5678"
@@ -703,9 +852,15 @@ export default function LandingPage({ onLaunchApp, stats }: LandingPageProps) {
                     className="w-full p-2 bg-slate-50 border border-slate-200 rounded text-slate-800 outline-none focus:border-slate-400 focus:bg-white text-xs cursor-pointer font-medium"
                   >
                     <option value="Under ₦5M / month">Under ₦5M / month</option>
-                    <option value="₦5M – ₦50M / month">₦5M – ₦50M / month</option>
-                    <option value="₦50M – ₦250M / month">₦50M – ₦250M / month</option>
-                    <option value="Over ₦250M / month">Over ₦250M / month</option>
+                    <option value="₦5M – ₦50M / month">
+                      ₦5M – ₦50M / month
+                    </option>
+                    <option value="₦50M – ₦250M / month">
+                      ₦50M – ₦250M / month
+                    </option>
+                    <option value="Over ₦250M / month">
+                      Over ₦250M / month
+                    </option>
                   </select>
                 </div>
 
@@ -726,8 +881,14 @@ export default function LandingPage({ onLaunchApp, stats }: LandingPageProps) {
                     disabled={submitting}
                     className="inline-flex items-center gap-1.5 px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded text-xs font-semibold shadow-xs disabled:opacity-50"
                   >
-                    {submitting && <Loader2 size={13} className="animate-spin" />}
-                    <span>{submitting ? "Provisioning Workspace..." : "Create Business Workspace →"}</span>
+                    {submitting && (
+                      <Loader2 size={13} className="animate-spin" />
+                    )}
+                    <span>
+                      {submitting
+                        ? "Provisioning Workspace..."
+                        : "Create Business Workspace →"}
+                    </span>
                   </button>
                 </div>
               </form>

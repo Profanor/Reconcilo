@@ -24,10 +24,7 @@ export const ReconciliationTab: React.FC<ReconciliationTabProps> = ({
   const [channelFilter, setChannelFilter] = useState("ALL");
   const [statusFilter, setStatusFilter] = useState("ALL");
 
-  // Working Table Unified Transaction Rows
-  // Combines matches, pending expected orders, and unmatched received payments
   const combinedRows = [
-    // Matched items
     ...matches.map((m) => ({
       id: m.id,
       expectedRef: m.expectedPayment?.reference || "N/A",
@@ -44,7 +41,6 @@ export const ReconciliationTab: React.FC<ReconciliationTabProps> = ({
       expectedId: m.expectedPaymentId,
       receivedId: m.receivedPaymentId,
     })),
-    // Unmatched expected orders
     ...expected
       .filter((e) => e.status === "PENDING")
       .map((e) => ({
@@ -63,7 +59,6 @@ export const ReconciliationTab: React.FC<ReconciliationTabProps> = ({
         expectedId: e.id,
         receivedId: "",
       })),
-    // Unmatched received inflows
     ...received
       .filter((r) => r.status === "UNMATCHED")
       .map((r) => ({
@@ -84,7 +79,6 @@ export const ReconciliationTab: React.FC<ReconciliationTabProps> = ({
       })),
   ];
 
-  // Filtered Working Rows
   const filteredRows = combinedRows.filter((row) => {
     if (channelFilter !== "ALL" && row.channel !== channelFilter) return false;
     if (statusFilter !== "ALL") {
@@ -104,25 +98,26 @@ export const ReconciliationTab: React.FC<ReconciliationTabProps> = ({
 
   return (
     <div className="space-y-4 max-w-7xl mx-auto">
-      {/* Working Controls Bar */}
-      <div className="bg-white p-4 rounded-lg border border-slate-200 shadow-2xs flex flex-wrap items-center justify-between gap-3">
-        <div className="flex items-center gap-2.5 flex-1 min-w-[280px]">
-          <div className="relative flex-1">
-            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-            <input
-              type="text"
-              placeholder="Search by order ref, bank ref, customer name..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-9 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded text-slate-800 placeholder-slate-400 outline-none focus:border-slate-400 focus:bg-white transition-colors"
-            />
-          </div>
+      {/* Controls Bar */}
+      <div className="bg-white p-4 rounded-lg border border-slate-200 shadow-2xs space-y-3">
+        {/* Search — full width on mobile */}
+        <div className="relative w-full">
+          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+          <input
+            type="text"
+            placeholder="Search by order ref, bank ref, customer..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full pl-9 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded text-slate-800 placeholder-slate-400 outline-none focus:border-slate-400 focus:bg-white transition-colors"
+          />
+        </div>
 
-          {/* Status Filter */}
+        {/* Filters row */}
+        <div className="flex flex-wrap items-center gap-2">
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="text-xs bg-slate-50 border border-slate-200 rounded px-2.5 py-1.5 text-slate-700 outline-none cursor-pointer"
+            className="flex-1 min-w-[120px] text-xs bg-slate-50 border border-slate-200 rounded px-2.5 py-1.5 text-slate-700 outline-none cursor-pointer"
           >
             <option value="ALL">All Statuses</option>
             <option value="MATCHED">Matched</option>
@@ -130,11 +125,10 @@ export const ReconciliationTab: React.FC<ReconciliationTabProps> = ({
             <option value="UNCLAIMED">Unclaimed Inflow</option>
           </select>
 
-          {/* Channel Filter */}
           <select
             value={channelFilter}
             onChange={(e) => setChannelFilter(e.target.value)}
-            className="text-xs bg-slate-50 border border-slate-200 rounded px-2.5 py-1.5 text-slate-700 outline-none cursor-pointer"
+            className="flex-1 min-w-[120px] text-xs bg-slate-50 border border-slate-200 rounded px-2.5 py-1.5 text-slate-700 outline-none cursor-pointer"
           >
             <option value="ALL">All Channels</option>
             <option value="BANK_TRANSFER">Bank Transfer</option>
@@ -142,30 +136,24 @@ export const ReconciliationTab: React.FC<ReconciliationTabProps> = ({
             <option value="WALLET">Wallet</option>
           </select>
 
-          {/* Manual Match Button */}
           <button
-            onClick={() =>
-              onOpenManualMatch({
-                selectedExpectedId: "",
-                selectedReceivedId: "",
-              })
-            }
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-white border border-slate-200 hover:bg-slate-50 text-slate-800 rounded transition-colors shadow-2xs cursor-pointer"
+            onClick={() => onOpenManualMatch({ selectedExpectedId: "", selectedReceivedId: "" })}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-white border border-slate-200 hover:bg-slate-50 text-slate-800 rounded transition-colors shadow-2xs cursor-pointer shrink-0"
           >
             <Link2 size={13} className="text-slate-500" />
             Manual Match
           </button>
-        </div>
 
-        <div className="text-xs text-slate-500 font-medium">
-          Showing {filteredRows.length} records
+          <span className="text-xs text-slate-500 font-medium ml-auto shrink-0">
+            {filteredRows.length} records
+          </span>
         </div>
       </div>
 
-      {/* Transaction Working Table */}
+      {/* Table — scroll container is the key fix */}
       <div className="bg-white rounded-lg border border-slate-200 shadow-2xs overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
+          <table className="w-full text-left text-xs" style={{ minWidth: "700px" }}>
             <thead className="bg-slate-50 text-slate-500 font-medium border-b border-slate-200">
               <tr>
                 <th className="px-4 py-3">Expected Ref</th>
@@ -182,24 +170,24 @@ export const ReconciliationTab: React.FC<ReconciliationTabProps> = ({
             <tbody className="divide-y divide-slate-100">
               {filteredRows.map((row) => (
                 <tr key={row.id} className="hover:bg-slate-50/60 transition-colors">
-                  <td className="px-4 py-3 font-semibold text-slate-900">{row.expectedRef}</td>
-                  <td className="px-4 py-3 font-mono text-slate-600">{row.receivedRef}</td>
-                  <td className="px-4 py-3 text-slate-800">{row.customer}</td>
-                  <td className="px-4 py-3 text-right text-slate-700">
+                  <td className="px-4 py-3 font-semibold text-slate-900 whitespace-nowrap">{row.expectedRef}</td>
+                  <td className="px-4 py-3 font-mono text-slate-600 whitespace-nowrap">{row.receivedRef}</td>
+                  <td className="px-4 py-3 text-slate-800 max-w-[140px] truncate">{row.customer}</td>
+                  <td className="px-4 py-3 text-right text-slate-700 whitespace-nowrap">
                     {row.expectedAmount > 0 ? formatNGN(row.expectedAmount) : "—"}
                   </td>
-                  <td className="px-4 py-3 text-right font-semibold text-slate-900">
+                  <td className="px-4 py-3 text-right font-semibold text-slate-900 whitespace-nowrap">
                     {row.receivedAmount > 0 ? formatNGN(row.receivedAmount) : "—"}
                   </td>
-                  <td className="px-4 py-3">
+                  <td className="px-4 py-3 whitespace-nowrap">
                     <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium bg-slate-100 text-slate-700">
                       {row.provider}
                     </span>
                   </td>
-                  <td className="px-4 py-3 text-slate-500 text-[11px]">
+                  <td className="px-4 py-3 text-slate-500 text-[11px] whitespace-nowrap">
                     {new Date(row.date).toLocaleDateString()}
                   </td>
-                  <td className="px-4 py-3">
+                  <td className="px-4 py-3 whitespace-nowrap">
                     {row.status === "MATCHED" && (
                       <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
                         Matched
@@ -207,16 +195,16 @@ export const ReconciliationTab: React.FC<ReconciliationTabProps> = ({
                     )}
                     {row.status === "UNMATCHED" && (
                       <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium bg-slate-100 text-slate-700 border border-slate-200">
-                        Pending Order
+                        Pending
                       </span>
                     )}
                     {row.status === "UNCLAIMED" && (
                       <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium bg-amber-50 text-amber-700 border border-amber-200">
-                        Unclaimed Inflow
+                        Unclaimed
                       </span>
                     )}
                   </td>
-                  <td className="px-4 py-3 text-right">
+                  <td className="px-4 py-3 text-right whitespace-nowrap">
                     {row.matchObj ? (
                       <button
                         onClick={() => onInspect(row.matchObj)}
@@ -226,29 +214,19 @@ export const ReconciliationTab: React.FC<ReconciliationTabProps> = ({
                       </button>
                     ) : row.status === "UNMATCHED" ? (
                       <button
-                        onClick={() =>
-                          onOpenManualMatch({
-                            selectedExpectedId: row.expectedId,
-                            selectedReceivedId: "",
-                          })
-                        }
+                        onClick={() => onOpenManualMatch({ selectedExpectedId: row.expectedId, selectedReceivedId: "" })}
                         className="inline-flex items-center gap-1 px-2 py-1 text-[11px] font-medium text-indigo-700 bg-indigo-50 border border-indigo-200 hover:bg-indigo-100 rounded transition-colors cursor-pointer"
                       >
                         <Link2 size={11} />
-                        Match to Inflow
+                        Match
                       </button>
                     ) : row.status === "UNCLAIMED" ? (
                       <button
-                        onClick={() =>
-                          onOpenManualMatch({
-                            selectedExpectedId: "",
-                            selectedReceivedId: row.receivedId,
-                          })
-                        }
+                        onClick={() => onOpenManualMatch({ selectedExpectedId: "", selectedReceivedId: row.receivedId })}
                         className="inline-flex items-center gap-1 px-2 py-1 text-[11px] font-medium text-amber-800 bg-amber-50 border border-amber-200 hover:bg-amber-100 rounded transition-colors cursor-pointer"
                       >
                         <Link2 size={11} />
-                        Match to Order
+                        Match
                       </button>
                     ) : (
                       <span className="text-slate-400">—</span>

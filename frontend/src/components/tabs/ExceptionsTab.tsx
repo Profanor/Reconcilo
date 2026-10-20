@@ -30,7 +30,7 @@ export const ExceptionsTab: React.FC<ExceptionsTabProps> = ({
 
       {/* Section 1: Candidate Suggestions */}
       <div className="space-y-3">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-wrap items-center justify-between gap-2">
           <h3 className="text-sm font-semibold text-slate-900 flex items-center gap-2">
             <span>Candidate Match Suggestions</span>
             <span className="px-2 py-0.5 rounded-full text-[11px] font-bold bg-amber-100 text-amber-800">
@@ -44,17 +44,17 @@ export const ExceptionsTab: React.FC<ExceptionsTabProps> = ({
                 selectedReceivedId: "",
               })
             }
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-white border border-slate-200 hover:bg-slate-50 text-slate-800 rounded transition-colors shadow-2xs cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-white border border-slate-200 hover:bg-slate-50 text-slate-800 rounded transition-colors shadow-2xs cursor-pointer shrink-0"
           >
             <Link2 size={13} className="text-slate-500" />
-            Manual Match Link
+            Manual Match
           </button>
         </div>
 
         {exceptions?.suggestions.map((item, idx) => (
           <div key={idx} className="bg-white p-5 rounded-lg border border-slate-200 shadow-2xs space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center justify-between border-b border-slate-100 pb-3 gap-2">
+              <div className="flex flex-wrap items-center gap-2">
                 <span className="text-xs font-bold text-slate-900">Suggestion #{idx + 1}</span>
                 <span className="px-2 py-0.5 text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 rounded">
                   {(item.confidenceScore * 100).toFixed(0)}% Confidence
@@ -106,20 +106,20 @@ export const ExceptionsTab: React.FC<ExceptionsTabProps> = ({
             </div>
 
             {/* Actions */}
-            <div className="flex items-center justify-between pt-1">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 pt-1">
               <span className="text-[11px] text-slate-500">
                 Authorizing Operator: <strong>{operatorName}</strong>
               </span>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 flex-wrap">
                 <button
                   onClick={() => onRejectSuggestion(item.expectedPayment.id, item.receivedPayment.id)}
-                  className="px-3 py-1.5 text-xs font-medium text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 rounded transition-colors cursor-pointer"
+                  className="flex-1 sm:flex-none px-3 py-1.5 text-xs font-medium text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 rounded transition-colors cursor-pointer"
                 >
-                  Reject Suggestion
+                  Reject
                 </button>
                 <button
                   onClick={() => onConfirmSuggestion(item.expectedPayment.id, item.receivedPayment.id, item.reason)}
-                  className="px-3.5 py-1.5 text-xs font-medium text-white bg-slate-900 hover:bg-slate-800 rounded transition-colors shadow-xs cursor-pointer"
+                  className="flex-1 sm:flex-none px-3.5 py-1.5 text-xs font-medium text-white bg-slate-900 hover:bg-slate-800 rounded transition-colors shadow-xs cursor-pointer"
                 >
                   Confirm Match
                 </button>
@@ -137,9 +137,9 @@ export const ExceptionsTab: React.FC<ExceptionsTabProps> = ({
 
       {/* Section 2: Ambiguous Multi-Matches */}
       <div className="space-y-3">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-wrap items-center justify-between gap-2">
           <h3 className="text-sm font-semibold text-slate-900 flex items-center gap-2">
-            <span>Ambiguous Multi-Matches (Conflicting Candidates)</span>
+            <span>Ambiguous Multi-Matches</span>
             <span className="px-2 py-0.5 rounded-full text-[11px] font-bold bg-amber-100 text-amber-800">
               {exceptions?.ambiguous.length || 0}
             </span>
@@ -176,17 +176,17 @@ export const ExceptionsTab: React.FC<ExceptionsTabProps> = ({
               {amb.candidateOrders.map((cand) => (
                 <div
                   key={cand.expectedPayment.id}
-                  className="flex items-center justify-between p-3 rounded border border-slate-200 bg-white hover:border-slate-300 text-xs"
+                  className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 p-3 rounded border border-slate-200 bg-white hover:border-slate-300 text-xs"
                 >
-                  <div>
-                    <div className="font-semibold text-slate-900">{cand.expectedPayment.reference} — {cand.expectedPayment.customerName}</div>
+                  <div className="flex-1 min-w-0">
+                    <div className="font-semibold text-slate-900 truncate">{cand.expectedPayment.reference} — {cand.expectedPayment.customerName}</div>
                     <div className="text-slate-500 text-[11px]">
                       {cand.expectedPayment.description || "Order"} • Created {new Date(cand.expectedPayment.createdAt).toLocaleDateString()}
                     </div>
                   </div>
                   <button
                     onClick={() => onConfirmSuggestion(cand.expectedPayment.id, amb.receivedPayment.id, `Resolved ambiguous payment to ${cand.expectedPayment.customerName}`)}
-                    className="px-3 py-1 bg-slate-900 hover:bg-slate-800 text-white rounded text-xs font-medium cursor-pointer"
+                    className="shrink-0 px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-white rounded text-xs font-medium cursor-pointer"
                   >
                     Link to this order
                   </button>

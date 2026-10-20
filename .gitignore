@@ -44,3 +44,8 @@ pnpm-debug.log*
 # Temporary files
 tmp/
 temp/
+
+# Prisma & TypeScript Build Artifacts
+backend/prisma/generated/
+backend/prisma.config.*
+*.tsbuildinfo

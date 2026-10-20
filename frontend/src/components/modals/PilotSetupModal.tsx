@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { X, Building, User, Briefcase, Hash, Sparkles, Check } from "lucide-react";
+import { X, Building, User, Briefcase, Hash, Sparkles, Check, RotateCcw } from "lucide-react";
 
 export interface PilotProfile {
   companyName: string;
@@ -15,16 +15,20 @@ interface PilotSetupModalProps {
   onClose: () => void;
   currentProfile: PilotProfile;
   onSave: (profile: PilotProfile) => void;
+  /** Present only when the user has switched to a preset and a real workspace snapshot exists */
+  onRestoreMyWorkspace?: () => void;
 }
 
 const PRESET_PILOTS: Array<{
   name: string;
   profile: PilotProfile;
   badge: string;
+  datasetLabel: string;
 }> = [
   {
     name: "Apex Superstores (Retail Chain)",
     badge: "Retail & POS",
+    datasetLabel: "Dataset A",
     profile: {
       tenantId: "tenant-apex-001",
       companyName: "Apex Superstores & Logistics Nigeria Ltd",
@@ -37,6 +41,7 @@ const PRESET_PILOTS: Array<{
   {
     name: "Alaba Wholesale Electronics",
     badge: "B2B Trade & Invoicing",
+    datasetLabel: "Dataset B",
     profile: {
       tenantId: "tenant-alaba-002",
       companyName: "Alaba Prime Wholesale Electronics Ltd",
@@ -49,6 +54,7 @@ const PRESET_PILOTS: Array<{
   {
     name: "PayPulse Merchant Services",
     badge: "Fintech & PSP",
+    datasetLabel: "Dataset A",
     profile: {
       tenantId: "tenant-apex-001",
       companyName: "PayPulse Solutions Nigeria Limited",
@@ -61,8 +67,9 @@ const PRESET_PILOTS: Array<{
   {
     name: "Kano Agro Commodities",
     badge: "Commodities & Bulk",
+    datasetLabel: "Dataset B",
     profile: {
-      tenantId: "tenant-apex-001",
+      tenantId: "tenant-alaba-002",
       companyName: "Sahel Agro Ventures Ltd",
       rcNumber: "RC-1102948",
       operatorName: "Ibrahim Danjuma",
@@ -77,6 +84,7 @@ export const PilotSetupModal: React.FC<PilotSetupModalProps> = ({
   onClose,
   currentProfile,
   onSave,
+  onRestoreMyWorkspace,
 }) => {
   const [profile, setProfile] = useState<PilotProfile>(currentProfile);
 
@@ -117,6 +125,22 @@ export const PilotSetupModal: React.FC<PilotSetupModalProps> = ({
         </div>
 
         <form onSubmit={handleSubmit} className="p-6 overflow-y-auto space-y-5 text-xs">
+
+          {/* My Workspace Restore Banner — shown only while previewing a preset */}
+          {onRestoreMyWorkspace && (
+            <button
+              type="button"
+              onClick={onRestoreMyWorkspace}
+              className="w-full flex items-center gap-2.5 px-3.5 py-2.5 rounded-lg border border-emerald-300 bg-emerald-50 hover:bg-emerald-100 transition-colors cursor-pointer group"
+            >
+              <RotateCcw size={14} className="text-emerald-600 shrink-0 group-hover:rotate-[-45deg] transition-transform duration-300" />
+              <div className="text-left">
+                <p className="text-[11px] font-bold text-emerald-800">Return to My Workspace</p>
+                <p className="text-[10px] text-emerald-600">Exit preset preview and restore your real tenant session</p>
+              </div>
+            </button>
+          )}
+
           {/* Quick Presets */}
           <div>
             <label className="text-[11px] font-bold uppercase tracking-wider text-slate-500 block mb-2">
@@ -142,12 +166,18 @@ export const PilotSetupModal: React.FC<PilotSetupModalProps> = ({
                       </span>
                       {isSelected && <Check size={12} className="text-indigo-600 shrink-0 ml-1" />}
                     </div>
-                    <div className="text-[10px] text-slate-500 mt-0.5">{p.badge}</div>
+                    <div className="flex items-center gap-1.5 mt-1">
+                      <span className="text-[10px] text-slate-500">{p.badge}</span>
+                      <span className="text-[9px] font-semibold px-1.5 py-0.5 rounded bg-slate-200 text-slate-600">
+                        {p.datasetLabel}
+                      </span>
+                    </div>
                   </button>
                 );
               })}
             </div>
           </div>
+
 
           <div className="border-t border-slate-100 pt-4 space-y-3.5">
             <label className="text-[11px] font-bold uppercase tracking-wider text-slate-500 block">
