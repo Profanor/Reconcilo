@@ -54,4 +54,51 @@ export class ReconciliationController {
   ) {
     return await this.reconciliationService.unmatch(tenantId, id, actor, reason);
   }
+
+  @Get("exceptions")
+  async getExceptions(@CurrentTenant() tenantId: string) {
+    return await this.reconciliationService.getExceptions(tenantId);
+  }
+
+  @Get("audit")
+  async getAuditLogs(@CurrentTenant() tenantId: string) {
+    return await this.reconciliationService.getAuditLogs(tenantId);
+  }
+
+  @Post("confirm-suggestion")
+  async confirmSuggestion(
+    @CurrentTenant() tenantId: string,
+    @Body("expectedPaymentId") expectedPaymentId: string,
+    @Body("receivedPaymentId") receivedPaymentId: string,
+    @Body("confirmedBy") confirmedBy?: string,
+    @Body("notes") notes?: string,
+  ) {
+    if (!expectedPaymentId || !receivedPaymentId) {
+      throw new BadRequestException("expectedPaymentId and receivedPaymentId are required");
+    }
+    return await this.reconciliationService.confirmSuggestion(
+      tenantId,
+      expectedPaymentId,
+      receivedPaymentId,
+      confirmedBy,
+      notes,
+    );
+  }
+
+  @Post("reject-suggestion")
+  async rejectSuggestion(
+    @CurrentTenant() tenantId: string,
+    @Body("expectedPaymentId") expectedPaymentId: string,
+    @Body("receivedPaymentId") receivedPaymentId: string,
+    @Body("rejectedBy") rejectedBy?: string,
+    @Body("reason") reason?: string,
+  ) {
+    return await this.reconciliationService.rejectSuggestion(
+      tenantId,
+      expectedPaymentId,
+      receivedPaymentId,
+      rejectedBy,
+      reason,
+    );
+  }
 }

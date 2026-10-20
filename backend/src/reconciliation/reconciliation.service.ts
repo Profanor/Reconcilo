@@ -318,4 +318,226 @@ export class ReconciliationService {
       orderBy: { matchedAt: 'desc' },
     });
   }
+
+  public async getAuditLogs(tenantId: string) {
+    return await this.prisma.auditLog.findMany({
+      where: { tenantId },
+      orderBy: { createdAt: 'desc' },
+      take: 100,
+    });
+  }
+
+  public async getExceptions(tenantId: string) {
+    const unmatchedExpected = await this.prisma.expectedPayment.findMany({
+      where: { tenantId, status: 'PENDING' },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    const unmatchedReceived = await this.prisma.receivedPayment.findMany({
+      where: { tenantId, status: 'UNMATCHED' },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    const auditLogs = await this.prisma.auditLog.findMany({
+      where: { tenantId },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    const rejectedPairsCount = auditLogs.filter(
+      (l: any) => l.action === 'REJECT_SUGGESTION',
+    ).length;
+
+    const duplicates = auditLogs
+      .filter((l: any) => l.action === 'DUPLICATE_FLAGGED')
+      .map((l: any) => ({
+        reference: l.targetId || undefined,
+        reason: l.reason || undefined,
+        createdAt: l.createdAt.toISOString(),
+      }));
+
+    const suggestions: any[] = [];
+    const ambiguousMap = new Map<string, any[]>();
+
+    const activeRules = await this.getEnabledRules(tenantId);
+
+    for (const received of unmatchedReceived) {
+      const candidates: any[] = [];
+
+      for (const expected of unmatchedExpected) {
+        for (const { rule, config } of activeRules) {
+          const res = rule.evaluate(expected, received, config);
+          if (res.isMatch) {
+            candidates.push({
+              expectedPayment: expected,
+              receivedPayment: received,
+              confidenceScore: res.confidenceScore,
+              matchedRules: res.matchedRules,
+              reason: res.notes,
+            });
+            break;
+          }
+        }
+      }
+
+      if (candidates.length === 1) {
+        suggestions.push(candidates[0]);
+      } else if (candidates.length > 1) {
+        ambiguousMap.set(received.id, candidates);
+      }
+    }
+
+    const ambiguous = Array.from(ambiguousMap.entries()).map(
+      ([receivedId, candList]) => ({
+        receivedPayment: unmatchedReceived.find((r) => r.id === receivedId)!,
+        candidateOrders: candList.map((c) => ({
+          expectedPayment: c.expectedPayment,
+          confidenceScore: c.confidenceScore,
+          reason: c.reason,
+        })),
+        reason: 'Multiple expected payments match amount or reference criteria',
+      }),
+    );
+
+    return {
+      suggestions,
+      ambiguous,
+      unmatchedExpected,
+      unmatchedReceived,
+      duplicates,
+      rejectedPairsCount,
+    };
+  }
+
+  public async confirmSuggestion(
+    tenantId: string,
+    expectedPaymentId: string,
+    receivedPaymentId: string,
+    confirmedBy = 'FINANCE_OPERATOR',
+    notes?: string,
+  ) {
+    return await this.prisma.$transaction(async (tx: any) => {
+      const expected = await tx.expectedPayment.findFirst({
+        where: { id: expectedPaymentId, tenantId },
+      });
+      const received = await tx.receivedPayment.findFirst({
+        where: { id: receivedPaymentId, tenantId },
+      });
+
+      if (!expected || !received) {
+        throw new NotFoundException('Expected or received payment not found.');
+      }
+
+      const match = await tx.reconciliationMatch.create({
+        data: {
+          tenantId,
+          expectedPaymentId,
+          receivedPaymentId,
+          matchMethod: 'CONFIRMED_SUGGESTION',
+          confidenceScore: 0.95,
+          matchedRules: JSON.stringify(['CONFIRMED_SUGGESTION']),
+          notes: notes || 'Suggestion confirmed by operator',
+          matchedBy: confirmedBy,
+        },
+      });
+
+      await tx.expectedPayment.update({
+        where: { id: expectedPaymentId },
+        data: { status: 'MATCHED' },
+      });
+
+      await tx.receivedPayment.update({
+        where: { id: receivedPaymentId },
+        data: { status: 'MATCHED' },
+      });
+
+      await tx.auditLog.create({
+        data: {
+          tenantId,
+          action: 'CONFIRM_SUGGESTION',
+          targetId: match.id,
+          user: confirmedBy,
+          reason: notes || 'Operator confirmed fuzzy candidate suggestion',
+        },
+      });
+
+      return match;
+    });
+  }
+
+  public async rejectSuggestion(
+    tenantId: string,
+    expectedPaymentId: string,
+    receivedPaymentId: string,
+    rejectedBy = 'FINANCE_OPERATOR',
+    reason = 'Candidate does not match actual transaction',
+  ) {
+    await this.prisma.auditLog.create({
+      data: {
+        tenantId,
+        action: 'REJECT_SUGGESTION',
+        targetId: `${expectedPaymentId}:${receivedPaymentId}`,
+        user: rejectedBy,
+        reason,
+      },
+    });
+
+    return {
+      success: true,
+      message: 'Suggestion rejected and recorded in audit log',
+    };
+  }
+
+  public async exportReportCsv(tenantId: string): Promise<string> {
+    const matches = await this.prisma.reconciliationMatch.findMany({
+      where: { tenantId },
+      include: {
+        expectedPayment: true,
+        receivedPayment: true,
+      },
+      orderBy: { matchedAt: 'desc' },
+    });
+
+    const headers = [
+      'Match ID',
+      'Matched At',
+      'Match Method',
+      'Confidence Score',
+      'Expected Reference',
+      'Customer Name',
+      'Expected Amount',
+      'Received Reference',
+      'Sender Name',
+      'Channel',
+      'Provider',
+      'Received Amount',
+      'Matched By',
+      'Notes',
+    ];
+
+    const rows = matches.map((m) => [
+      m.id,
+      m.matchedAt.toISOString(),
+      m.matchMethod,
+      `${Math.round(m.confidenceScore * 100)}%`,
+      m.expectedPayment.reference,
+      m.expectedPayment.customerName,
+      m.expectedPayment.amount.toString(),
+      m.receivedPayment.reference,
+      m.receivedPayment.senderName || '',
+      m.receivedPayment.channel,
+      m.receivedPayment.provider,
+      m.receivedPayment.amount.toString(),
+      m.matchedBy || '',
+      m.notes || '',
+    ]);
+
+    const csvContent = [
+      headers.join(','),
+      ...rows.map((row) =>
+        row.map((val) => `"${(val || '').replace(/"/g, '""')}"`).join(','),
+      ),
+    ].join('\n');
+
+    return csvContent;
+  }
 }
