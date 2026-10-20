@@ -141,6 +141,7 @@ export default function App() {
       // which takes priority over the header in tenant.guard.ts (tokenTenantId || headerTenantId).
       localStorage.removeItem("reconcilo_token");
     }
+    setMobileMenuOpen(false);
     addToast(`Switched workspace to ${profile.companyName}!`, "info");
     await loadAllData();
   };
@@ -170,6 +171,7 @@ export default function App() {
     localStorage.removeItem("lissafi_real_operator_role");
 
     setShowPilotModal(false);
+    setMobileMenuOpen(false);
     addToast(`Restored your workspace: ${realCompany}`, "success");
     await loadAllData();
   };

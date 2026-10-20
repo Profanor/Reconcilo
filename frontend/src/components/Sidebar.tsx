@@ -132,7 +132,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
       {/* Sidebar Footer */}
       <div className="p-3 border-t border-slate-800 space-y-2 shrink-0">
         <button
-          onClick={onNavigateLanding}
+          onClick={() => {
+            onMobileClose?.();
+            onNavigateLanding();
+          }}
           className="w-full flex items-center justify-between px-2.5 py-1.5 rounded text-xs font-medium text-slate-400 hover:text-white hover:bg-slate-800 transition-colors cursor-pointer"
         >
           <div className="flex items-center gap-2">
@@ -143,7 +146,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
         </button>
 
         <button
-          onClick={onSignOut}
+          onClick={() => {
+            onMobileClose?.();
+            onSignOut();
+          }}
           className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded text-xs font-medium text-slate-400 hover:text-red-400 hover:bg-red-500/10 transition-colors cursor-pointer group"
         >
           <LogOut size={13} className="shrink-0" />
@@ -151,7 +157,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
         </button>
 
         <button
-          onClick={onOpenPilotSetup}
+          onClick={() => {
+            onMobileClose?.();
+            onOpenPilotSetup();
+          }}
           title="Click to customize demo company and operator"
           className="w-full px-2.5 py-2 rounded bg-slate-800/60 hover:bg-slate-800 border border-slate-700/80 hover:border-slate-600 flex items-center justify-between text-xs text-left transition-all cursor-pointer group"
         >
@@ -166,7 +175,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
         </button>
 
         <div
-          onClick={onOpenPilotSetup}
+          onClick={() => {
+            onMobileClose?.();
+            onOpenPilotSetup();
+          }}
           title="Click to change operator profile"
           className="px-2.5 py-1.5 flex items-center justify-between text-xs rounded hover:bg-slate-800/40 cursor-pointer transition-colors"
         >
