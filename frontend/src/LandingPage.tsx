@@ -155,34 +155,37 @@ export default function LandingPage({ onLaunchApp, stats }: LandingPageProps) {
             </span>
           </div>
 
-          <nav className="hidden md:flex items-center gap-8 text-xs font-medium text-slate-600">
+          <nav className="hidden md:flex items-center gap-4 lg:gap-8 text-xs font-medium text-slate-600">
             <a
               href="#how-it-works"
-              className="hover:text-slate-900 transition-colors"
+              className="hover:text-slate-900 transition-colors whitespace-nowrap"
             >
               How It Works
             </a>
             <a
               href="#accuracy"
-              className="hover:text-slate-900 transition-colors"
+              className="hover:text-slate-900 transition-colors whitespace-nowrap"
             >
               Controlled Matching
             </a>
-            <a href="#rails" className="hover:text-slate-900 transition-colors">
+            <a
+              href="#rails"
+              className="hover:text-slate-900 transition-colors whitespace-nowrap"
+            >
               Supported Rails
             </a>
           </nav>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 lg:gap-3 shrink-0">
             <button
               onClick={openDemoModal}
-              className="hidden sm:inline-flex px-3.5 py-1.5 text-xs font-semibold text-slate-700 hover:text-slate-950 transition-colors"
+              className="hidden lg:inline-flex px-3.5 py-1.5 text-xs font-semibold text-slate-700 hover:text-slate-950 transition-colors whitespace-nowrap"
             >
               Request Pilot Demo
             </button>
             <button
               onClick={handleLaunchOrAuth}
-              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-slate-900 hover:bg-slate-800 text-white rounded-md text-xs font-semibold shadow-xs transition-all hover:gap-2"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 lg:px-3.5 lg:py-1.5 bg-slate-900 hover:bg-slate-800 text-white rounded-md text-xs font-semibold shadow-xs transition-all hover:gap-2 whitespace-nowrap"
             >
               <span>Launch Demo App</span>
               <ArrowRight size={13} />
@@ -199,14 +202,14 @@ export default function LandingPage({ onLaunchApp, stats }: LandingPageProps) {
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-gradient-to-b from-slate-200/50 via-slate-100/20 to-transparent blur-3xl pointer-events-none -z-10" />
 
         <div className="max-w-4xl mx-auto px-6 text-center space-y-6">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-slate-200 shadow-2xs text-[11px] font-medium text-slate-700">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-slate-200 shadow-2xs text-[11px] font-medium text-slate-700 whitespace-nowrap">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shrink-0" />
             <span>
-              Built for Nigerian Commerce & High-Volume Merchant Teams
+              Built for Nigerian Commerce <span className="hidden sm:inline">& High-Volume Teams</span>
             </span>
           </div>
 
-          <h1 className="text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-slate-950 leading-[1.12]">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-950 leading-[1.12]">
             Know what should have come in. <br />
             <span className="text-slate-500">Know what actually came in.</span>
           </h1>
@@ -258,31 +261,36 @@ export default function LandingPage({ onLaunchApp, stats }: LandingPageProps) {
         <div className="max-w-5xl mx-auto px-6 mt-12 md:mt-16">
           <div className="relative rounded-xl border border-slate-200 bg-white p-4 sm:p-6 shadow-xl shadow-slate-200/50 overflow-hidden">
             {/* Top Toolbar */}
-            <div className="flex items-center justify-between border-b border-slate-100 pb-4 mb-5">
-              <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-slate-200" />
-                <span className="w-2.5 h-2.5 rounded-full bg-slate-200" />
-                <span className="w-2.5 h-2.5 rounded-full bg-slate-200" />
-                <span className="ml-2 text-xs font-semibold text-slate-900">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3.5 mb-5 gap-3">
+              <div className="flex items-center gap-2 sm:gap-2.5 min-w-0">
+                <div className="flex items-center gap-1.5 shrink-0">
+                  <span className="w-2.5 h-2.5 rounded-full bg-rose-400/80" />
+                  <span className="w-2.5 h-2.5 rounded-full bg-amber-400/80" />
+                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-400/80" />
+                </div>
+                <span className="ml-1 text-xs sm:text-sm font-semibold text-slate-900 whitespace-nowrap truncate">
                   {PRODUCT_NAME} Ledger Engine
                 </span>
-                <span className="text-[10px] font-mono text-slate-400">
-                  SESSION · LIVE RUN
+                <span className="hidden sm:inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 text-[10px] font-mono font-medium text-emerald-700 whitespace-nowrap shrink-0">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                  LIVE RUN
                 </span>
               </div>
               <button
                 onClick={handleLaunchOrAuth}
-                className="text-xs font-semibold text-indigo-600 hover:text-indigo-800 flex items-center gap-1"
+                className="text-xs font-semibold text-indigo-600 hover:text-indigo-800 flex items-center gap-1 whitespace-nowrap shrink-0 transition-colors"
               >
-                <span>Open Full Workspace</span>
+                <span>
+                  <span className="hidden sm:inline">Open Full </span>Workspace
+                </span>
                 <ChevronRight size={14} />
               </button>
             </div>
 
             {/* Reconciliation Comparison Mock */}
-            <div className="grid grid-cols-1 md:grid-cols-7 gap-4 items-center">
+            <div className="grid grid-cols-1 lg:grid-cols-7 gap-4 lg:gap-5 items-center">
               {/* Expected Side */}
-              <div className="md:col-span-3 p-4 bg-slate-50 rounded-lg border border-slate-200 text-xs space-y-2">
+              <div className="lg:col-span-3 p-4 sm:p-5 bg-slate-50 rounded-lg border border-slate-200 text-xs space-y-2">
                 <div className="flex items-center justify-between text-slate-500 font-mono text-[10px] uppercase">
                   <span>Sales Order (Shopify)</span>
                   <span className="text-indigo-600 font-bold">EXPECTED</span>
@@ -302,20 +310,22 @@ export default function LandingPage({ onLaunchApp, stats }: LandingPageProps) {
               </div>
 
               {/* Matching Engine Bridge */}
-              <div className="md:col-span-1 flex flex-col items-center justify-center py-2 text-center">
-                <div className="w-8 h-8 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center justify-center font-bold text-xs mb-1 shadow-2xs">
+              <div className="lg:col-span-1 flex flex-row lg:flex-col items-center justify-center py-2 lg:py-0 gap-2 lg:gap-0 text-center">
+                <div className="w-8 h-8 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center justify-center font-bold text-xs mb-0 lg:mb-1 shadow-2xs shrink-0">
                   ✓
                 </div>
-                <span className="text-[10px] font-bold text-emerald-800 uppercase tracking-tight">
-                  100% Match
-                </span>
-                <span className="text-[9px] text-slate-400 font-mono mt-0.5">
-                  Ref & Amount
-                </span>
+                <div className="flex flex-col items-start lg:items-center">
+                  <span className="text-[10px] font-bold text-emerald-800 uppercase tracking-tight whitespace-nowrap">
+                    100% Match
+                  </span>
+                  <span className="text-[9px] text-slate-400 font-mono mt-0.5 whitespace-nowrap">
+                    Ref & Amount
+                  </span>
+                </div>
               </div>
 
               {/* Received Side */}
-              <div className="md:col-span-3 p-4 bg-slate-50 rounded-lg border border-slate-200 text-xs space-y-2">
+              <div className="lg:col-span-3 p-4 sm:p-5 bg-slate-50 rounded-lg border border-slate-200 text-xs space-y-2">
                 <div className="flex items-center justify-between text-slate-500 font-mono text-[10px] uppercase">
                   <span>Bank Statement (Access)</span>
                   <span className="text-emerald-700 font-bold">
@@ -392,7 +402,7 @@ export default function LandingPage({ onLaunchApp, stats }: LandingPageProps) {
             Standardize statements and logs across Nigeria's banking & payment
             ecosystem
           </p>
-          <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-6 text-xs font-semibold text-slate-700">
+          <div className="flex flex-wrap items-center justify-center gap-2.5 sm:gap-3.5 md:gap-4 lg:gap-5 text-xs font-semibold text-slate-700">
             {[
               "Access Bank",
               "GTBank",
@@ -435,9 +445,9 @@ export default function LandingPage({ onLaunchApp, stats }: LandingPageProps) {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-8">
           {/* Step 1: Import */}
-          <div className="bg-white p-7 rounded-xl border border-slate-200 shadow-xs hover:border-slate-300 transition-all flex flex-col justify-between">
+          <div className="bg-white p-5 lg:p-7 rounded-xl border border-slate-200 shadow-xs hover:border-slate-300 transition-all flex flex-col justify-between">
             <div className="space-y-4">
               <div className="w-10 h-10 rounded-lg bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-700 font-bold text-sm">
                 01
@@ -472,7 +482,7 @@ export default function LandingPage({ onLaunchApp, stats }: LandingPageProps) {
           </div>
 
           {/* Step 2: Match */}
-          <div className="bg-white p-7 rounded-xl border border-slate-200 shadow-xs hover:border-slate-300 transition-all flex flex-col justify-between">
+          <div className="bg-white p-5 lg:p-7 rounded-xl border border-slate-200 shadow-xs hover:border-slate-300 transition-all flex flex-col justify-between">
             <div className="space-y-4">
               <div className="w-10 h-10 rounded-lg bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-700 font-bold text-sm">
                 02
@@ -507,7 +517,7 @@ export default function LandingPage({ onLaunchApp, stats }: LandingPageProps) {
           </div>
 
           {/* Step 3: Resolve */}
-          <div className="bg-white p-7 rounded-xl border border-slate-200 shadow-xs hover:border-slate-300 transition-all flex flex-col justify-between">
+          <div className="bg-white p-5 lg:p-7 rounded-xl border border-slate-200 shadow-xs hover:border-slate-300 transition-all flex flex-col justify-between">
             <div className="space-y-4">
               <div className="w-10 h-10 rounded-lg bg-amber-50 border border-amber-100 flex items-center justify-center text-amber-700 font-bold text-sm">
                 03
@@ -562,8 +572,8 @@ export default function LandingPage({ onLaunchApp, stats }: LandingPageProps) {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="p-6 rounded-lg bg-slate-800/80 border border-slate-700/80 space-y-3">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6">
+            <div className="p-5 lg:p-6 rounded-lg bg-slate-800/80 border border-slate-700/80 space-y-3">
               <div className="text-xs font-bold text-amber-400">
                 01 / The Third-Party Payer
               </div>
@@ -578,7 +588,7 @@ export default function LandingPage({ onLaunchApp, stats }: LandingPageProps) {
               </p>
             </div>
 
-            <div className="p-6 rounded-lg bg-slate-800/80 border border-slate-700/80 space-y-3">
+            <div className="p-5 lg:p-6 rounded-lg bg-slate-800/80 border border-slate-700/80 space-y-3">
               <div className="text-xs font-bold text-amber-400">
                 02 / The Identical Amount Trap
               </div>
@@ -593,7 +603,7 @@ export default function LandingPage({ onLaunchApp, stats }: LandingPageProps) {
               </p>
             </div>
 
-            <div className="p-6 rounded-lg bg-slate-800/80 border border-slate-700/80 space-y-3">
+            <div className="p-5 lg:p-6 rounded-lg bg-slate-800/80 border border-slate-700/80 space-y-3">
               <div className="text-xs font-bold text-amber-400">
                 03 / The Audit Defense
               </div>
